@@ -216,7 +216,7 @@
         <input class="tool-input" id="addr" type="text" inputmode="text" placeholder="Enter any Florida property address" aria-label="Florida property address" required />
         <button class="cta" type="submit" id="goBtn">Run free records check</button>
       </form>
-      <p class="tool-note"><b>Free · No account, no card</b> · This searches the same public records you look up by hand for every insurance inspection — the FL DOR property roll, FEMA, and the county permit systems</p>
+      <p class="tool-note"><b>Free · No account, no card</b> · This searches the same public records you look up by hand for every insurance inspection — the FL DOR property roll and FEMA — and checks the county's permit coverage</p>
 
       <div class="console" id="console" aria-live="polite"></div>
 
@@ -287,7 +287,7 @@
   <div class="wrap">
     <p class="kicker"><span class="no">The next step</span></p>
     <h2>Your first full inspection is free — records to signed report.</h2>
-    <p>Run one real job through it: paste the booking, pull the records you just saw, shoot the guided checklist, and email the official signed PDFs from the driveway. Card on file, not charged for the trial. Cancel anytime.</p>
+    <p>Run one real job through it: paste the booking, pull the records you just saw, shoot the guided checklist, and email the official signed PDFs from the driveway. Email us and the trial account is set up in minutes — no charge for the trial. Cancel anytime.</p>
     <a class="cta" href="app/">Start the free inspection</a>
     <p class="sub2">$5 a pull · $20/mo for 10 · $98/yr unlimited &nbsp;·&nbsp; <a href="/" style="color:#fff;">see the full tour &rarr;</a></p>
   </div>
@@ -407,10 +407,15 @@
     var geoLn = line('<span class="arrow">&rarr;</span> LOCATING THE PROPERTY');
     var state = {};
 
-    fetchJson("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=1&outFields=Region,City&SingleLine=" + encodeURIComponent(q))
+    fetchJson("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=1&outFields=Region,City,Addr_type&SingleLine=" + encodeURIComponent(q))
       .then(function (geo) {
         var cand = (geo.candidates || [])[0];
         if (!cand || !cand.location || (cand.score || 0) < 65) throw { step: "geo" };
+        // A city/ZIP-level match would land the pin on a locality centroid and
+        // return some unrelated parcel as if it were "found" — only accept
+        // property-level matches.
+        var addrType = (cand.attributes && cand.attributes.Addr_type) || "";
+        if (addrType && !/PointAddress|StreetAddress|Subaddress|BuildingName/i.test(addrType)) throw { step: "geo" };
         var region = (cand.attributes && cand.attributes.Region) || "";
         if (region && !/florida/i.test(region)) throw { step: "state", region: region };
         state.matched = cand.address;
@@ -515,10 +520,10 @@
     var badge;
     if (state.covered) {
       badge = '<div class="permit-badge covered">' + okIcon + "<span><b>Permit auto-pull: COVERED in " + esc(state.county) +
-        " County.</b> In the full app, roof and building permits for this parcel come in automatically — numbers, types, and dates. That's a documented roof age instead of an estimate.</span></div>";
+        " County.</b> In the full app, county-issued roof and building permits for this parcel come in automatically — numbers, types, and dates (addresses permitted by an incorporated city route to that city's portal). That's a documented roof age instead of an estimate.</span></div>";
     } else {
       badge = '<div class="permit-badge linked">' + arrowIcon + "<span><b>Permit auto-pull: not yet live in " + esc(state.county || "this") +
-        " County — direct portal link provided.</b> In the full app, you get a one-click link to the county's own permit portal for this address. We only claim auto-pull where we actually have it (16 counties + 7 cities and growing); property records still fill in automatically here, statewide.</span></div>";
+        " County — direct lookup link provided.</b> In the full app, you get a one-click link to the county's permit lookup for this address. We only claim auto-pull where we actually have it (16 counties + 7 cities and growing); property records still fill in automatically here, statewide.</span></div>";
     }
     document.getElementById("rPermit").innerHTML = badge;
 
