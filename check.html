@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PX3ZXWR6');</script>
+<!-- End Google Tag Manager -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Free Florida Property Records Check — See What Auto-Fills Before You Buy Anything | Inspector Gadgets</title>
@@ -187,9 +194,35 @@
     .topbar nav a:not(.app-link) { display: none; }
   }
 </style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebApplication",
+ "name": "Free Florida Property Records Check",
+ "url": "https://inspection.rent/check.html",
+ "applicationCategory": "BusinessApplication",
+ "operatingSystem": "Web",
+ "description": "Type any Florida address and see the public property record live \u2014 year built, living area, owner, parcel, flood zone \u2014 plus county permit coverage. Free, no account.",
+ "offers": {
+  "@type": "Offer",
+  "price": "0",
+  "priceCurrency": "USD"
+ },
+ "provider": {
+  "@type": "Organization",
+  "name": "Inspector Gadgets",
+  "url": "https://inspection.rent/"
+ }
+}
+</script>
 </head>
 <body>
 
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PX3ZXWR6"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <div class="topbar">
   <div class="wrap">
     <a class="brand" href="/">
@@ -370,6 +403,8 @@
   function delay(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
   function showFail(title, msg) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: "check_failed" });
     document.getElementById("failTitle").textContent = title;
     document.getElementById("failMsg").textContent = msg;
     failEl.classList.add("active");
@@ -399,6 +434,8 @@
 
     btn.disabled = true;
     btn.textContent = "Pulling…";
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: "check_search" });
     consoleEl.innerHTML = "";
     consoleEl.classList.add("active");
     resultEl.classList.remove("active");
@@ -530,11 +567,30 @@
     var subject = encodeURIComponent("Inspector Gadgets free trial — " + state.matched);
     document.getElementById("rTrialMail").href = "mailto:richducat@gmail.com?subject=" + subject;
 
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: "check_found", county: state.county || "unknown", permit_covered: state.covered ? "yes" : "no" });
+
     resultEl.classList.add("active");
     resultEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 })();
 </script>
 
+
+<script>
+(function () {
+  window.dataLayer = window.dataLayer || [];
+  document.addEventListener("click", function (ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest("a") : null;
+    if (!a) return;
+    var href = a.getAttribute("href") || "";
+    if (href.indexOf("app/") === 0) {
+      window.dataLayer.push({ event: "app_open_click", cta_location: a.id === "rAppCta" ? "check_results" : "check_page" });
+    } else if (href.indexOf("mailto:") === 0 && /trial/i.test(href)) {
+      window.dataLayer.push({ event: "generate_lead", lead_source: a.id === "rTrialMail" ? "check_results" : "check_page" });
+    }
+  }, true);
+})();
+</script>
 </body>
 </html>
