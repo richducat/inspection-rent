@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Free Florida Property Records Check — See What Auto-Fills Before You Buy Anything | Inspector Gadgets</title>
+<meta name="description" content="Type any Florida address and watch the county and state records come back in seconds — year built, living area, owner, parcel, flood zone, permit coverage. Free, no signup. This is the same pull that pre-fills the official 4-Point and Wind Mitigation forms." />
+<meta name="theme-color" content="#0B1D31" />
+<link rel="canonical" href="https://inspection.rent/check.html" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Type a Florida Address. Watch the Records Come Back. Free." />
+<meta property="og:description" content="The same records pull that pre-fills the official Florida 4-Point and Wind Mitigation forms — run it free on any address, right now." />
+<meta property="og:url" content="https://inspection.rent/check.html" />
+<meta property="og:image" content="https://inspection.rent/shots/research.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Crect width='44' height='44' fill='%230B1D31'/%3E%3Cpath d='M8 8h21l7 7v21H8z' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M14 23 22 15l8 8' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M17 25.5 21 29.5 29 21' fill='none' stroke='%23F5A300' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" />
+<style>
+  :root {
+    --ink: #0f2438; --muted: #52657b; --paper: #eff2f6; --white: #ffffff;
+    --line: #d5dde6; --line-strong: #adbbcb;
+    --navy: #0b1d31; --navy-deep: #071527; --navy-text: #b9c7d8;
+    --primary: #143c61; --amber: #f5a300; --amber-strong: #d88a00; --amber-soft: #fcefd3;
+    --success: #177342; --success-soft: #e1f2e8; --warn-text: #9a5b00;
+    --vellum: #fbfaf6; --blueprint: #1d5b93;
+    --font-ui: "Public Sans", -apple-system, "Segoe UI", sans-serif;
+    --font-display: "Archivo", "Public Sans", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --grid-navy:
+      linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    --grid-navy-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: var(--font-ui); color: var(--ink); background: var(--paper); line-height: 1.55; font-size: 16px; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px; }
+  .kicker { font-family: var(--font-mono); font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; line-height: 1.08; margin: 0; }
+  section { padding: 72px 0; }
+  section + section { border-top: 1px solid var(--line); }
+
+  .cta {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    background: var(--amber); color: var(--ink); font-family: var(--font-display);
+    font-size: 15px; font-weight: 700; padding: 15px 28px; border-radius: 4px;
+    text-decoration: none; box-shadow: inset 0 -2px 0 rgba(0,0,0,0.22); white-space: nowrap;
+    border: 0; cursor: pointer;
+  }
+  .cta:hover { background: var(--amber-strong); }
+  .cta-ghost {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.35);
+    font-family: var(--font-display); font-size: 15px; font-weight: 700;
+    padding: 14px 28px; border-radius: 4px; text-decoration: none; white-space: nowrap;
+  }
+  .cta-ghost:hover { border-color: rgba(255,255,255,0.7); }
+
+  /* ---------- top bar ---------- */
+  .topbar { background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.12); }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; padding-bottom: 14px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: #fff; text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 15px; }
+  .topbar nav { display: flex; gap: 20px; align-items: center; }
+  .topbar nav a { color: var(--navy-text); text-decoration: none; font-size: 14px; font-weight: 600; }
+  .topbar nav a:hover { color: #fff; }
+  .topbar nav a.app-link { color: var(--amber); }
+
+  /* ---------- hero / tool ---------- */
+  .hero {
+    background: radial-gradient(120% 90% at 50% 0%, var(--navy) 55%, var(--navy-deep) 100%);
+    background-color: var(--navy);
+    position: relative; color: #fff; padding: 72px 0 88px; overflow: hidden;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: var(--grid-navy); background-size: var(--grid-navy-size);
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; text-align: center; }
+  .hero h1 { font-size: clamp(32px, 5.4vw, 54px); font-weight: 800; color: #fff; max-width: 21ch; margin: 16px auto 18px; }
+  .hero h1 em { font-style: normal; color: var(--amber); }
+  .hero .sub { font-size: 17.5px; color: var(--navy-text); max-width: 58ch; margin: 0 auto 34px; }
+  .hero .kicker { color: var(--navy-text); }
+  .hero .kicker .no { color: var(--amber); }
+
+  .tool {
+    max-width: 720px; margin: 0 auto; text-align: left;
+  }
+  .tool-form { display: flex; gap: 10px; }
+  .tool-input {
+    flex: 1; min-width: 0; font-family: var(--font-ui); font-size: 17px; font-weight: 500;
+    padding: 16px 18px; border-radius: 4px; border: 2px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.97); color: var(--ink); outline: none;
+  }
+  .tool-input:focus { border-color: var(--amber); }
+  .tool-input::placeholder { color: #8fa1b5; font-weight: 400; }
+  .tool-note { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--navy-text); margin: 12px 2px 0; }
+  .tool-note b { color: #fff; font-weight: 600; }
+
+  /* progress console */
+  .console {
+    display: none; margin-top: 22px; background: rgba(7,21,39,0.92);
+    border: 1px solid rgba(255,255,255,0.16); border-radius: 6px; padding: 18px 20px;
+    font-family: var(--font-mono); font-size: 13px; line-height: 2.05; color: var(--navy-text);
+    text-align: left;
+  }
+  .console.active { display: block; }
+  .console .ln { opacity: 0; transform: translateY(3px); transition: opacity .3s, transform .3s; display: flex; gap: 10px; align-items: baseline; }
+  .console .ln.show { opacity: 1; transform: none; }
+  .console .ok { color: #6fd598; }
+  .console .arrow { color: var(--amber); }
+  .console .err { color: #f08a8a; }
+
+  /* results sheet */
+  .result { display: none; margin-top: 26px; text-align: left; }
+  .result.active { display: block; animation: rise .45s ease; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  .sheet { border: 1px solid var(--ink); border-radius: 6px; overflow: hidden; background: var(--white);
+    box-shadow: 0 2px 6px rgba(15,36,56,0.12), 0 20px 50px rgba(0,0,0,0.4); color: var(--ink); }
+  .sheet-head {
+    display: flex; justify-content: space-between; gap: 12px; align-items: center;
+    background: var(--ink); color: var(--navy-text); padding: 8px 16px;
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .sheet-head .live { color: #6fd598; }
+  .sheet-body { padding: 22px 24px; }
+  .found-addr { font-family: var(--font-display); font-weight: 700; font-size: 19px; margin: 0 0 16px; }
+  .rec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 20px; }
+  .rec { border-left: 3px solid var(--amber); padding-left: 12px; }
+  .rec .lbl { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 2px; }
+  .rec .val { font-family: var(--font-display); font-weight: 700; font-size: 17px; overflow-wrap: anywhere; }
+  .rec .val.small { font-size: 14px; font-family: var(--font-mono); font-weight: 600; }
+  .permit-badge {
+    margin-top: 18px; border-radius: 4px; padding: 12px 16px;
+    font-size: 14.5px; font-weight: 600; display: flex; gap: 10px; align-items: flex-start;
+  }
+  .permit-badge.covered { background: var(--success-soft); color: var(--success); }
+  .permit-badge.linked { background: var(--amber-soft); color: var(--warn-text); }
+  .permit-badge svg { flex: 0 0 auto; margin-top: 2px; }
+  .src-note { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--muted); margin: 16px 0 0; text-transform: uppercase; }
+
+  .bridge { border-top: 1px dashed var(--line-strong); margin-top: 20px; padding-top: 18px; }
+  .bridge p.lead { font-weight: 600; font-size: 15.5px; margin: 0 0 10px; }
+  .bridge ul { margin: 0 0 18px; padding-left: 20px; color: var(--muted); font-size: 14.5px; }
+  .bridge ul li { margin-bottom: 4px; }
+  .bridge .ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .bridge .mailto { font-size: 14px; font-weight: 600; color: var(--primary); }
+
+  .fail { display: none; margin-top: 26px; text-align: left; background: var(--white); border: 1px solid var(--line-strong); border-left: 4px solid var(--amber); border-radius: 6px; padding: 20px 22px; color: var(--ink); }
+  .fail.active { display: block; }
+  .fail h3 { font-size: 17px; margin-bottom: 6px; }
+  .fail p { margin: 0 0 12px; color: var(--muted); font-size: 14.5px; }
+
+  /* ---------- supporting sections ---------- */
+  .sec-head { margin-bottom: 36px; }
+  .sec-head h2 { font-size: clamp(26px, 3.6vw, 34px); font-weight: 700; margin-top: 12px; max-width: 30ch; }
+  .sec-head p.lede { font-size: 16.5px; color: var(--muted); max-width: 62ch; margin: 12px 0 0; }
+  .kicker .no { color: var(--primary); }
+
+  .strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .strip .cell { background: var(--white); border: 1px solid var(--line); border-radius: 6px; padding: 20px; }
+  .strip .cell h3 { font-size: 16.5px; margin-bottom: 6px; }
+  .strip .cell p { margin: 0; color: var(--muted); font-size: 14px; }
+  .strip .cell .num { font-family: var(--font-mono); color: var(--amber-strong); font-weight: 600; font-size: 12px; letter-spacing: 0.08em; }
+
+  .final { background: var(--navy); color: #fff; text-align: center; }
+  .final h2 { color: #fff; font-size: clamp(26px, 3.8vw, 36px); max-width: 26ch; margin: 12px auto 14px; }
+  .final p { color: var(--navy-text); max-width: 56ch; margin: 0 auto 26px; }
+  .final .kicker { color: var(--navy-text); }
+  .final .kicker .no { color: var(--amber); }
+  .final .sub2 { font-family: var(--font-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 18px; }
+
+  footer { background: var(--navy-deep); color: var(--navy-text); padding: 26px 0; font-size: 13.5px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; }
+  footer a { color: #fff; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 760px) {
+    section { padding: 56px 0; }
+    .tool-form { flex-direction: column; }
+    .rec-grid { grid-template-columns: repeat(2, 1fr); }
+    .strip { grid-template-columns: 1fr; }
+    .topbar nav a:not(.app-link) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">
+      <svg width="26" height="26" viewBox="0 0 44 44" fill="none" aria-hidden="true"><path d="M4 4h27l9 9v27H4z" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 22 22 12l10 10" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 24.5 20.5 29 31 18" stroke="#F5A300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Inspector Gadgets
+    </a>
+    <nav>
+      <a href="/">Full site</a>
+      <a href="how-it-works.html">How it works</a>
+      <a class="app-link" href="app/">Open the app &rarr;</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ======================= HERO + TOOL ======================= -->
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker"><span class="no">Free records check</span> — no account, no card, about 15 seconds</p>
+    <h1>Type any Florida address. <em>Watch the report start filling itself.</em></h1>
+    <p class="sub">Enter an address — a job on your schedule works best. We'll pull the state property record and check permit coverage for that county, live, right here. This is the exact data Inspector Gadgets types onto the 4-Point and the 1802.</p>
+
+    <div class="tool">
+      <form class="tool-form" id="checkForm" autocomplete="street-address">
+        <input class="tool-input" id="addr" type="text" inputmode="text" placeholder="Enter any Florida property address" aria-label="Florida property address" required />
+        <button class="cta" type="submit" id="goBtn">Run free records check</button>
+      </form>
+      <p class="tool-note"><b>Free · No account, no card</b> · This searches the same public records you look up by hand for every insurance inspection — the FL DOR property roll, FEMA, and the county permit systems</p>
+
+      <div class="console" id="console" aria-live="polite"></div>
+
+      <div class="result" id="result">
+        <div class="sheet">
+          <div class="sheet-head"><span>Records pull — live public data</span><span class="live">&#9679; Found</span></div>
+          <div class="sheet-body">
+            <p class="found-addr" id="rAddr"></p>
+            <div class="rec-grid" id="rGrid"></div>
+            <div id="rPermit"></div>
+            <p class="src-note">FL DOR statewide property roll (current roll year) · FEMA NFHL · public record — verify before you sign, same as anything you'd type yourself</p>
+            <div class="bridge">
+              <p class="lead">In the app, this data doesn't sit in a card. It lands on the forms.</p>
+              <ul>
+                <li>These exact fields get typed onto the official <b>4-Point</b> and the current <b>OIR-B1-1802</b> — you answer the inspection questions, attach photos, sign on screen, send the finished PDF</li>
+                <li><b>Permit history with numbers and dates</b> — a documented roof age instead of an estimate</li>
+                <li>The 20&ndash;30 minutes of lookup-and-retype desk work after every insurance job? That's the part that just happened in seconds</li>
+              </ul>
+              <div class="ctas">
+                <a class="cta" id="rAppCta" href="app/">Turn this into a finished 4-Point — first one free</a>
+                <a class="mailto" id="rTrialMail" href="mailto:richducat@gmail.com?subject=Inspector%20Gadgets%20free%20trial">or email us to set up the trial &rarr;</a>
+              </div>
+              <p style="margin:12px 0 0;"><a href="#" id="againLink" style="font-size:13.5px;color:var(--muted);">Run another address first &rarr;</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fail" id="fail">
+        <h3 id="failTitle"></h3>
+        <p id="failMsg"></p>
+        <a class="cta" href="app/">Try the full app — first inspection free</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= WHAT JUST HAPPENED ======================= -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker"><span class="no">Sec 01</span> — What you just watched</p>
+      <h2>That pull is the desk-time drill you run after every insurance job.</h2>
+      <p class="lede">Look up the property on the appraiser's site. Copy year built, sq ft, owner, parcel. Dig the permit portal for the re-roof so you're not guessing roof age. Type all of it, twice, onto two different forms. That's 20&ndash;30 minutes per job that pays you nothing — and it's the part the app just did in seconds.</p>
+    </div>
+    <div class="strip">
+      <div class="cell">
+        <span class="num">01 · SOURCED</span>
+        <h3>Public record, with a paper trail</h3>
+        <p>Every field traces to the FL DOR roll or a county permit system — permit numbers and dates shown, so your roof age has a source a carrier can check, not a shingle-squint.</p>
+      </div>
+      <div class="cell">
+        <span class="num">02 · $2 A REPORT</span>
+        <h3>Costs less than the lookup alone</h3>
+        <p>$20/mo covers 10 inspections — $2 a report. Permit-lookup services charge more than that just to show you the permit, without filling a single form field. $98/yr makes it unlimited.</p>
+      </div>
+      <div class="cell">
+        <span class="num">03 · OFFICIAL FORMS</span>
+        <h3>The real 4-Point and 1802</h3>
+        <p>Current-edition Florida 4-Point and OIR-B1-1802 — filled, photo-attached, signed, PDF'd. The exact document the carrier and the agent expect, not a template you re-key later.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FINAL CTA ======================= -->
+<section class="final">
+  <div class="wrap">
+    <p class="kicker"><span class="no">The next step</span></p>
+    <h2>Your first full inspection is free — records to signed report.</h2>
+    <p>Run one real job through it: paste the booking, pull the records you just saw, shoot the guided checklist, and email the official signed PDFs from the driveway. Card on file, not charged for the trial. Cancel anytime.</p>
+    <a class="cta" href="app/">Start the free inspection</a>
+    <p class="sub2">$5 a pull · $20/mo for 10 · $98/yr unlimited &nbsp;·&nbsp; <a href="/" style="color:#fff;">see the full tour &rarr;</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Inspector Gadgets — built with York Home Inspections, Brevard County FL.</span>
+    <span><a href="/">Home</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="mailto:richducat@gmail.com">Support</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Counties whose permit systems the app auto-pulls today (kept in sync with
+     the records API registry). Everything else gets a one-click portal link. */
+  var PERMIT_AUTOPULL = [
+    "Brevard", "Hillsborough", "Pinellas", "Pasco", "Manatee", "Citrus", "Lake",
+    "Seminole", "Nassau", "Franklin", "Madison", "Lee", "Polk", "Martin",
+    "St. Johns", "Indian River"
+  ];
+
+  var FDOR_COUNTY = {
+    11:"Alachua",12:"Baker",13:"Bay",14:"Bradford",15:"Brevard",16:"Broward",17:"Calhoun",
+    18:"Charlotte",19:"Citrus",20:"Clay",21:"Collier",22:"Columbia",23:"Miami-Dade",24:"DeSoto",
+    25:"Dixie",26:"Duval",27:"Escambia",28:"Flagler",29:"Franklin",30:"Gadsden",31:"Gilchrist",
+    32:"Glades",33:"Gulf",34:"Hamilton",35:"Hardee",36:"Hendry",37:"Hernando",38:"Highlands",
+    39:"Hillsborough",40:"Holmes",41:"Indian River",42:"Jackson",43:"Jefferson",44:"Lafayette",
+    45:"Lake",46:"Lee",47:"Leon",48:"Levy",49:"Liberty",50:"Madison",51:"Manatee",52:"Marion",
+    53:"Martin",54:"Monroe",55:"Nassau",56:"Okaloosa",57:"Okeechobee",58:"Orange",59:"Osceola",
+    60:"Palm Beach",61:"Pasco",62:"Pinellas",63:"Polk",64:"Putnam",65:"St. Johns",66:"St. Lucie",
+    67:"Santa Rosa",68:"Sarasota",69:"Seminole",70:"Sumter",71:"Suwannee",72:"Taylor",73:"Union",
+    74:"Volusia",75:"Wakulla",76:"Walton",77:"Washington"
+  };
+
+  var DOR_USE = {
+    "000":"Vacant residential","001":"Single family","002":"Mobile home","003":"Multi-family 10+",
+    "004":"Condominium","005":"Co-op","006":"Retirement home","008":"Multi-family <10",
+    "086":"County government","010":"Vacant commercial","100":"Vacant"
+  };
+
+  var form = document.getElementById("checkForm");
+  var input = document.getElementById("addr");
+  var btn = document.getElementById("goBtn");
+  var consoleEl = document.getElementById("console");
+  var resultEl = document.getElementById("result");
+  var failEl = document.getElementById("fail");
+
+  function esc(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, function (ch) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+    });
+  }
+
+  function line(html) {
+    var el = document.createElement("div");
+    el.className = "ln";
+    el.innerHTML = html;
+    consoleEl.appendChild(el);
+    requestAnimationFrame(function () { requestAnimationFrame(function () { el.classList.add("show"); }); });
+    return el;
+  }
+
+  function finishLine(el, ok, extra) {
+    var mark = ok ? ' <span class="ok">&#10003;' + (extra ? " " + esc(extra) : "") + "</span>"
+                  : ' <span class="err">&#10007;' + (extra ? " " + esc(extra) : "") + "</span>";
+    el.innerHTML += mark;
+  }
+
+  function fetchJson(url, timeoutMs) {
+    var ctrl = new AbortController();
+    var timer = setTimeout(function () { ctrl.abort(); }, timeoutMs || 15000);
+    return fetch(url, { signal: ctrl.signal })
+      .then(function (res) { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+      .finally(function () { clearTimeout(timer); });
+  }
+
+  function delay(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function showFail(title, msg) {
+    document.getElementById("failTitle").textContent = title;
+    document.getElementById("failMsg").textContent = msg;
+    failEl.classList.add("active");
+  }
+
+  function num(value) {
+    var n = Number(value);
+    return isFinite(n) && n > 0 ? n : null;
+  }
+
+  function fmtOwner(raw) {
+    var owner = String(raw || "").trim();
+    if (!owner) return null;
+    // "LAST, FIRST" -> "First Last" for simple two-part personal names.
+    var parts = owner.split(",");
+    if (parts.length === 2 && !/LLC|INC|TRUST|CORP|CO\b|BANK|COUNTY|CITY|STATE/i.test(owner)) {
+      owner = (parts[1].trim() + " " + parts[0].trim());
+    }
+    return owner.replace(/\s+/g, " ").toLowerCase().replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); });
+  }
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var q = input.value.trim();
+    if (!q) return;
+    if (!/fl|florida/i.test(q)) q += ", FL";
+
+    btn.disabled = true;
+    btn.textContent = "Pulling…";
+    consoleEl.innerHTML = "";
+    consoleEl.classList.add("active");
+    resultEl.classList.remove("active");
+    failEl.classList.remove("active");
+
+    var geoLn = line('<span class="arrow">&rarr;</span> LOCATING THE PROPERTY');
+    var state = {};
+
+    fetchJson("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=1&outFields=Region,City&SingleLine=" + encodeURIComponent(q))
+      .then(function (geo) {
+        var cand = (geo.candidates || [])[0];
+        if (!cand || !cand.location || (cand.score || 0) < 65) throw { step: "geo" };
+        var region = (cand.attributes && cand.attributes.Region) || "";
+        if (region && !/florida/i.test(region)) throw { step: "state", region: region };
+        state.matched = cand.address;
+        state.x = cand.location.x; state.y = cand.location.y;
+        finishLine(geoLn, true, "matched");
+        return delay(350);
+      })
+      .then(function () {
+        state.fdorLn = line('<span class="arrow">&rarr;</span> SEARCHING THE FL DOR PROPERTY ROLL — year built, living area, owner');
+        return fetchJson("https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/Florida_Statewide_Cadastral/FeatureServer/0/query?f=json&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outFields=PARCEL_ID,ACT_YR_BLT,EFF_YR_BLT,TOT_LVG_AR,NO_BULDNG,OWN_NAME,DOR_UC,CO_NO&geometry=" + state.x + "," + state.y, 20000);
+      })
+      .then(function (fdor) {
+        var feat = ((fdor && fdor.features) || [])[0];
+        if (!feat || !feat.attributes) throw { step: "fdor" };
+        state.parcel = feat.attributes;
+        finishLine(state.fdorLn, true, "parcel found");
+        return delay(350);
+      })
+      .then(function () {
+        state.femaLn = line('<span class="arrow">&rarr;</span> CHECKING FEMA NFHL — flood zone');
+        return fetchJson("https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query?f=json&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outFields=FLD_ZONE,ZONE_SUBTY&geometry=" + state.x + "," + state.y, 15000)
+          .catch(function () { return null; });
+      })
+      .then(function (fema) {
+        var zone = fema && fema.features && fema.features[0] && fema.features[0].attributes;
+        state.flood = zone && zone.FLD_ZONE ? zone.FLD_ZONE : null;
+        finishLine(state.femaLn, Boolean(state.flood), state.flood ? "zone " + state.flood : "no layer here");
+        return delay(350);
+      })
+      .then(function () {
+        var permitLn = line('<span class="arrow">&rarr;</span> CHECKING PERMIT-PORTAL COVERAGE — ' + esc(FDOR_COUNTY[Math.trunc(Number(state.parcel.CO_NO))] || "county"));
+        state.county = FDOR_COUNTY[Math.trunc(Number(state.parcel.CO_NO))] || null;
+        state.covered = state.county ? PERMIT_AUTOPULL.indexOf(state.county) !== -1 : false;
+        finishLine(permitLn, true, state.covered ? "auto-pull covered" : "portal link ready");
+        return delay(500);
+      })
+      .then(function () { render(state); })
+      .catch(function (err) {
+        if (err && err.step === "state") {
+          finishLine(geoLn, false, "outside Florida");
+          showFail("That address matched in " + err.region + ".",
+            "This check runs on Florida public records — FL DOR cadastral, FEMA, and county permit portals. Try a Florida property address.");
+        } else if (err && err.step === "geo") {
+          finishLine(geoLn, false, "no match");
+          showFail("Couldn't place that address.",
+            "Try the full street address with city — e.g. “1801 27th St, Vero Beach, FL”. In the app you get address autocomplete, so this step is one tap.");
+        } else if (err && err.step === "fdor") {
+          finishLine(state.fdorLn, false, "no parcel at point");
+          showFail("Found the location, but no parcel record at that exact point.",
+            "That usually means the pin landed on a road or common area. The full app cross-references the appraiser record and lets you adjust — this free check only does a single point lookup.");
+        } else {
+          line('<span class="err">&#10007; A public data layer did not respond. It happens — they are government servers.</span>');
+          showFail("The public layer didn't answer just now.",
+            "FL DOR / FEMA endpoints occasionally rate-limit. Wait a few seconds and try again — or run it in the full app, which retries and cross-references multiple sources.");
+        }
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = "Run free records check";
+      });
+  });
+
+  document.addEventListener("click", function (ev) {
+    if (ev.target && ev.target.id === "againLink") {
+      ev.preventDefault();
+      resultEl.classList.remove("active");
+      consoleEl.classList.remove("active");
+      consoleEl.innerHTML = "";
+      input.value = "";
+      input.focus();
+      input.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  });
+
+  function render(state) {
+    var p = state.parcel;
+    document.getElementById("rAddr").textContent = state.matched;
+
+    var yr = num(p.ACT_YR_BLT);
+    var living = num(p.TOT_LVG_AR);
+    var bldgs = num(p.NO_BULDNG);
+    var owner = fmtOwner(p.OWN_NAME);
+    var use = DOR_USE[String(p.DOR_UC || "").trim()] || (p.DOR_UC ? "DOR use " + p.DOR_UC : null);
+
+    var cells = [
+      ["Year built", yr ? String(yr) : "—"],
+      ["Living area", living ? living.toLocaleString() + " sq ft" : "—"],
+      ["County", state.county || "—"],
+      ["Owner of record", owner || "—"],
+      ["Parcel ID", p.PARCEL_ID || "—", true],
+      ["Flood zone", state.flood ? "Zone " + state.flood : "—"],
+      ["Buildings", bldgs ? String(bldgs) : "—"],
+      ["Property use", use || "—"]
+    ];
+    var grid = cells.map(function (c) {
+      return '<div class="rec"><span class="lbl">' + esc(c[0]) + '</span><span class="val' + (c[2] ? " small" : "") + '">' + esc(c[1]) + "</span></div>";
+    }).join("");
+    document.getElementById("rGrid").innerHTML = grid;
+
+    var okIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17.5 19 7"/></svg>';
+    var arrowIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+    var badge;
+    if (state.covered) {
+      badge = '<div class="permit-badge covered">' + okIcon + "<span><b>Permit auto-pull: COVERED in " + esc(state.county) +
+        " County.</b> In the full app, roof and building permits for this parcel come in automatically — numbers, types, and dates. That's a documented roof age instead of an estimate.</span></div>";
+    } else {
+      badge = '<div class="permit-badge linked">' + arrowIcon + "<span><b>Permit auto-pull: not yet live in " + esc(state.county || "this") +
+        " County — direct portal link provided.</b> In the full app, you get a one-click link to the county's own permit portal for this address. We only claim auto-pull where we actually have it (16 counties + 7 cities and growing); property records still fill in automatically here, statewide.</span></div>";
+    }
+    document.getElementById("rPermit").innerHTML = badge;
+
+    var subject = encodeURIComponent("Inspector Gadgets free trial — " + state.matched);
+    document.getElementById("rTrialMail").href = "mailto:richducat@gmail.com?subject=" + subject;
+
+    resultEl.classList.add("active");
+    resultEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+})();
+</script>
+
+</body>
+</html>
