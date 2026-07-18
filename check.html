@@ -157,6 +157,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .bridge .ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
   .bridge .mailto { font-size: 14px; font-weight: 600; color: var(--primary); }
 
+  .vacant-note {
+    background: var(--amber-soft); color: var(--warn-text); border-radius: 4px;
+    padding: 11px 14px; font-size: 13.5px; font-weight: 600; margin: 0 0 16px;
+  }
+
   .fail { display: none; margin-top: 26px; text-align: left; background: var(--white); border: 1px solid var(--line-strong); border-left: 4px solid var(--amber); border-radius: 6px; padding: 20px 22px; color: var(--ink); }
   .fail.active { display: block; }
   .fail h3 { font-size: 17px; margin-bottom: 6px; }
@@ -192,6 +197,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .rec-grid { grid-template-columns: repeat(2, 1fr); }
     .strip { grid-template-columns: 1fr; }
     .topbar nav a:not(.app-link) { display: none; }
+    /* The results/fail CTAs carry long labels ("…first one free"); nowrap would
+       overflow the narrow sheet and clip the text. Let them wrap full-width. */
+    .bridge .ctas { flex-direction: column; align-items: stretch; }
+    .bridge .ctas .cta { white-space: normal; width: 100%; text-align: center; }
+    .bridge .mailto { text-align: center; }
+    .fail .cta { display: block; white-space: normal; text-align: center; }
   }
 </style>
 <script type="application/ld+json">
@@ -255,9 +266,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <div class="result" id="result">
         <div class="sheet">
-          <div class="sheet-head"><span>Records pull — live public data</span><span class="live">&#9679; Found</span></div>
+          <div class="sheet-head"><span>Records pull — live public data</span><span class="live" id="rStatus">&#9679; Found</span></div>
           <div class="sheet-body">
             <p class="found-addr" id="rAddr"></p>
+            <div id="rVacantNote"></div>
             <div class="rec-grid" id="rGrid"></div>
             <div id="rPermit"></div>
             <p class="src-note">FL DOR statewide property roll (current roll year) · FEMA NFHL · public record — verify before you sign, same as anything you'd type yourself</p>
@@ -360,9 +372,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   var DOR_USE = {
     "000":"Vacant residential","001":"Single family","002":"Mobile home","003":"Multi-family 10+",
-    "004":"Condominium","005":"Co-op","006":"Retirement home","008":"Multi-family <10",
-    "086":"County government","010":"Vacant commercial","100":"Vacant"
+    "004":"Condominium","005":"Co-op","006":"Retirement home","007":"Boarding/residential misc",
+    "008":"Multi-family <10","009":"Residential common area","010":"Vacant commercial",
+    "011":"Stores, one story","017":"Office building","039":"Hotel/motel",
+    "040":"Vacant industrial","048":"Warehousing","051":"Cropland","066":"Orchard/grove",
+    "070":"Vacant institutional","071":"Church","072":"School (private)","073":"Hospital (private)",
+    "083":"Public school","086":"County government","087":"State government","088":"Federal government",
+    "089":"Municipal government","091":"Utility","094":"Right-of-way","100":"Vacant"
   };
+
+  /* Any code not in DOR_USE still resolves to its DOR category by numeric range,
+     so the card never shows a raw "DOR use 087" to an ad visitor. */
+  function dorUseLabel(code) {
+    var c = String(code == null ? "" : code).trim();
+    if (!c) return null;
+    if (DOR_USE[c]) return DOR_USE[c];
+    var n = parseInt(c, 10);
+    if (!isFinite(n)) return null;
+    if (n <= 9) return "Residential";
+    if (n <= 39) return "Commercial";
+    if (n <= 49) return "Industrial";
+    if (n <= 69) return "Agricultural";
+    if (n <= 79) return "Institutional";
+    if (n <= 89) return "Government / public";
+    return "Utility / miscellaneous";
+  }
 
   var form = document.getElementById("checkForm");
   var input = document.getElementById("addr");
@@ -402,9 +436,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   function delay(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
-  function showFail(title, msg) {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: "check_failed" });
+  function showFail(title, msg, track) {
+    // track === false for input-validation prompts (e.g. an empty box) so they
+    // don't inflate the check_failed conversion metric with non-searches.
+    if (track !== false) {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: "check_failed" });
+    }
     document.getElementById("failTitle").textContent = title;
     document.getElementById("failMsg").textContent = msg;
     failEl.classList.add("active");
@@ -418,20 +456,47 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   function fmtOwner(raw) {
     var owner = String(raw || "").trim();
     if (!owner) return null;
-    // "LAST, FIRST" -> "First Last" for simple two-part personal names.
+    // "LAST, FIRST" -> "First Last" for simple two-part personal names only.
     var parts = owner.split(",");
-    if (parts.length === 2 && !/LLC|INC|TRUST|CORP|CO\b|BANK|COUNTY|CITY|STATE/i.test(owner)) {
+    if (parts.length === 2 &&
+        !/\b(LLC|INC|TRUST|CORP|CO|BANK|COUNTY|CITY|STATE|LP|LLP|LLLP|PA|NA|PLLC|ASSN|HOA|LTD|FBO)\b/i.test(owner)) {
       owner = (parts[1].trim() + " " + parts[0].trim());
     }
-    return owner.replace(/\s+/g, " ").toLowerCase().replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); });
+    owner = owner.replace(/\s+/g, " ").toLowerCase()
+      .replace(/\b[a-z]/g, function (c) { return c.toUpperCase(); });
+    // Title-casing lower-cases entity acronyms and Scots/Irish name prefixes —
+    // "SMITH FAMILY LLC" must not read "Smith Family Llc", "MCBRIDE" not "Mcbride".
+    owner = owner.replace(/\b(Llc|Inc|Lp|Llp|Lllp|Pa|Na|Pllc|Hoa|Assn|Ltd|Fbo|Ii|Iii|Iv|Usa|Us)\b/g,
+      function (m) { return m.toUpperCase(); });
+    owner = owner.replace(/\bMc([a-z])/g, function (_, c) { return "Mc" + c.toUpperCase(); });
+    owner = owner.replace(/\bO'([a-z])/g, function (_, c) { return "O'" + c.toUpperCase(); });
+    return owner;
   }
 
+  var inFlight = false;
   form.addEventListener("submit", function (ev) {
     ev.preventDefault();
+    // Ignore re-submits while a lookup is running — a disabled button doesn't
+    // stop Enter-key spam or double-taps, and overlapping lookups would race the
+    // console, render out of order, and double-count the ad conversion events.
+    if (inFlight) return;
     var q = input.value.trim();
-    if (!q) return;
-    if (!/fl|florida/i.test(q)) q += ", FL";
+    if (!q) {
+      // `required` blocks a truly empty box, but a spaces-only value slips through
+      // and used to no-op silently. Tell the visitor what to type.
+      resultEl.classList.remove("active");
+      consoleEl.classList.remove("active");
+      showFail("Enter a Florida property address.",
+        "Type a full street address with city — e.g. “1801 27th St, Vero Beach, FL”.", false);
+      input.focus();
+      return;
+    }
+    // Bias the geocoder to Florida only when the query doesn't already END with a
+    // state token. A plain substring test for "fl" mis-fired on street names like
+    // "Flagler" / "Flint" (skipping the bias they actually needed).
+    if (!/\b(fl|florida)\b[.,]?\s*(\d{5}(-\d{4})?)?\s*$/i.test(q)) q += ", FL";
 
+    inFlight = true;
     btn.disabled = true;
     btn.textContent = "Pulling…";
     window.dataLayer = window.dataLayer || [];
@@ -442,7 +507,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     failEl.classList.remove("active");
 
     var geoLn = line('<span class="arrow">&rarr;</span> LOCATING THE PROPERTY');
-    var state = {};
+    var state = { pendingLn: geoLn };
 
     fetchJson("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=1&outFields=Region,City,Addr_type&SingleLine=" + encodeURIComponent(q))
       .then(function (geo) {
@@ -458,17 +523,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         state.matched = cand.address;
         state.x = cand.location.x; state.y = cand.location.y;
         finishLine(geoLn, true, "matched");
+        state.pendingLn = null;
         return delay(350);
       })
       .then(function () {
         state.fdorLn = line('<span class="arrow">&rarr;</span> SEARCHING THE FL DOR PROPERTY ROLL — year built, living area, owner');
-        return fetchJson("https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/Florida_Statewide_Cadastral/FeatureServer/0/query?f=json&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outFields=PARCEL_ID,ACT_YR_BLT,EFF_YR_BLT,TOT_LVG_AR,NO_BULDNG,OWN_NAME,DOR_UC,CO_NO&geometry=" + state.x + "," + state.y, 20000);
+        state.pendingLn = state.fdorLn;
+        return fetchJson("https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/Florida_Statewide_Cadastral/FeatureServer/0/query?f=json&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outFields=PARCEL_ID,ACT_YR_BLT,EFF_YR_BLT,TOT_LVG_AR,NO_BULDNG,OWN_NAME,DOR_UC,CO_NO&geometry=" + state.x + "," + state.y, 15000);
       })
       .then(function (fdor) {
         var feat = ((fdor && fdor.features) || [])[0];
         if (!feat || !feat.attributes) throw { step: "fdor" };
         state.parcel = feat.attributes;
         finishLine(state.fdorLn, true, "parcel found");
+        state.pendingLn = null;
         return delay(350);
       })
       .then(function () {
@@ -504,12 +572,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           showFail("Found the location, but no parcel record at that exact point.",
             "That usually means the pin landed on a road or common area. The full app cross-references the appraiser record and lets you adjust — this free check only does a single point lookup.");
         } else {
-          line('<span class="err">&#10007; A public data layer did not respond. It happens — they are government servers.</span>');
-          showFail("The public layer didn't answer just now.",
-            "FL DOR / FEMA endpoints occasionally rate-limit. Wait a few seconds and try again — or run it in the full app, which retries and cross-references multiple sources.");
+          // A fetch/network/timeout/HTTP error on a live layer. Mark whichever
+          // step was in flight (so no console line hangs unmarked) and word the
+          // message for the step that actually broke.
+          if (state.pendingLn) finishLine(state.pendingLn, false, "no response");
+          if (!state.matched) {
+            showFail("Couldn't reach the address locator just now.",
+              "That request timed out or was blocked. Check your connection and try again — or run it in the full app, which retries automatically.");
+          } else {
+            showFail("A public data layer didn't answer just now.",
+              "FL DOR / FEMA endpoints occasionally rate-limit or time out. Wait a few seconds and try again — or run it in the full app, which retries and cross-references multiple sources.");
+          }
         }
       })
       .finally(function () {
+        inFlight = false;
         btn.disabled = false;
         btn.textContent = "Run free records check";
       });
@@ -535,7 +612,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var living = num(p.TOT_LVG_AR);
     var bldgs = num(p.NO_BULDNG);
     var owner = fmtOwner(p.OWN_NAME);
-    var use = DOR_USE[String(p.DOR_UC || "").trim()] || (p.DOR_UC ? "DOR use " + p.DOR_UC : null);
+    var use = dorUseLabel(p.DOR_UC);
+
+    // A parcel with no year built, no living area, and no building count is
+    // vacant land / no structure on record. Presenting empty dashes under a green
+    // "Found" reads as broken — flip the header and add an honest note so the
+    // blank structure fields are expected, not a failure.
+    var hasStructure = Boolean(yr || living || bldgs);
+    var statusEl = document.getElementById("rStatus");
+    var noteEl = document.getElementById("rVacantNote");
+    if (!hasStructure) {
+      statusEl.innerHTML = "&#9679; Vacant land";
+      statusEl.style.color = "var(--amber)";
+      noteEl.innerHTML = '<div class="vacant-note">This parcel has <b>no building on record</b> — the FL DOR roll lists it as vacant land, so the structure fields below are empty. Try a built address to watch those fill in.</div>';
+    } else {
+      statusEl.innerHTML = "&#9679; Found";
+      statusEl.style.color = "";
+      noteEl.innerHTML = "";
+    }
 
     var cells = [
       ["Year built", yr ? String(yr) : "—"],
