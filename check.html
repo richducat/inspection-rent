@@ -282,7 +282,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               </ul>
               <div class="ctas">
                 <a class="cta" id="rAppCta" href="app/">Turn this into a finished 4-Point — first one free</a>
-                <a class="mailto" id="rTrialMail" href="mailto:richducat@gmail.com?subject=Inspector%20Gadgets%20free%20trial">or email us to set up the trial &rarr;</a>
+                <a class="mailto" id="rTrialMail" href="app/">no card, no waiting — start the free trial &rarr;</a>
               </div>
               <p style="margin:12px 0 0;"><a href="#" id="againLink" style="font-size:13.5px;color:var(--muted);">Run another address first &rarr;</a></p>
             </div>
@@ -658,9 +658,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     document.getElementById("rPermit").innerHTML = badge;
 
-    var subject = encodeURIComponent("Inspector Gadgets free trial — " + state.matched);
-    document.getElementById("rTrialMail").href = "mailto:richducat@gmail.com?subject=" + subject;
-
+    // Trial is self-serve now — both CTAs go straight to the app (no mailto override).
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ event: "check_found", county: state.county || "unknown", permit_covered: state.covered ? "yes" : "no" });
 
