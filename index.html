@@ -76,6 +76,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
   .badge-row span::before { content: "▪ "; color: var(--amber); }
 
+  /* ---------- sticky top nav ---------- */
+  .topbar { position: sticky; top: 0; z-index: 50; background: var(--navy-deep, #071527); border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 24px; }
+  .topbar .brand { display: flex; align-items: center; gap: 11px; color: #fff; text-decoration: none; font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: -0.01em; }
+  .topbar .navlinks { display: flex; gap: 20px; align-items: center; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .topbar .navlinks a { color: var(--navy-text); text-decoration: none; }
+  .topbar .navlinks a:hover { color: #fff; }
+  .topbar .navlinks a.navcta { color: var(--ink); background: var(--amber); padding: 8px 13px; border-radius: 4px; }
+  .topbar .navlinks a.navcta:hover { background: #fff; }
+  @media (max-width: 760px) { .topbar .navlinks a.hide-sm { display: none; } }
+
   /* ---------- hero ---------- */
   .hero {
     background: radial-gradient(120% 90% at 50% 0%, var(--navy) 55%, var(--navy-deep) 100%);
@@ -430,6 +441,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PX3ZXWR6"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
+<!-- ======================= TOP NAV ======================= -->
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="./">
+      <svg width="26" height="26" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+        <path d="M6 6h25l7 7v25H6z" stroke="#fff" stroke-width="2.5" stroke-linejoin="round" />
+        <path d="M13 23 22 14l9 9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M16.5 25 21 29.5 30 20.5" stroke="#F5A300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      Inspector Gadgets
+    </a>
+    <nav class="navlinks">
+      <a href="product.html" class="hide-sm">Product</a>
+      <a href="how-it-works.html" class="hide-sm">How it works</a>
+      <a href="forms.html" class="hide-sm">Forms</a>
+      <a href="coverage.html" class="hide-sm">Coverage</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="faq.html" class="hide-sm">FAQ</a>
+      <a href="app/" class="navcta">Start My Free Inspection</a>
+    </nav>
+  </div>
+</div>
 <!-- ======================= HERO ======================= -->
 <header class="hero on-navy">
   <div class="wrap">
