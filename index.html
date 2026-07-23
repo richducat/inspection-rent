@@ -325,12 +325,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   "offers": [
    {
     "@type": "Offer",
-    "name": "Pay per pull",
-    "price": "5",
-    "priceCurrency": "USD"
-   },
-   {
-    "@type": "Offer",
     "name": "Professional",
     "price": "20",
     "priceCurrency": "USD",
@@ -344,12 +338,25 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
    },
    {
     "@type": "Offer",
-    "name": "Unlimited Annual",
+    "name": "Unlimited",
     "price": "98",
     "priceCurrency": "USD",
     "priceSpecification": {
      "@type": "UnitPriceSpecification",
      "price": "98",
+     "priceCurrency": "USD",
+     "billingIncrement": 1,
+     "unitText": "MONTH"
+    }
+   },
+   {
+    "@type": "Offer",
+    "name": "Unlimited Annual",
+    "price": "980",
+    "priceCurrency": "USD",
+    "priceSpecification": {
+     "@type": "UnitPriceSpecification",
+     "price": "980",
      "priceCurrency": "USD",
      "billingIncrement": 1,
      "unitText": "YEAR"
@@ -378,7 +385,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     "name": "$20 a month adds up \u2014 is it really worth it?",
     "acceptedAnswer": {
      "@type": "Answer",
-     "text": "Compare it to one evening, not to other apps. Skip a single drive-back or head off one bounced report and the year's already covered. If getting home to your family instead of the kitchen-table form even once a month is worth twenty bucks, it's already paid for. Run the unlimited year at $98 and it's under $2 a week \u2014 less than a tank of gas."
+     "text": "Compare it to one evening, not to other apps. Skip a single drive-back or head off one bounced report and it's already paid for. $20/mo covers 10 inspections; $98/mo or $980/yr prepaid makes it unlimited. Every plan starts with a 3-day free trial, so you can run a real job through it before you're charged."
     }
    },
    {
@@ -475,7 +482,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <a class="cta" href="app/">Start My Free Inspection</a>
           <a class="cta-ghost" href="check.html">Run a Free Records Check &rarr;</a>
         </div>
-        <p class="micro">Complete and preview your first inspection with a watermark. Add a card to verify the account; you are not charged to create the sample. Or <a href="how-it-works.html" style="color:#fff;">see the step-by-step tour</a>.</p>
+        <p class="micro">Start a 3-day free trial with full access. A card is required, and your chosen plan is charged on day 3 unless you cancel. Or <a href="how-it-works.html" style="color:#fff;">see the step-by-step tour</a>.</p>
       </div>
       <svg class="seal" width="132" height="132" viewBox="0 0 132 132" fill="none" aria-hidden="true">
         <circle cx="66" cy="66" r="63" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" />
@@ -769,7 +776,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div style="max-width: 60ch;">
       <p class="kicker" style="color: var(--warn-text);">Don't take our word for it</p>
       <h3 style="font-size: 21px; margin: 8px 0 6px;">Type an address. Watch the records come back. Free.</h3>
-      <p style="margin: 0; color: var(--muted); font-size: 14.5px;">No account, no card — run the live records pull on a job from your own schedule and see exactly what you'd never type again.</p>
+      <p style="margin: 0; color: var(--muted); font-size: 14.5px;">Preview the live records pull on any job from your own schedule and see exactly what you'd never type again. Start a free trial to use it on real reports.</p>
     </div>
     <a class="cta" href="check.html">Run a Free Records Check</a>
   </div>
@@ -857,7 +864,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div class="anchor-card">
       <div class="big">$2 a report</div>
-      <p>$20/mo covers 10 inspections. $98/yr makes it unlimited — 300 reports works out to 33&cent; each, under $2 a week.</p>
+      <p>$20/mo covers 10 inspections. $98/mo — or $980/yr prepaid — makes it unlimited.</p>
     </div>
   </div>
 </section>
@@ -867,34 +874,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="wrap">
     <div class="sec-head">
       <p class="kicker"><span class="no">Sec 09</span> — Choose what fits your schedule</p>
-      <h2>Start with one inspection.</h2>
-      <p class="lede">Complete and preview your first inspection with a watermark. Add a card to verify the account; you are not charged to create the sample. Pay when you need the clean report, or choose a plan for recurring work.</p>
+      <h2>Start a 3-day free trial.</h2>
+      <p class="lede">Pick a plan and get full access for 3 days. A card is required, and your chosen plan is charged on day 3 unless you cancel. Cancel anytime before then and you won't be charged.</p>
     </div>
-    <div class="price-grid">
-      <div class="price-card">
-        <p class="tier">The trial</p>
-        <span class="amount">1st</span>
-        <span class="per">inspection preview</span>
-        <p class="blurb">Add a card to verify the account — you are not charged to create the sample. Complete one inspection and preview the finished report with a watermark. Pay only to download the clean, submission-ready PDF.</p>
-        <ul>
-          <li>One complete inspection, start to finish</li>
-          <li>Research, photos &amp; official forms</li>
-          <li>Card required — no charge to create the sample</li>
-        </ul>
-        <a class="go" href="app/">Start My Free Inspection</a>
-      </div>
-      <div class="price-card">
-        <p class="tier">Pay per pull</p>
-        <span class="amount">$5</span>
-        <span class="per">per inspection pull</span>
-        <p class="blurb">No subscription — email us for pull credits and pay for the one job in front of you.</p>
-        <ul>
-          <li>One property pull per purchase</li>
-          <li>Full records research + forms</li>
-          <li>No monthly commitment</li>
-        </ul>
-        <a class="go" href="mailto:richducat@gmail.com?subject=Inspector%20Gadgets%20%245%20pull%20credits">Email for pull credits</a>
-      </div>
+    <div class="price-grid" style="grid-template-columns:repeat(3,1fr)">
       <div class="price-card">
         <p class="tier">Professional</p>
         <span class="amount">$20</span>
@@ -902,23 +885,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="blurb">For the working inspector — covers a steady week-in, week-out schedule.</p>
         <ul>
           <li>Up to 10 inspections a month</li>
+          <li>3-day free trial to start</li>
           <li>Every feature in the tool</li>
           <li>Cancel anytime</li>
         </ul>
-        <a class="go" href="app/">Start Monthly</a>
+        <a class="go" href="app/">Start Free Trial</a>
       </div>
       <div class="price-card featured">
-        <span class="price-stamp">Best value</span>
-        <p class="tier">Unlimited annual</p>
+        <span class="price-stamp">Most popular</span>
+        <p class="tier">Unlimited</p>
         <span class="amount">$98</span>
-        <span class="per">per year</span>
-        <p class="blurb">Busy season, slow season — every inspection you run, covered for the year.</p>
+        <span class="per">per month</span>
+        <p class="blurb">Every inspection you run, uncapped — for a full schedule.</p>
         <ul>
           <li>Unlimited inspections</li>
-          <li>Every feature, all year</li>
-          <li>Under $2 a week</li>
+          <li>3-day free trial to start</li>
+          <li>Every feature in the tool</li>
+          <li>Cancel anytime</li>
         </ul>
-        <a class="go" href="app/">Go Unlimited</a>
+        <a class="go" href="app/">Start Free Trial</a>
+      </div>
+      <div class="price-card">
+        <p class="tier">Unlimited Annual</p>
+        <span class="amount">$980</span>
+        <span class="per">per year</span>
+        <p class="blurb">Unlimited, prepaid for the year — the best effective rate.</p>
+        <ul>
+          <li>Unlimited inspections, all year</li>
+          <li>3-day free trial to start</li>
+          <li>Two months off vs. monthly</li>
+        </ul>
+        <a class="go" href="app/">Start Free Trial</a>
       </div>
     </div>
     <div class="company-soon" aria-label="Company Accounts — coming soon">
@@ -926,7 +923,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="tier">Company Accounts</p>
       <p class="blurb">Multiple inspectors under one firm — shared branding, team scheduling, and one consolidated bill.</p>
     </div>
-    <p class="price-note">Nothing to install. Cancel anytime. Your saved work stays yours. Start your free trial in the app any time; email us for pay-per-pull credits.<br />For reference: mainstream inspection platforms run $90&ndash;109/month and still hand you a blank wind mit template. Permit-lookup services charge $2.50&ndash;$5 per report and don't fill a single form field.</p>
+    <p class="price-note">Every plan starts with a 3-day free trial; a card is required and your plan is charged on day 3 unless you cancel. Nothing to install. Cancel anytime — your saved work stays yours.<br />For reference: mainstream inspection platforms run $90&ndash;109/month and still hand you a blank wind mit template.</p>
   </div>
 </section>
 
@@ -944,7 +941,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </details>
       <details>
         <summary>$20 a month adds up — is it really worth it?</summary>
-        <p>Compare it to one evening, not to other apps. Skip a single drive-back or head off one bounced report and the year's already covered. If getting home to your family instead of the kitchen-table form even once a month is worth twenty bucks, it's already paid for. Run the unlimited year at $98 and it's under $2 a week — less than a tank of gas.</p>
+        <p>Compare it to one evening, not to other apps. Skip a single drive-back or head off one bounced report and the year's already covered. If getting home to your family instead of the kitchen-table form even once a month is worth twenty bucks, it's already paid for. Or run Unlimited at $98/mo — or $980/yr prepaid — and never count inspections.</p>
       </details>
       <details>
         <summary>Do I have to install anything or learn new software?</summary>
@@ -981,7 +978,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h2>Complete your next home inspection faster.</h2>
     <p>Start with an inspection already on your schedule. Pull the property research, follow the guided checklist, review the forms, and see how much of the job is finished before you leave. Built for qualified inspectors — you review every finding and sign every final report.</p>
     <a class="cta" href="app/">Start My Free Inspection</a>
-    <p class="sub" style="color: var(--navy-text);">First inspection on the trial · $5 a pull · $20/mo for 10 · $98/yr unlimited</p>
+    <p class="sub" style="color: var(--navy-text);">3-day free trial · $20/mo for 10 · $98/mo unlimited · $980/yr</p>
     <div class="badge-row">
       <span>Nothing to install</span><span>Official Florida forms</span><span>You approve every finding</span><span>Syncs across your devices</span>
     </div>
@@ -1014,7 +1011,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>Nothing to install. First inspection on the trial — plans from $20/mo or $98/yr unlimited.</span>
+      <span>Nothing to install. Start a 3-day free trial, then $20/mo (10 inspections), $98/mo unlimited, or $980/yr.</span>
       <span><a href="product.html">Product</a> · <a href="how-it-works.html">How it works</a> · <a href="forms.html">Forms</a> · <a href="coverage.html">Coverage</a> · <a href="pricing.html">Pricing</a> · <a href="faq.html">FAQ</a> · <a href="trust.html">Trust</a> · <a href="check.html">Records check</a> · <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="mailto:richducat@gmail.com">Support</a> · Built by <a href="https://eb28.co/">EB28</a></span>
     </div>
   </div>
