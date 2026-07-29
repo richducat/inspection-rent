@@ -50,21 +50,36 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .faq-row{display:grid;grid-template-columns:360px 1fr;gap:36px}
   .foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:32px}
   .cost-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center}
-  /* hero live-check widget */
-  .chk-input{width:100%;padding:13px 14px;border:1px solid rgba(11,29,49,.18);border-radius:8px;font:400 15px "Libre Franklin",system-ui,sans-serif;color:#0B1D31;background:#fff}
-  .chk-input:focus{outline:none;border-color:#C7962B;box-shadow:0 0 0 3px rgba(199,150,43,.18)}
-  .chk-btn{width:100%;padding:14px;border:none;border-radius:8px;background:#C7962B;color:#0B1D31;font:700 15px "Libre Franklin",system-ui,sans-serif;cursor:pointer}
-  .chk-btn:hover{background:#d9a938}
-  .chk-step{display:none;flex-direction:column;gap:10px}
+  /* hero live-check widget — premium */
+  .chk-card{background:linear-gradient(180deg,#ffffff 0%,#FBFAF7 100%);border-radius:18px;box-shadow:0 1px 2px rgba(11,29,49,.08),0 24px 60px -18px rgba(0,0,0,.55);overflow:visible;color:#0B1D31;border:1px solid rgba(255,255,255,.6)}
+  .chk-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:linear-gradient(135deg,#0B1D31 0%,#14385a 100%);border-radius:18px 18px 0 0}
+  .chk-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3ddc97;margin-right:8px;box-shadow:0 0 0 0 rgba(61,220,151,.5);animation:chkPulse 2s infinite}
+  @keyframes chkPulse{0%{box-shadow:0 0 0 0 rgba(61,220,151,.45)}70%{box-shadow:0 0 0 7px rgba(61,220,151,0)}100%{box-shadow:0 0 0 0 rgba(61,220,151,0)}}
+  .chk-body{padding:22px 22px 24px}
+  .chk-title{font-family:"Newsreader",Georgia,serif;font-size:22px;line-height:1.2;letter-spacing:-.01em}
+  .chk-sub{font-size:13.5px;color:#5c6f80;line-height:1.55}
+  .chk-input{width:100%;padding:15px 16px;border:1px solid rgba(11,29,49,.14);border-radius:12px;font:400 15.5px "Libre Franklin",system-ui,sans-serif;color:#0B1D31;background:#fff;box-shadow:inset 0 1px 2px rgba(11,29,49,.04);transition:border-color .15s,box-shadow .15s}
+  .chk-input::placeholder{color:#9aa9b8}
+  .chk-input:focus{outline:none;border-color:#C7962B;box-shadow:inset 0 1px 2px rgba(11,29,49,.04),0 0 0 4px rgba(199,150,43,.14)}
+  .chk-btn{width:100%;padding:15px;border:none;border-radius:12px;background:linear-gradient(180deg,#dcaa3d 0%,#C7962B 100%);color:#0B1D31;font:700 15px "Libre Franklin",system-ui,sans-serif;letter-spacing:.01em;cursor:pointer;box-shadow:0 6px 16px -6px rgba(199,150,43,.55),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .12s,box-shadow .12s}
+  .chk-btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px -6px rgba(199,150,43,.6),inset 0 1px 0 rgba(255,255,255,.35)}
+  .chk-step{display:none;flex-direction:column;gap:12px}
   .chk-step.active{display:flex}
-  .chk-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 13px;border:1px solid rgba(11,29,49,.1);border-radius:8px;font-size:12.5px;color:#3a4b5c;opacity:0;transform:translateY(4px);transition:opacity .35s,transform .35s}
+  .chk-ac-wrap{position:relative}
+  .chk-ac{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:30;background:#fff;border:1px solid rgba(11,29,49,.1);border-radius:12px;box-shadow:0 16px 40px -12px rgba(11,29,49,.35);overflow:hidden;display:none}
+  .chk-ac.open{display:block}
+  .chk-ac button{display:block;width:100%;text-align:left;padding:12px 16px;border:none;background:#fff;font:400 14px "Libre Franklin",system-ui,sans-serif;color:#22384c;cursor:pointer;border-bottom:1px solid rgba(11,29,49,.05)}
+  .chk-ac button:last-child{border-bottom:none}
+  .chk-ac button:hover,.chk-ac button.hot{background:rgba(199,150,43,.09)}
+  .chk-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 15px;background:#F6F4EE;border:none;border-radius:11px;font-size:13px;color:#3a4b5c;opacity:0;transform:translateY(6px);transition:opacity .45s ease,transform .45s ease}
   .chk-row.show{opacity:1;transform:none}
-  .chk-chip{flex:none;font-family:"IBM Plex Mono",monospace;font-size:11px;padding:2px 8px;border-radius:5px;color:#1E6F5C;background:rgba(30,111,91,.12)}
-  .chk-chip.wait{color:#8296a8;background:transparent}
-  .chk-chip.warn{color:#b06a00;background:rgba(176,106,0,.1)}
-  .chk-fact{display:flex;justify-content:space-between;gap:12px;padding:8px 2px;border-bottom:1px solid rgba(11,29,49,.08);font-size:13.5px;color:#3a4b5c}
-  .chk-fact b{color:#0B1D31;text-align:right}
-  .chk-err{display:none;padding:10px 13px;border:1px solid rgba(176,106,0,.4);background:rgba(176,106,0,.07);border-radius:8px;color:#7a5200;font-size:13px}
+  .chk-chip{flex:none;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.02em;padding:4px 10px;border-radius:999px;color:#1E6F5C;background:rgba(30,111,91,.1)}
+  .chk-chip.wait{color:#8296a8;background:rgba(11,29,49,.05)}
+  .chk-chip.warn{color:#9a6200;background:rgba(199,150,43,.12)}
+  .chk-fact{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:9px 2px;border-bottom:1px solid rgba(11,29,49,.06)}
+  .chk-fact span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#8296a8}
+  .chk-fact b{color:#0B1D31;text-align:right;font-size:14px;font-weight:600}
+  .chk-err{display:none;padding:11px 15px;border:none;border-left:3px solid #C7962B;background:rgba(199,150,43,.08);border-radius:8px;color:#7a5200;font-size:13px}
   @media(max-width:900px){
     .wrap{padding:0 24px}
     .hero-grid,.g2,.g3,.price-grid,.cost-grid{grid-template-columns:1fr!important;gap:20px}
@@ -121,23 +136,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- LIVE light property check — the lead-gen tool. Real lookups run in the
          visitor's browser (Esri geocoder, FL DOR roll, FEMA); name/email is the
          price of the results and lands in accounts.eb28.co /leads. -->
-    <div class="hero-mock" id="check" style="background:#fff;border-radius:14px;box-shadow:0 40px 70px -30px rgba(0,0,0,.6);overflow:hidden;color:#0B1D31">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:#F1EFE9;border-bottom:1px solid rgba(11,29,49,.1)">
-        <span class="mono" style="font-size:11px;letter-spacing:.08em;font-weight:600">LIGHT PROPERTY CHECK</span>
-        <span class="mono" style="font-size:10.5px;color:#1E6F5C;background:rgba(30,111,91,.12);padding:3px 8px;border-radius:20px">FREE · NO CARD</span>
+    <div class="hero-mock chk-card" id="check">
+      <div class="chk-head">
+        <span class="mono" style="font-size:11px;letter-spacing:.1em;font-weight:600;color:#e7edf3"><span class="chk-dot"></span>LIVE PROPERTY CHECK</span>
+        <span class="mono" style="font-size:10px;letter-spacing:.06em;color:#0B1D31;background:linear-gradient(180deg,#dcaa3d,#C7962B);padding:4px 10px;border-radius:999px;font-weight:600">FREE · NO CARD</span>
       </div>
-      <div style="padding:18px 18px 20px">
+      <div class="chk-body">
         <div class="chk-step active" id="chkStep1">
-          <div style="font-size:17px;font-weight:700;line-height:1.3">See what we can pull on a property — right now.</div>
-          <div style="font-size:13px;color:#5c6f80;line-height:1.5">Type any Florida address. We look it up the same way the app does on a real inspection.</div>
-          <input class="chk-input" id="chkAddress" type="text" autocomplete="street-address" placeholder="123 Main St, Melbourne, FL" />
+          <div class="chk-title">See what we can pull on a property — right now.</div>
+          <div class="chk-sub">Start typing any Florida address — we look it up the same way the app does on a real inspection.</div>
+          <div class="chk-ac-wrap">
+            <input class="chk-input" id="chkAddress" type="text" autocomplete="off" placeholder="Start typing an address…" />
+            <div class="chk-ac" id="chkAc"></div>
+          </div>
           <div class="chk-err" id="chkErr1"></div>
           <button class="chk-btn" id="chkGo" type="button">Try It Now — Run the Check</button>
           <div style="font-size:11px;color:#8296a8;text-align:center">Public records only. Takes about 10 seconds.</div>
         </div>
         <div class="chk-step" id="chkStep2">
-          <div style="font-size:17px;font-weight:700;line-height:1.3">Ready — who are the results for?</div>
-          <div style="font-size:13px;color:#5c6f80;line-height:1.5">They&rsquo;ll appear right here on this page.</div>
+          <div class="chk-title">Ready — who are the results for?</div>
+          <div class="chk-sub">They&rsquo;ll appear right here on this page.</div>
           <input class="chk-input" id="chkName" type="text" autocomplete="name" placeholder="Your name" />
           <input class="chk-input" id="chkEmail" type="email" autocomplete="email" placeholder="Work email" />
           <div class="chk-err" id="chkErr2"></div>
@@ -603,6 +621,36 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   }
   function fact(label, value) { return "<div class=\"chk-fact\"><span>" + label + "</span><b>" + esc(value) + "</b></div>"; }
 
+  // Address autocomplete — same Esri suggest the app uses, Florida-biased.
+  var acKey = ""; var acTimer = null; var acAbort = null;
+  var acBox = $("chkAc");
+  function acClose() { acBox.className = "chk-ac"; acBox.innerHTML = ""; }
+  $("chkAddress").addEventListener("input", function () {
+    acKey = ""; var q = this.value.trim();
+    if (acTimer) clearTimeout(acTimer);
+    if (q.length < 4) { acClose(); return; }
+    acTimer = setTimeout(function () {
+      if (acAbort) acAbort.abort();
+      acAbort = new AbortController();
+      fetch("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/suggest?f=json&countryCode=USA&category=Address&maxSuggestions=6&searchExtent=-87.6,24.4,-79.8,31.1&text=" + encodeURIComponent(q), { signal: acAbort.signal })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var list = (d.suggestions || []).filter(function (x) { return x.text && x.magicKey; });
+          if (!list.length) { acClose(); return; }
+          acBox.innerHTML = "";
+          list.forEach(function (x) {
+            var b = document.createElement("button"); b.type = "button"; b.textContent = x.text;
+            b.addEventListener("click", function () {
+              $("chkAddress").value = x.text; acKey = x.magicKey; acClose(); $("chkGo").click();
+            });
+            acBox.appendChild(b);
+          });
+          acBox.className = "chk-ac open";
+        }).catch(function () {});
+    }, 220);
+  });
+  document.addEventListener("click", function (e) { if (!acBox.contains(e.target) && e.target !== $("chkAddress")) acClose(); });
+
   $("chkGo").addEventListener("click", function () {
     var q = $("chkAddress").value.trim();
     if (q.length < 8 || !/[a-z]/i.test(q) || !/\d/.test(q)) { err("chkErr1", "Enter a full street address — number, street, city."); return; }
@@ -639,7 +687,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   function run() {
     var st = {};
     var ln = row("Locating the property");
-    fetchJson("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=1&outFields=Region,City,Addr_type&SingleLine=" + encodeURIComponent(address))
+    fetchJson("https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&maxLocations=1&outFields=Region,City,Addr_type" + (acKey ? "&magicKey=" + encodeURIComponent(acKey) : "") + "&SingleLine=" + encodeURIComponent(address))
       .then(function (geo) {
         var c = (geo.candidates || [])[0];
         if (!c || !c.location || (c.score || 0) < 65) throw { msg: "Couldn&rsquo;t match that address — add the city and FL, then try again." };
