@@ -50,36 +50,46 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .faq-row{display:grid;grid-template-columns:360px 1fr;gap:36px}
   .foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:32px}
   .cost-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center}
-  /* hero live-check widget — premium */
-  .chk-card{background:linear-gradient(180deg,#ffffff 0%,#FBFAF7 100%);border-radius:18px;box-shadow:0 1px 2px rgba(11,29,49,.08),0 24px 60px -18px rgba(0,0,0,.55);overflow:visible;color:#0B1D31;border:1px solid rgba(255,255,255,.6)}
-  .chk-head{display:flex;align-items:center;justify-content:space-between;padding:18px 26px;background:linear-gradient(135deg,#0B1D31 0%,#14385a 100%);border-radius:18px 18px 0 0}
-  .chk-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3ddc97;margin-right:8px;box-shadow:0 0 0 0 rgba(61,220,151,.5);animation:chkPulse 2s infinite}
-  @keyframes chkPulse{0%{box-shadow:0 0 0 0 rgba(61,220,151,.45)}70%{box-shadow:0 0 0 7px rgba(61,220,151,0)}100%{box-shadow:0 0 0 0 rgba(61,220,151,0)}}
-  .chk-body{padding:28px 28px 30px}
-  .chk-title{font-family:"Newsreader",Georgia,serif;font-size:26px;line-height:1.2;letter-spacing:-.01em}
-  .chk-sub{font-size:14.5px;color:#5c6f80;line-height:1.55}
-  .chk-input{width:100%;padding:17px 18px;border:1px solid rgba(11,29,49,.14);border-radius:12px;font:400 16.5px "Libre Franklin",system-ui,sans-serif;color:#0B1D31;background:#fff;box-shadow:inset 0 1px 2px rgba(11,29,49,.04);transition:border-color .15s,box-shadow .15s}
-  .chk-input::placeholder{color:#9aa9b8}
-  .chk-input:focus{outline:none;border-color:#C7962B;box-shadow:inset 0 1px 2px rgba(11,29,49,.04),0 0 0 4px rgba(199,150,43,.14)}
-  .chk-btn{width:100%;padding:17px;border:none;border-radius:12px;background:linear-gradient(180deg,#dcaa3d 0%,#C7962B 100%);color:#0B1D31;font:700 16px "Libre Franklin",system-ui,sans-serif;letter-spacing:.01em;cursor:pointer;box-shadow:0 6px 16px -6px rgba(199,150,43,.55),inset 0 1px 0 rgba(255,255,255,.35);transition:transform .12s,box-shadow .12s}
-  .chk-btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px -6px rgba(199,150,43,.6),inset 0 1px 0 rgba(255,255,255,.35)}
-  .chk-step{display:none;flex-direction:column;gap:12px}
-  .chk-step.active{display:flex}
+  /* hero live-check widget — modern, restrained */
+  .chk-card{background:#fff;border-radius:24px;box-shadow:0 1px 2px rgba(11,29,49,.06),0 40px 80px -32px rgba(0,0,0,.55);color:#0B1D31;border:1px solid rgba(11,29,49,.06);padding:38px 40px 34px}
+  .chk-live{display:flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.14em;color:#8296a8;margin-bottom:22px}
+  .chk-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#1E9E77;box-shadow:0 0 0 0 rgba(30,158,119,.4);animation:chkPulse 2.2s infinite}
+  @keyframes chkPulse{0%{box-shadow:0 0 0 0 rgba(30,158,119,.35)}70%{box-shadow:0 0 0 6px rgba(30,158,119,0)}100%{box-shadow:0 0 0 0 rgba(30,158,119,0)}}
+  .chk-title{font-family:"Newsreader",Georgia,serif;font-size:29px;line-height:1.16;letter-spacing:-.015em}
+  .chk-sub{font-size:14.5px;color:#5c6f80;line-height:1.6}
+  .chk-meta{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.05em;color:#8296a8;line-height:1.9}
+  .chk-meta em{font-style:normal;color:#40566b}
+  .chk-field{position:relative}
+  .chk-field label{position:absolute;left:18px;top:50%;transform:translateY(-50%);font:500 15.5px "Libre Franklin",system-ui,sans-serif;color:#8b9aab;pointer-events:none;transition:all .18s cubic-bezier(.4,0,.2,1)}
+  .chk-field .chk-input:focus + label,.chk-field .chk-input:not(:placeholder-shown) + label{top:13px;transform:none;font-size:11px;font-weight:600;letter-spacing:.04em;color:#a07c26}
+  .chk-input{width:100%;padding:24px 18px 8px;border:1.5px solid rgba(11,29,49,.12);border-radius:14px;font:400 16px "Libre Franklin",system-ui,sans-serif;color:#0B1D31;background:#fff;transition:border-color .18s,box-shadow .18s}
+  .chk-input::placeholder{color:transparent}
+  .chk-input:hover{border-color:rgba(11,29,49,.24)}
+  .chk-input:focus{outline:none;border-color:#0B1D31;box-shadow:0 0 0 4px rgba(11,29,49,.07)}
+  .chk-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:17px;border:none;border-radius:14px;background:#C7962B;color:#0B1D31;font:600 15.5px "Libre Franklin",system-ui,sans-serif;letter-spacing:.005em;cursor:pointer;transition:background .18s,transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s}
+  .chk-btn:hover{background:#d9a938;transform:translateY(-1px);box-shadow:0 12px 24px -12px rgba(199,150,43,.7)}
+  .chk-btn:active{transform:translateY(0)}
+  .chk-btn::after{content:"→";font-weight:500;transition:transform .18s}
+  .chk-btn:hover::after{transform:translateX(3px)}
+  .chk-step{display:none;flex-direction:column;gap:16px}
+  .chk-step.active{display:flex;animation:chkIn .45s cubic-bezier(.22,1,.36,1)}
+  @keyframes chkIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   .chk-ac-wrap{position:relative}
-  .chk-ac{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:30;background:#fff;border:1px solid rgba(11,29,49,.1);border-radius:12px;box-shadow:0 16px 40px -12px rgba(11,29,49,.35);overflow:hidden;display:none}
-  .chk-ac.open{display:block}
-  .chk-ac button{display:block;width:100%;text-align:left;padding:12px 16px;border:none;background:#fff;font:400 14px "Libre Franklin",system-ui,sans-serif;color:#22384c;cursor:pointer;border-bottom:1px solid rgba(11,29,49,.05)}
-  .chk-ac button:last-child{border-bottom:none}
-  .chk-ac button:hover,.chk-ac button.hot{background:rgba(199,150,43,.09)}
-  .chk-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 15px;background:#F6F4EE;border:none;border-radius:11px;font-size:13px;color:#3a4b5c;opacity:0;transform:translateY(6px);transition:opacity .45s ease,transform .45s ease}
+  .chk-ac{position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:30;background:#fff;border:1px solid rgba(11,29,49,.08);border-radius:14px;box-shadow:0 24px 48px -16px rgba(11,29,49,.3);overflow:hidden;display:none}
+  .chk-ac.open{display:block;animation:chkIn .22s cubic-bezier(.22,1,.36,1)}
+  .chk-ac button{display:block;width:100%;text-align:left;padding:13px 18px;border:none;background:#fff;font:400 14px "Libre Franklin",system-ui,sans-serif;color:#22384c;cursor:pointer;transition:background .12s}
+  .chk-ac button:hover,.chk-ac button.hot{background:rgba(199,150,43,.08)}
+  .chk-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid rgba(11,29,49,.07);font-size:14px;color:#3a4b5c;opacity:0;transform:translateY(6px);transition:opacity .45s ease,transform .45s ease}
   .chk-row.show{opacity:1;transform:none}
-  .chk-chip{flex:none;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.02em;padding:4px 10px;border-radius:999px;color:#1E6F5C;background:rgba(30,111,91,.1)}
-  .chk-chip.wait{color:#8296a8;background:rgba(11,29,49,.05)}
-  .chk-chip.warn{color:#9a6200;background:rgba(199,150,43,.12)}
-  .chk-fact{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:9px 2px;border-bottom:1px solid rgba(11,29,49,.06)}
+  .chk-chip{flex:none;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.02em;color:#1E6F5C}
+  .chk-chip.wait{color:#8b9aab;animation:chkBlink 1.1s ease infinite}
+  @keyframes chkBlink{50%{opacity:.35}}
+  .chk-chip.warn{color:#9a6200}
+  .chk-fact{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:10px 2px;border-bottom:1px solid rgba(11,29,49,.06)}
   .chk-fact span{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#8296a8}
-  .chk-fact b{color:#0B1D31;text-align:right;font-size:14px;font-weight:600}
-  .chk-err{display:none;padding:11px 15px;border:none;border-left:3px solid #C7962B;background:rgba(199,150,43,.08);border-radius:8px;color:#7a5200;font-size:13px}
+  .chk-fact b{color:#0B1D31;text-align:right;font-size:14.5px;font-weight:600}
+  .chk-err{display:none;padding:12px 16px;border:none;border-left:2px solid #C7962B;background:rgba(199,150,43,.07);border-radius:0 10px 10px 0;color:#7a5200;font-size:13px;line-height:1.5}
+  .chk-foot{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:12px;color:#8b9aab}
   @media(max-width:900px){
     .wrap{padding:0 24px}
     .hero-grid,.g2,.g3,.price-grid,.cost-grid{grid-template-columns:1fr!important;gap:20px}
@@ -92,6 +102,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .nav-links{display:none!important}
     .hero-mock{order:2}
     .chk-trust{grid-column:1!important;order:3;margin-top:0!important}
+    .chk-card{padding:28px 22px 26px;border-radius:20px}
+    .chk-title{font-size:25px}
     .pad{padding-top:60px!important;padding-bottom:60px!important}
   }
 </style>
@@ -139,47 +151,45 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
          visitor's browser (Esri geocoder, FL DOR roll, FEMA); name/email is the
          price of the results and lands in accounts.eb28.co /leads. -->
     <div class="hero-mock chk-card" id="check">
-      <div class="chk-head">
-        <span class="mono" style="font-size:11px;letter-spacing:.1em;font-weight:600;color:#e7edf3"><span class="chk-dot"></span>LIVE PROPERTY CHECK</span>
-        <span class="mono" style="font-size:10px;letter-spacing:.06em;color:#0B1D31;background:linear-gradient(180deg,#dcaa3d,#C7962B);padding:4px 10px;border-radius:999px;font-weight:600">LIVE COUNTY DATA</span>
-      </div>
-      <div class="chk-body">
+        <div class="chk-live"><span class="chk-dot"></span>LIVE PROPERTY CHECK&nbsp;·&nbsp;FLORIDA COUNTY RECORDS</div>
         <div class="chk-step active" id="chkStep1">
-          <div class="chk-title" style="font-size:29px">Search an address. We pull the records.</div>
-          <div class="chk-sub" style="font-size:15px">Any Florida property. This is the light version of the lookup the app runs on a real job — inside the app it goes further, pulls the full permit history, and pre-fills your 4-Point and wind mit.</div>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <span class="mono" style="font-size:10.5px;letter-spacing:.04em;color:#1E6F5C;background:rgba(30,111,91,.09);padding:5px 11px;border-radius:999px">OWNER &amp; YEAR BUILT</span>
-            <span class="mono" style="font-size:10.5px;letter-spacing:.04em;color:#1E6F5C;background:rgba(30,111,91,.09);padding:5px 11px;border-radius:999px">SQUARE FOOTAGE</span>
-            <span class="mono" style="font-size:10.5px;letter-spacing:.04em;color:#1E6F5C;background:rgba(30,111,91,.09);padding:5px 11px;border-radius:999px">FLOOD ZONE</span>
-            <span class="mono" style="font-size:10.5px;letter-spacing:.04em;color:#1E6F5C;background:rgba(30,111,91,.09);padding:5px 11px;border-radius:999px">PERMIT COVERAGE</span>
-          </div>
+          <div class="chk-title">Search an address.<br/>We pull the records.</div>
+          <div class="chk-sub">Any Florida property — this is the light version of the lookup the app runs on a real job. Inside the app it goes further: full permit history, then your 4-Point and wind mit pre-filled.</div>
           <div class="chk-ac-wrap">
-            <input class="chk-input" id="chkAddress" type="text" autocomplete="off" placeholder="Start typing an address…" />
+            <div class="chk-field">
+              <input class="chk-input" id="chkAddress" type="text" autocomplete="off" placeholder=" " />
+              <label for="chkAddress">Property address</label>
+            </div>
             <div class="chk-ac" id="chkAc"></div>
           </div>
           <div class="chk-err" id="chkErr1"></div>
-          <button class="chk-btn" id="chkGo" type="button">Run My Property Check</button>
-          <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;font-size:11.5px;color:#8296a8"><span>✓ Straight from county records</span><span>✓ About 10 seconds</span></div>
+          <button class="chk-btn" id="chkGo" type="button">Run the Property Check</button>
+          <div class="chk-meta" style="text-align:center">OWNER · YEAR BUILT · SQ FT · FLOOD ZONE · PERMITS</div>
         </div>
         <div class="chk-step" id="chkStep2">
-          <div class="chk-title">Where do we send your results?</div>
+          <div class="chk-title">Where do we send<br/>your results?</div>
           <div class="chk-sub">Name and email — the results show up right below.</div>
-          <input class="chk-input" id="chkName" type="text" autocomplete="name" placeholder="Your name" />
-          <input class="chk-input" id="chkEmail" type="email" autocomplete="email" placeholder="Work email" />
+          <div class="chk-field">
+            <input class="chk-input" id="chkName" type="text" autocomplete="name" placeholder=" " />
+            <label for="chkName">Your name</label>
+          </div>
+          <div class="chk-field">
+            <input class="chk-input" id="chkEmail" type="email" autocomplete="email" placeholder=" " />
+            <label for="chkEmail">Work email</label>
+          </div>
           <div class="chk-err" id="chkErr2"></div>
           <button class="chk-btn" id="chkShow" type="button">Show My Results</button>
-          <div style="font-size:11px;color:#8296a8;text-align:center">No spam. Just the results.</div>
+          <div class="chk-foot"><span>No spam. Just the results.</span></div>
         </div>
         <div class="chk-step" id="chkStep3">
-          <div id="chkRows" style="display:flex;flex-direction:column;gap:8px"></div>
-          <div id="chkFacts" style="display:none;margin-top:4px"></div>
-          <div id="chkTeaser" style="display:none;padding:11px 13px;border:1px dashed rgba(11,29,49,.25);border-radius:8px;font-size:12.5px;color:#3a4b5c;line-height:1.5">
-            <strong style="color:#0B1D31">Inside the app this keeps going:</strong> full permit history with the roof permit date, required-photo checklist, and the official 4-Point &amp; wind mitigation forms filling themselves.
+          <div id="chkRows" style="display:flex;flex-direction:column"></div>
+          <div id="chkFacts" style="display:none;margin-top:2px"></div>
+          <div id="chkTeaser" style="display:none;padding:2px 0 0 16px;border-left:2px solid rgba(199,150,43,.5);font-size:13px;color:#5c6f80;line-height:1.6">
+            <strong style="color:#0B1D31;font-weight:600">Inside the app this keeps going:</strong> full permit history with the roof permit date, required-photo checklist, and the official 4-Point &amp; wind mitigation forms filling themselves.
           </div>
-          <a id="chkCta" href="app/" style="display:none" class="chk-btn">Get Started — Run It on a Real Inspection</a>
-          <button id="chkAgain" type="button" style="display:none;background:none;border:none;color:#a07c26;font-size:12.5px;cursor:pointer;text-decoration:underline">Run another address</button>
+          <a id="chkCta" href="app/" style="display:none" class="chk-btn">Get Started Now</a>
+          <button id="chkAgain" type="button" style="display:none;background:none;border:none;color:#a07c26;font-size:12.5px;cursor:pointer;text-decoration:underline;padding:0;align-self:center">Run another address</button>
         </div>
-      </div>
     </div>
 </div>
     <div class="chk-trust" style="grid-column:2;margin-top:-28px">
