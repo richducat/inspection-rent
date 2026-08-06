@@ -734,8 +734,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       body: JSON.stringify({ email: email, address: address, source: "property-check" })
     }).then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status);
-      $("chkLeadBtn").textContent = "Sent";
-      leadMsg("Sent — check your inbox.", true);
+      $("chkLeadBtn").textContent = "Requested";
+      leadMsg("Request received — we’ll email it to you.", true);
       window.dataLayer = window.dataLayer || [];
       window.dataLayer.push({ event: "lp_lead", source: "property-check" });
     }).catch(function () {
