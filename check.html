@@ -10,13 +10,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Free Florida Property and Permit Check | Inspector Gadgets</title>
-<meta name="description" content="Preview the public property and permit information Inspector Gadgets pulls into a Florida home inspection job. Sign up free and use it on a real job — preview the finished report as a watermarked sample before you pay." />
+<title>Instant Florida Property and Permit Check | Inspector Gadgets</title>
+<meta name="description" content="Preview the public property and permit information Inspector Gadgets pulls into a Florida home inspection job. No signup, no card to run it. Sign up to use it on a real job — preview the finished report as a watermarked sample before you pay." />
 <meta name="theme-color" content="#0B1D31" />
 <link rel="canonical" href="https://inspection.rent/check.html" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="See What Inspector Gadgets Pulls Before the Inspection" />
-<meta property="og:description" content="The same records pull that pre-fills the official Florida 4-Point and Wind Mitigation forms — run it free on any address, right now." />
+<meta property="og:description" content="The same records pull that pre-fills the official Florida 4-Point and Wind Mitigation forms — run it on any address right now. No signup, no card." />
 <meta property="og:url" content="https://inspection.rent/check.html" />
 <meta property="og:image" content="https://inspection.rent/shots/research.png" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -150,6 +150,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .permit-badge svg { flex: 0 0 auto; margin-top: 2px; }
   .src-note { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em; color: var(--muted); margin: 16px 0 0; text-transform: uppercase; }
 
+  /* optional email-me-this-report capture — never blocks the results */
+  .lead-cap { border-top: 1px dashed var(--line-strong); margin-top: 18px; padding-top: 16px; }
+  .lead-cap .lead-lbl { font-size: 14px; font-weight: 600; margin: 0 0 10px; }
+  .lead-cap .lead-lbl span { color: var(--muted); font-weight: 500; }
+  .lead-cap form { display: flex; gap: 10px; flex-wrap: wrap; }
+  .lead-cap input[type="email"] {
+    flex: 1; min-width: 220px; font-family: var(--font-ui); font-size: 15px;
+    padding: 12px 14px; border-radius: 4px; border: 1.5px solid var(--line-strong);
+    color: var(--ink); outline: none;
+  }
+  .lead-cap input[type="email"]:focus { border-color: var(--primary); }
+  .lead-cap .cta { padding: 12px 20px; font-size: 14px; }
+  .lead-cap .lead-msg { margin: 10px 0 0; font-size: 13.5px; font-weight: 600; }
+  .lead-cap .lead-msg.ok { color: var(--success); }
+  .lead-cap .lead-msg.err { color: var(--warn-text); font-weight: 500; }
+  .lead-cap .lead-msg a { color: var(--primary); }
+
   .bridge { border-top: 1px dashed var(--line-strong); margin-top: 20px; padding-top: 18px; }
   .bridge p.lead { font-weight: 600; font-size: 15.5px; margin: 0 0 10px; }
   .bridge ul { margin: 0 0 18px; padding-left: 20px; color: var(--muted); font-size: 14.5px; }
@@ -197,7 +214,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .rec-grid { grid-template-columns: repeat(2, 1fr); }
     .strip { grid-template-columns: 1fr; }
     .topbar nav a:not(.app-link) { display: none; }
-    /* The results/fail CTAs carry long labels ("…first one free"); nowrap would
+    /* The results/fail CTAs carry long labels; nowrap would
        overflow the narrow sheet and clip the text. Let them wrap full-width. */
     .bridge .ctas { flex-direction: column; align-items: stretch; }
     .bridge .ctas .cta { white-space: normal; width: 100%; text-align: center; }
@@ -209,7 +226,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 {
  "@context": "https://schema.org",
  "@type": "WebApplication",
- "name": "Free Florida Property Records Check",
+ "name": "Instant Florida Property Records Check",
  "url": "https://inspection.rent/check.html",
  "applicationCategory": "BusinessApplication",
  "operatingSystem": "Web",
@@ -253,7 +270,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ======================= HERO + TOOL ======================= -->
 <header class="hero">
   <div class="wrap">
-    <p class="kicker"><span class="no">Free Florida property check</span> — a quick look before you start</p>
+    <p class="kicker"><span class="no">Florida property check</span> — no signup, no card, instant</p>
     <h1>See what Inspector Gadgets can pull <em>before the inspection.</em></h1>
     <p class="sub">Enter a Florida property address — a job on your schedule works best. Inspector Gadgets will look for available property details, flood information, permit coverage, and source links — the same research that can be attached to an inspection job.</p>
 
@@ -262,7 +279,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <input class="tool-input" id="addr" type="text" inputmode="text" placeholder="Enter the address of an upcoming inspection" aria-label="Florida property address" required />
         <button class="cta" type="submit" id="goBtn">Check This Property</button>
       </form>
-      <p class="tool-note"><b>Free preview</b> · This searches the same public records you look up by hand — the FL DOR property roll and FEMA — and checks the county's permit coverage. Sign up free to use it on real jobs.</p>
+      <p class="tool-note"><b>No signup. No card. Instant.</b> · This searches the same public records you look up by hand — the FL DOR property roll and FEMA — and checks the county's permit coverage. Sign up to use it on real jobs.</p>
 
       <div class="console" id="console" aria-live="polite"></div>
 
@@ -275,6 +292,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="rec-grid" id="rGrid"></div>
             <div id="rPermit"></div>
             <p class="src-note">FL DOR statewide property roll (current roll year) · FEMA NFHL · public record — verify before you sign, same as anything you'd type yourself</p>
+            <div class="lead-cap">
+              <p class="lead-lbl">Email me this property report <span>— optional, results stay on screen either way</span></p>
+              <form id="leadForm" novalidate>
+                <input type="email" id="leadEmail" autocomplete="email" placeholder="you@yourcompany.com" aria-label="Email address for this property report" />
+                <button class="cta" type="submit" id="leadBtn">Email Me This Report</button>
+              </form>
+              <p class="lead-msg" id="leadMsg" role="status"></p>
+            </div>
             <div class="bridge">
               <p class="lead">In the app, this data doesn't sit in a card. It lands on the forms.</p>
               <ul>
@@ -283,7 +308,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <li>The 20&ndash;30 minutes of lookup-and-retype desk work after every insurance job? That's the part that just happened in seconds</li>
               </ul>
               <div class="ctas">
-                <a class="cta" id="rAppCta" href="app/">Start My Free Inspection</a>
+                <a class="cta" id="rAppCta" href="app/">Start My First Inspection</a>
                 <a class="mailto" id="rTrialMail" href="app/">add a card to verify the account, no charge to create the sample &rarr;</a>
               </div>
               <p style="margin:12px 0 0;"><a href="#" id="againLink" style="font-size:13.5px;color:var(--muted);">Run another address first &rarr;</a></p>
@@ -295,7 +320,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="fail" id="fail">
         <h3 id="failTitle"></h3>
         <p id="failMsg"></p>
-        <a class="cta" href="app/">Start My Free Inspection</a>
+        <a class="cta" href="app/">Start My First Inspection</a>
       </div>
     </div>
   </div>
@@ -334,9 +359,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="wrap">
     <p class="kicker"><span class="no">The next step</span></p>
     <h2>Now use it on the entire inspection.</h2>
-    <p>Sign up and bring the property research into a full-home, 4-point, or wind mitigation job. Run it free and preview the finished report as a watermarked sample — a card is required at signup, but nothing is charged until you unlock.</p>
-    <a class="cta" href="app/">Start My Free Inspection</a>
-    <p class="sub2">Free watermarked sample · $5 a report · $20/mo for 10 · $98/yr unlimited &nbsp;·&nbsp; <a href="/" style="color:#fff;">see the full tour &rarr;</a></p>
+    <p>Sign up and bring the property research into a full-home, 4-point, or wind mitigation job. Preview the finished report as a watermarked sample — a card is required at signup, but nothing is charged until you unlock.</p>
+    <a class="cta" href="app/">Start My First Inspection</a>
+    <p class="sub2">Watermarked sample first · $5 a report · $20/mo for 10 · $98/yr unlimited &nbsp;·&nbsp; <a href="/" style="color:#fff;">see the full tour &rarr;</a></p>
   </div>
 </section>
 
@@ -572,7 +597,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         } else if (err && err.step === "fdor") {
           finishLine(state.fdorLn, false, "no parcel at point");
           showFail("Found the location, but no parcel record at that exact point.",
-            "That usually means the pin landed on a road or common area. The full app cross-references the appraiser record and lets you adjust — this free check only does a single point lookup.");
+            "That usually means the pin landed on a road or common area. The full app cross-references the appraiser record and lets you adjust — this quick check only does a single point lookup.");
         } else {
           // A fetch/network/timeout/HTTP error on a live layer. Mark whichever
           // step was in flight (so no console line hangs unmarked) and word the
@@ -590,7 +615,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       .finally(function () {
         inFlight = false;
         btn.disabled = false;
-        btn.textContent = "Run free records check";
+        btn.textContent = "Run another records check";
       });
   });
 
@@ -606,8 +631,59 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
   });
 
+  /* --- optional "email me this report" lead capture (never gates results) --- */
+  var lastAddress = "";
+  var leadForm = document.getElementById("leadForm");
+  var leadEmail = document.getElementById("leadEmail");
+  var leadBtn = document.getElementById("leadBtn");
+  var leadMsg = document.getElementById("leadMsg");
+  var leadBusy = false;
+  leadForm.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    if (leadBusy) return;
+    var email = leadEmail.value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+      leadMsg.className = "lead-msg err";
+      leadMsg.textContent = "Enter a working email and we'll send this report there.";
+      leadEmail.focus();
+      return;
+    }
+    leadBusy = true;
+    leadBtn.disabled = true;
+    leadBtn.textContent = "Sending…";
+    leadMsg.className = "lead-msg";
+    leadMsg.textContent = "";
+    fetch("https://accounts.eb28.co/leads", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, address: lastAddress, source: "property-check" })
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        leadMsg.className = "lead-msg ok";
+        leadMsg.textContent = "Sent — check your inbox.";
+        leadBtn.textContent = "Sent";
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: "lp_lead", source: "property-check" });
+      })
+      .catch(function () {
+        leadMsg.className = "lead-msg err";
+        leadMsg.innerHTML = "Couldn't send just now — the results above are still yours. " +
+          '<a href="mailto:richducat@gmail.com?subject=' + encodeURIComponent("Property report: " + lastAddress) + '">Email us</a> and we\'ll send it over.';
+        leadBtn.disabled = false;
+        leadBtn.textContent = "Email Me This Report";
+      })
+      .finally(function () { leadBusy = false; });
+  });
+
   function render(state) {
     var p = state.parcel;
+    lastAddress = state.matched || "";
+    // A fresh lookup gets a fresh capture form (a prior "Sent" shouldn't stick).
+    leadBtn.disabled = false;
+    leadBtn.textContent = "Email Me This Report";
+    leadMsg.className = "lead-msg";
+    leadMsg.textContent = "";
     document.getElementById("rAddr").textContent = state.matched;
 
     var yr = num(p.ACT_YR_BLT);

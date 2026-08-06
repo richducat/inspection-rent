@@ -164,8 +164,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p style="margin:20px 0 0;font-size:13px;line-height:1.55;color:#7f93a7;max-width:460px">Run your first inspection and see the finished report as a watermarked sample — upgrade any time to download the clean, submission-ready PDF.</p>
     </div>
     <!-- LIVE light property check — the lead-gen tool. Real lookups run in the
-         visitor's browser (Esri geocoder, FL DOR roll, FEMA); name/email is the
-         price of the results and lands in accounts.eb28.co /leads. -->
+         visitor's browser (Esri geocoder, FL DOR roll, FEMA). Results are
+         ungated (same as check.html); an OPTIONAL email-me-this-report field
+         after the results posts to accounts.eb28.co /leads. -->
     <div class="hero-mock chk-card" id="check">
         <div class="chk-live"><span class="chk-dot"></span>LIVE PROPERTY CHECK&nbsp;·&nbsp;FLORIDA COUNTY RECORDS</div>
         <div class="chk-step active" id="chkStep1">
@@ -182,24 +183,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <button class="chk-btn" id="chkGo" type="button">Run the Property Check</button>
           <div class="chk-meta" style="text-align:center">OWNER · YEAR BUILT · SQ FT · FLOOD ZONE · PERMITS</div>
         </div>
-        <div class="chk-step" id="chkStep2">
-          <div class="chk-title">Where do we send<br/>your results?</div>
-          <div class="chk-sub">Name and email — the results show up right below.</div>
-          <div class="chk-field">
-            <input class="chk-input" id="chkName" type="text" autocomplete="name" placeholder=" " />
-            <label for="chkName">Your name</label>
-          </div>
-          <div class="chk-field">
-            <input class="chk-input" id="chkEmail" type="email" autocomplete="email" placeholder=" " />
-            <label for="chkEmail">Work email</label>
-          </div>
-          <div class="chk-err" id="chkErr2"></div>
-          <button class="chk-btn" id="chkShow" type="button">Show My Results</button>
-          <div class="chk-foot"><span>No spam. Just the results.</span></div>
-        </div>
         <div class="chk-step" id="chkStep3">
           <div id="chkRows" style="display:flex;flex-direction:column"></div>
           <div id="chkFacts" style="display:none;margin-top:2px"></div>
+          <div id="chkLead" style="display:none;padding-top:14px;border-top:1px dashed rgba(11,29,49,.18)">
+            <div style="font-size:13.5px;font-weight:600;color:#0B1D31">Email me this property report <span style="color:#8b9aab;font-weight:500">— optional</span></div>
+            <form id="chkLeadForm" novalidate style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+              <input class="chk-input" id="chkLeadEmail" type="email" autocomplete="email" placeholder="you@yourcompany.com" aria-label="Email address for this property report" style="flex:1;min-width:180px;padding:13px 14px" />
+              <button class="chk-btn" id="chkLeadBtn" type="submit" style="width:auto;padding:13px 18px;font-size:14px">Send</button>
+            </form>
+            <div id="chkLeadMsg" role="status" style="display:none;margin-top:9px;font-size:13px;font-weight:600"></div>
+          </div>
           <div id="chkTeaser" style="display:none;padding:2px 0 0 16px;border-left:2px solid rgba(199,150,43,.5);font-size:13px;color:#5c6f80;line-height:1.6">
             <strong style="color:#0B1D31;font-weight:600">Inside the app this keeps going:</strong> full permit history with the roof permit date, required-photo checklist, and the official 4-Point &amp; wind mitigation forms filling themselves.
           </div>
@@ -487,18 +481,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <h2 class="serif sec-h2" style="font-size:44px;margin-top:16px;color:#fff">Add your card to start.</h2>
     <p style="margin:22px 0 0;font-size:16.5px;line-height:1.6;color:#b9c6d3;max-width:720px">A credit card is required to begin — verified, not charged today. Run your first inspection and preview the finished report (a watermarked sample); you pay only when you download the clean, submission-ready file. Pick the plan that fits, or unlock one report at a time.</p>
     <div class="price-grid" style="margin-top:48px">
-      <!-- Single report -->
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:32px">
-        <div style="font-size:15px;font-weight:600;color:#fff">Single report</div>
-        <div style="margin-top:14px"><span class="serif" style="font-size:44px;color:#fff">$5</span><span style="font-size:14px;color:#8fa3b8"> / report</span></div>
-        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#b9c6d3">Just one job? Unlock a single clean, submission-ready report.</p>
-        <ul style="margin:22px 0 24px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
-          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>One clean 4-Point or Wind-Mit export</li>
-          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>Every feature in the tool</li>
-          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>No subscription — pay as you go</li>
-        </ul>
-        <a class="btn-s" href="/app/" style="width:100%;justify-content:center;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.24)">Get Started</a>
-      </div>
       <!-- Professional -->
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:32px">
         <div style="font-size:15px;font-weight:600;color:#fff">Professional</div>
@@ -511,18 +493,30 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </ul>
         <a class="btn-s" href="/app/" style="width:100%;justify-content:center;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.24)">Get Started</a>
       </div>
-      <!-- Unlimited Annual -->
+      <!-- Unlimited Annual — the anchor -->
       <div style="background:#fff;border:1px solid #C7962B;border-radius:14px;padding:32px;position:relative;box-shadow:0 30px 60px -30px rgba(0,0,0,.5)">
         <span style="position:absolute;top:-12px;left:32px;background:#C7962B;color:#0B1D31;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:20px">Best value</span>
         <div style="font-size:15px;font-weight:600;color:#0B1D31">Unlimited</div>
         <div style="margin-top:14px"><span class="serif" style="font-size:44px;color:#0B1D31">$98</span><span style="font-size:14px;color:#8296a8"> / year</span></div>
-        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#3a4b5c">Every inspection you run, uncapped — prepaid for the year at the best rate.</p>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#3a4b5c">Less than 5 months of the monthly plan covers your whole year, uncapped.</p>
         <ul style="margin:22px 0 24px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
           <li style="font-size:14px;color:#0B1D31;display:flex;gap:9px"><span style="color:#1E6F5C">✓</span>Unlimited inspections, all year</li>
           <li style="font-size:14px;color:#0B1D31;display:flex;gap:9px"><span style="color:#1E6F5C">✓</span>Every feature in the tool</li>
           <li style="font-size:14px;color:#0B1D31;display:flex;gap:9px"><span style="color:#1E6F5C">✓</span>Works out to pennies a report</li>
         </ul>
         <a class="btn-p" href="/app/" style="width:100%;justify-content:center">Get Started</a>
+      </div>
+      <!-- Single report -->
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:32px">
+        <div style="font-size:15px;font-weight:600;color:#fff">Single report</div>
+        <div style="margin-top:14px"><span class="serif" style="font-size:44px;color:#fff">$5</span><span style="font-size:14px;color:#8fa3b8"> / report</span></div>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#b9c6d3">Just one job? Unlock a single clean, submission-ready report.</p>
+        <ul style="margin:22px 0 24px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
+          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>One clean 4-Point or Wind-Mit export</li>
+          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>Every feature in the tool</li>
+          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>No subscription — pay as you go</li>
+        </ul>
+        <a class="btn-s" href="/app/" style="width:100%;justify-content:center;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.24)">Get Started</a>
       </div>
     </div>
     <p style="margin:26px 0 0;font-size:12.5px;color:#7f93a7;line-height:1.65;max-width:900px">A card is required to start; you're not charged until you unlock a clean report. Nothing to install. Cancel anytime — your saved work stays yours. For reference: mainstream inspection platforms run $90–109/month and still hand you a blank wind mit template. <span style="color:#aebccb">Company Accounts — multiple inspectors under one firm — coming soon.</span></p>
@@ -572,7 +566,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div style="display:flex;gap:14px;justify-content:center;margin-top:34px">
       <a class="btn-p" href="/app/">Get Started</a>
     </div>
-    <div class="mono" style="margin-top:22px;font-size:12px;color:#7f93a7;letter-spacing:.04em">$20/MO FOR 10 JOBS · $98/YR UNLIMITED · $5 A SINGLE REPORT</div>
+    <div class="mono" style="margin-top:22px;font-size:12px;color:#7f93a7;letter-spacing:.04em">$98/YR UNLIMITED · $20/MO FOR 10 JOBS · $5 A SINGLE REPORT</div>
     <div style="display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-top:34px">
       <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:#aebccb"><span style="color:#1E9E77">✓</span>Nothing to install</span>
       <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:#aebccb"><span style="color:#1E9E77">✓</span>Official Florida forms</span>
@@ -591,7 +585,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <span style="width:30px;height:30px;border-radius:7px;background:#C7962B;display:flex;align-items:center;justify-content:center;color:#0B1D31;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px">IG</span>
           <span style="font-weight:700;font-size:15px">Inspector Gadgets</span>
         </a>
-        <p style="margin:16px 0 0;font-size:13px;line-height:1.6;max-width:300px">Inspection software operated by DIGITAL SYNC, LLC and developed with field input from York Home Inspections in Brevard County, Florida.</p>
+        <p style="margin:16px 0 0;font-size:13px;line-height:1.6;max-width:300px">Inspection software operated by Inspector Gadgets LLC and developed with field input from York Home Inspections in Brevard County, Florida.</p>
       </div>
       <div>
         <div style="font-size:12px;font-weight:600;color:#fff;text-transform:uppercase;letter-spacing:.08em">Product</div>
@@ -623,7 +617,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div style="margin-top:40px;padding-top:22px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:12px;color:#5f7387">
       <span>The official Florida 4-Point (2025) &amp; Wind Mitigation OIR-B1-1802 (Rev. 04/26). Unverified fields are always left blank, never guessed.</span>
-      <span>© 2026 Inspector Gadgets · DIGITAL SYNC, LLC · Built by EB28</span>
+      <span>© 2026 Inspector Gadgets · Inspector Gadgets LLC · Built by EB28</span>
     </div>
   </div>
 </footer>
@@ -646,8 +640,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       .then(function (r) { return r.json(); })
       .then(function (j) { clearTimeout(t); return j; }, function (e) { clearTimeout(t); throw e; });
   }
+  // Two panes now — the email wall between address and results is gone.
+  // step(1) = address entry, step(2) = live results.
   function step(n) {
-    ["chkStep1","chkStep2","chkStep3"].forEach(function (id, i) { $(id).classList.toggle("active", i === n - 1); });
+    ["chkStep1","chkStep3"].forEach(function (id, i) { $(id).classList.toggle("active", i === n - 1); });
   }
   function err(id, msg) { var e = $(id); e.textContent = msg; e.style.display = msg ? "block" : "none"; }
   function row(text) {
@@ -697,33 +693,63 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   $("chkGo").addEventListener("click", function () {
     var q = $("chkAddress").value.trim();
     if (q.length < 8 || !/[a-z]/i.test(q) || !/\d/.test(q)) { err("chkErr1", "Enter a full street address — number, street, city."); return; }
-    err("chkErr1", ""); address = q; track("hero_check_search"); step(2);
-    setTimeout(function () { $("chkName").focus(); }, 60);
+    err("chkErr1", ""); address = q; track("hero_check_search");
+    step(2); run();
   });
   $("chkAddress").addEventListener("keydown", function (e) { if (e.key === "Enter") $("chkGo").click(); });
-  $("chkEmail").addEventListener("keydown", function (e) { if (e.key === "Enter") $("chkShow").click(); });
-
-  $("chkShow").addEventListener("click", function () {
-    var email = $("chkEmail").value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err("chkErr2", "Enter a real email — the results appear right here."); return; }
-    err("chkErr2", ""); track("generate_lead");
-    fetch("https://accounts.eb28.co/leads", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email, name: $("chkName").value.trim(), address: address, source: "homepage-check" })
-    }).catch(function () {});
-    step(3); run();
-  });
 
   $("chkAgain").addEventListener("click", function () {
     $("chkRows").innerHTML = ""; $("chkFacts").style.display = "none"; $("chkFacts").innerHTML = "";
     $("chkTeaser").style.display = "none"; $("chkCta").style.display = "none"; $("chkAgain").style.display = "none";
+    $("chkLead").style.display = "none"; leadReset();
     $("chkAddress").value = ""; step(1); $("chkAddress").focus();
+  });
+
+  // Optional post-results lead capture. Results are already on screen — this
+  // never gates or blocks them.
+  var leadBusy = false;
+  function leadReset() {
+    leadBusy = false;
+    $("chkLeadBtn").disabled = false;
+    $("chkLeadBtn").textContent = "Send";
+    $("chkLeadEmail").value = "";
+    var m = $("chkLeadMsg"); m.style.display = "none"; m.textContent = "";
+  }
+  function leadMsg(text, ok) {
+    var m = $("chkLeadMsg");
+    m.style.display = "block";
+    m.style.color = ok ? "#1E6F5C" : "#9a6200";
+    m.innerHTML = text;
+  }
+  $("chkLeadForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (leadBusy) return;
+    var email = $("chkLeadEmail").value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { leadMsg("Enter a working email and we&rsquo;ll send this report there.", false); return; }
+    leadBusy = true;
+    $("chkLeadBtn").disabled = true;
+    $("chkLeadBtn").textContent = "Sending…";
+    fetch("https://accounts.eb28.co/leads", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, address: address, source: "property-check" })
+    }).then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      $("chkLeadBtn").textContent = "Sent";
+      leadMsg("Sent — check your inbox.", true);
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: "lp_lead", source: "property-check" });
+    }).catch(function () {
+      $("chkLeadBtn").disabled = false;
+      $("chkLeadBtn").textContent = "Send";
+      leadMsg("Couldn&rsquo;t send just now — your results above aren&rsquo;t going anywhere. <a href=\"mailto:richducat@gmail.com?subject=" + encodeURIComponent("Property report: " + address) + "\" style=\"color:#a07c26\">Email us</a> and we&rsquo;ll send it over.", false);
+    }).finally(function () { leadBusy = false; });
   });
 
   function done(found) {
     $("chkTeaser").style.display = "block";
     $("chkCta").style.display = "flex";
     $("chkAgain").style.display = "block";
+    if (found) { leadReset(); $("chkLead").style.display = "block"; }
     track(found ? "hero_check_found" : "hero_check_failed");
   }
 
