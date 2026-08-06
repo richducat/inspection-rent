@@ -23,6 +23,9 @@
       content="Inspector Gadgets — York Inspections' inspection workstation: booking intake, public-records autofill, guided photo evidence, inspector-reviewed AI drafts, and official Florida 4-Point and Wind Mitigation PDF exports."
     />
     <meta name="theme-color" content="#0B1D31" />
+    <!-- The app shell is a private, logged-in tool: robots.txt disallows /app/
+         but that alone doesn't stop bare-URL indexing — noindex does. -->
+    <meta name="robots" content="noindex" />
     <link
       rel="icon"
       type="image/png"
@@ -34,7 +37,9 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
     />
-    <title>Inspector Gadgets · York Inspections</title>
+    <!-- Product name only — every prospect sees this tab title. Tenant branding
+         (e.g. a company name) belongs at runtime after sign-in, not here. -->
+    <title>Inspector Gadgets</title>
     <script>
       // ALWAYS run the latest deploy. This checks the deployed shell on EVERY
       // document load (boot, manual refresh, iOS tab restore) AND whenever the
@@ -143,12 +148,65 @@
         } catch (e) {}
       })();
     </script>
-    <script type="module" crossorigin src="/app/assets/index-CwHsDQ2q.js"></script>
+    <script type="module" crossorigin src="/app/assets/index-BbGPBzvL.js"></script>
     <link rel="modulepreload" crossorigin href="/app/assets/rolldown-runtime-DAXXjFlN.js">
     <link rel="modulepreload" crossorigin href="/app/assets/react-DaRcFtLA.js">
     <link rel="stylesheet" crossorigin href="/app/assets/index-CWq1GDgO.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static pre-JS loading state — React replaces this on mount. Without it
+           the CTA from the marketing site landed on a blank white window while
+           the bundle downloaded, which reads as "the app is broken". -->
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 14px;
+          min-height: 100vh;
+          background: #0b1d31;
+          color: #eaf1f8;
+          font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          text-align: center;
+          padding: 24px;
+        "
+      >
+        <svg viewBox="0 0 44 44" width="44" height="44" fill="none" aria-hidden="true">
+          <path d="M4 4h27l9 9v27H4z" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round" />
+          <path d="M12 22 22 12l10 10" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M16 24.5 20.5 29 31 18" stroke="#F5A300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M13 34h18" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.55" />
+        </svg>
+        <p style="margin: 0; font-size: 17px; font-weight: 600">Loading Inspector Gadgets…</p>
+        <p style="margin: 0; font-size: 13px; opacity: 0.7">Florida inspection software</p>
+      </div>
+    </div>
+    <noscript>
+      <div
+        style="
+          position: fixed;
+          inset: 0;
+          z-index: 10;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          background: #0b1d31;
+          color: #eaf1f8;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          text-align: center;
+          padding: 24px;
+        "
+      >
+        <p style="margin: 0; font-size: 17px; font-weight: 600">Inspector Gadgets needs JavaScript</p>
+        <p style="margin: 0; font-size: 14px; max-width: 32em; opacity: 0.85">
+          The inspection workstation runs entirely in your browser. Please enable JavaScript
+          (or leave private/restricted mode) and reload this page.
+        </p>
+      </div>
+    </noscript>
   </body>
 </html>
