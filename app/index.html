@@ -127,7 +127,21 @@
           // which is exactly what Beth reported. The every-document-LOAD check above
           // is unaffected, so a fresh load / manual refresh still lands on latest.
           function busy() {
-            try { return !!window.__hiaNoReload; } catch (e) { return false; }
+            // Also hold off while OFFLINE EDITS are pending (hia:dirty:v1:* has
+            // ids): those records exist only in this tab's mirror until the
+            // reconciler replays them — reloading is data-safe but delays the
+            // sync and, on a flaky connection, re-queues the whole boot.
+            try {
+              if (window.__hiaNoReload) return true;
+              for (var i = 0; i < window.localStorage.length; i += 1) {
+                var key = window.localStorage.key(i);
+                if (key && key.indexOf("hia:dirty:v1:") === 0) {
+                  var ids = JSON.parse(window.localStorage.getItem(key) || "[]");
+                  if (ids && ids.length > 0) return true;
+                }
+              }
+              return false;
+            } catch (e) { return false; }
           }
           var awayAt = 0;
           function markAway() { if (!awayAt) awayAt = Date.now(); }
@@ -148,10 +162,10 @@
         } catch (e) {}
       })();
     </script>
-    <script type="module" crossorigin src="/app/assets/index-DeHIDIkw.js"></script>
+    <script type="module" crossorigin src="/app/assets/index-ChgCuLN2.js"></script>
     <link rel="modulepreload" crossorigin href="/app/assets/rolldown-runtime-DAXXjFlN.js">
     <link rel="modulepreload" crossorigin href="/app/assets/react-DaRcFtLA.js">
-    <link rel="stylesheet" crossorigin href="/app/assets/index-DuYnQpcB.css">
+    <link rel="stylesheet" crossorigin href="/app/assets/index-CYOKu89Y.css">
   </head>
   <body>
     <div id="root">
