@@ -1,4 +1,4 @@
-import{A as e,F as t,M as n,N as r,O as i,P as a,et as o,j as s,rt as c,tt as l}from"./index-BbATE7zK.js";var u=`
+import{B as e,F as t,H as n,L as r,R as i,V as a,ct as o,st as s,ut as c,z as l}from"./index-B0xzrPZo.js";var u=`
           :root { color-scheme: only light; }
           html, body { background: #ffffff; }
           @page { size: letter; margin: 0.6in 0.5in; }
@@ -27,14 +27,14 @@ import{A as e,F as t,M as n,N as r,O as i,P as a,et as o,j as s,rt as c,tt as l}
             /* Printed links should read as text, not blue underlines. */
             a { color: inherit; text-decoration: none; }
             .no-print { display: none !important; }
-          }`,d=`<svg xmlns='http://www.w3.org/2000/svg' width='360' height='210'><text x='8' y='150' transform='rotate(-30 180 105)' fill='rgba(200,28,28,0.13)' font-family='Arial, Helvetica, sans-serif' font-size='27' font-weight='700'>SAMPLE - NOT FOR SUBMISSION</text></svg>`;function f(e){return e?`<style>.wm-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,${encodeURIComponent(d)}");background-repeat:repeat;}.wm-footer{position:fixed;left:0;right:0;bottom:0;z-index:10000;pointer-events:none;background:rgba(255,255,255,.92);color:#b91c1c;text-align:center;font:600 10.5px/1.5 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em;padding:5px 8px;border-top:1px solid #eab8b8;}@media print{.wm-overlay,.wm-footer{position:fixed;}body{padding-bottom:34px;}}</style><div class="wm-overlay" aria-hidden="true"></div><div class="wm-footer">PREVIEW - not for submission. Subscribe at inspection.rent to download the clean, submission-ready report.</div>`:``}function p(e,t,n,r=!1){let a=e.findings.map(e=>`
+          }`,d=`<svg xmlns='http://www.w3.org/2000/svg' width='360' height='210'><text x='8' y='150' transform='rotate(-30 180 105)' fill='rgba(200,28,28,0.13)' font-family='Arial, Helvetica, sans-serif' font-size='27' font-weight='700'>SAMPLE - NOT FOR SUBMISSION</text></svg>`;function f(e){return e?`<style>.wm-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,${encodeURIComponent(d)}");background-repeat:repeat;}.wm-footer{position:fixed;left:0;right:0;bottom:0;z-index:10000;pointer-events:none;background:rgba(255,255,255,.92);color:#b91c1c;text-align:center;font:600 10.5px/1.5 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em;padding:5px 8px;border-top:1px solid #eab8b8;}@media print{.wm-overlay,.wm-footer{position:fixed;}body{padding-bottom:34px;}}</style><div class="wm-overlay" aria-hidden="true"></div><div class="wm-footer">PREVIEW - not for submission. Subscribe at inspection.rent to download the clean, submission-ready report.</div>`:``}function p(e,n,r,i=!1){let a=e.findings.map(e=>`
         <section>
           <h3>${v(e.title)}</h3>
           <p><strong>Severity:</strong> ${v(e.severity)}</p>
           <p>${v(e.narrative)}</p>
           <p><strong>Recommendation:</strong> ${v(e.recommendation)}</p>
         </section>
-      `).join(``),s=e.photos.map(e=>`
+      `).join(``),l=e.photos.map(e=>`
         <figure>
           <img src="${v(e.url)}" alt="${v(e.label)}" />
           <figcaption>${v(e.label)} - ${v(e.location)}${e.analysis?` - Scan: ${v(e.analysis.detectedIssue)}`:``}</figcaption>
@@ -68,7 +68,7 @@ import{A as e,F as t,M as n,N as r,O as i,P as a,et as o,j as s,rt as c,tt as l}
           <td><a href="${y(e.url)}" rel="noopener noreferrer">${v(e.url)}</a></td>
           <td>${v(e.detail)}</td>
         </tr>
-      `).join(``),g=[[`Client`,o(e.request)],[`Insured`,e.request.insuredName],[`Phone`,e.request.phone],[`Email`,e.request.email],[`Inspection type`,c(e.request.inspectionType)],[`Price`,e.request.price],...e.clientPayment||e.request.paymentStatus!==`unpaid`?[[`Payment`,e.request.paymentStatus.replace(`_`,` `)]]:[],[`Appointment`,e.request.appointmentStart]].map(([e,t])=>`<tr><td>${v(e)}</td><td>${v(t||`Not populated`)}</td></tr>`).join(``),b=e.permitCandidates.filter(e=>e.status===`selected`).map(e=>`
+      `).join(``),g=[[`Client`,s(e.request)],[`Insured`,e.request.insuredName],[`Phone`,e.request.phone],[`Email`,e.request.email],[`Inspection type`,c(e.request.inspectionType)],[`Price`,e.request.price],...e.clientPayment||e.request.paymentStatus!==`unpaid`?[[`Payment`,e.request.paymentStatus.replace(`_`,` `)]]:[],[`Appointment`,e.request.appointmentStart]].map(([e,t])=>`<tr><td>${v(e)}</td><td>${v(t||`Not populated`)}</td></tr>`).join(``),b=e.permitCandidates.filter(e=>e.status===`selected`).map(e=>`
         <tr>
           <td>${v(e.type)}</td>
           <td>${v(e.permitNumber||`No permit number`)}</td>
@@ -76,12 +76,12 @@ import{A as e,F as t,M as n,N as r,O as i,P as a,et as o,j as s,rt as c,tt as l}
           <td>${v(e.finalDate||`Unknown`)}</td>
           <td>${v(e.notes)}</td>
         </tr>
-      `).join(``),x=Object.entries(e.officialFields).filter(([t,n])=>i(t,e.request.inspectionType,!!(n??``).trim())).map(([e,t])=>`
+      `).join(``),x=Object.entries(e.officialFields).filter(([n,r])=>t(n,e.request.inspectionType,!!(r??``).trim())).map(([e,t])=>`
         <tr>
           <td>${v(e.replace(/([A-Z])/g,` $1`))}</td>
           <td>${v(t||`Blank`)}</td>
         </tr>
-      `).join(``),S=[[`Property`,`${e.property.address}, ${e.property.city}, ${e.property.state} ${e.property.postalCode}`],[`Owner`,e.property.ownerName||`Not populated`],[`County / parcel`,`${e.property.county||`Not populated`} / ${e.property.parcelId||`Not populated`}`],[`Legal description`,e.property.legalDescription||`Not populated`],[`Flood zone`,`${e.property.floodZone||`Not populated`}${e.property.sfha?` — SFHA ${e.property.sfha}`:``}`],[`Inspection date`,e.inspectionDate||`Not set`],[`Inspector`,`${e.inspector.name} — ${e.inspector.license}`],[`Company`,`${e.inspector.company||`Not set`} — ${e.inspector.email||`No email`}`],[`State pack`,`${t.name} ${t.version}`],[`Scope`,e.scope||`Not set`],[`Signoff`,e.signedAt?`${e.signatureName||e.inspector.name} at ${l(e.signedAt)}`:`Pending inspector finalization`]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
+      `).join(``),S=[[`Property`,`${e.property.address}, ${e.property.city}, ${e.property.state} ${e.property.postalCode}`],[`Owner`,e.property.ownerName||`Not populated`],[`County / parcel`,`${e.property.county||`Not populated`} / ${e.property.parcelId||`Not populated`}`],[`Legal description`,e.property.legalDescription||`Not populated`],[`Flood zone`,`${e.property.floodZone||`Not populated`}${e.property.sfha?` — SFHA ${e.property.sfha}`:``}`],[`Inspection date`,e.inspectionDate||`Not set`],[`Inspector`,`${e.inspector.name} — ${e.inspector.license}`],[`Company`,`${e.inspector.company||`Not set`} — ${e.inspector.email||`No email`}`],[`State pack`,`${n.name} ${n.version}`],[`Scope`,e.scope||`Not set`],[`Signoff`,e.signedAt?`${e.signatureName||e.inspector.name} at ${o(e.signedAt)}`:`Pending inspector finalization`]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
     <!doctype html>
     <html>
       <head>
@@ -123,15 +123,15 @@ import{A as e,F as t,M as n,N as r,O as i,P as a,et as o,j as s,rt as c,tt as l}
           .status {
             display: inline-block; padding: 7px 12px; border-radius: 3px; margin-top: 12px;
             font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-            color: ${n.ready?`#177342`:`#9a5b00`};
-            background: ${n.ready?`#e1f2e8`:`#fcefd3`};
-            border: 1px solid ${n.ready?`#9cc7ae`:`#e3c27e`};
+            color: ${r.ready?`#177342`:`#9a5b00`};
+            background: ${r.ready?`#e1f2e8`:`#fcefd3`};
+            border: 1px solid ${r.ready?`#9cc7ae`:`#e3c27e`};
           }
 ${u}
         </style>
       </head>
       <body>
-        ${f(r)}
+        ${f(i)}
         <header>
           <div class="letterhead">
             <div>
@@ -146,7 +146,7 @@ ${u}
             </svg>`}
           </div>
           <dl class="header-facts">${S}</dl>
-          <p class="status">${n.ready?`Ready for inspector final export`:`Inspector review required before final export`}</p>
+          <p class="status">${r.ready?`Ready for inspector final export`:`Inspector review required before final export`}</p>
         </header>
         <section>
           <h2>Booking Intake</h2>
@@ -159,7 +159,7 @@ ${u}
         ${p}
         <section>
           <h2>Photo Evidence</h2>
-          ${s}
+          ${l}
         </section>
         <section>
           <h2>Image Scan Evidence</h2>
@@ -196,13 +196,13 @@ ${u}
         </section>
         <section>
           <h2>Compliance Notes</h2>
-          <ul>${t.disclaimers.map(e=>`<li>${v(e)}</li>`).join(``)}</ul>
+          <ul>${n.disclaimers.map(e=>`<li>${v(e)}</li>`).join(``)}</ul>
         </section>
         <section>
           <h2>Audit Trail</h2>
           <p>Inspection ID: ${v(e.id)}</p>
-          <p>Signed at: ${v(e.signedAt?l(e.signedAt):`Pending`)}</p>
-          <p>Exported at: ${v(e.exportedAt?l(e.exportedAt):`Pending`)}</p>
+          <p>Signed at: ${v(e.signedAt?o(e.signedAt):`Pending`)}</p>
+          <p>Exported at: ${v(e.exportedAt?o(e.exportedAt):`Pending`)}</p>
         </section>
       </body>
     </html>
@@ -218,7 +218,7 @@ ${u}
           <td>${e.status===`selected`?`Selected`:`On file`}</td>
           <td>${e.sourceUrl?`<a href="${y(e.sourceUrl)}" rel="noopener noreferrer">source</a>`:`—`}</td>
         </tr>
-      `).join(``),r=[[`Property`,`${e.property.address}, ${e.property.city}, ${e.property.state} ${e.property.postalCode}`],[`Owner`,e.property.ownerName||`Not populated`],[`Parcel / tax acct`,`${e.property.parcelId||`—`} / ${e.property.taxAccount||`—`}`],[`Inspector`,`${e.inspector.name} — ${e.inspector.license}`],[`Prepared`,l(new Date().toISOString())]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
+      `).join(``),r=[[`Property`,`${e.property.address}, ${e.property.city}, ${e.property.state} ${e.property.postalCode}`],[`Owner`,e.property.ownerName||`Not populated`],[`Parcel / tax acct`,`${e.property.parcelId||`—`} / ${e.property.taxAccount||`—`}`],[`Inspector`,`${e.inspector.name} — ${e.inspector.license}`],[`Prepared`,o(new Date().toISOString())]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
     <!doctype html>
     <html>
       <head>
@@ -258,30 +258,30 @@ ${u}
         </table>
       </body>
     </html>
-  `}var h={satisfactory:`cond-ok`,marginal:`cond-marginal`,deficient:`cond-deficient`,not_present:`cond-na`,not_inspected:`cond-ni`};function g(i,o=!1){let d=i.request,p=i.property,m=[[`Client`,d.clientName],[`Phone`,d.phone],[`Email`,d.email],[`Property`,[p.address,p.city,p.state,p.postalCode].filter(Boolean).join(`, `)],[`Owner of record`,p.ownerName||``],[`Year built`,p.yearBuilt||``],[`Approx. area`,p.squareFeet?`${p.squareFeet} sq ft`:``],[`Occupancy`,p.occupancy||``],[`Inspection date`,i.inspectionDate||(d.appointmentStart?d.appointmentStart.slice(0,10):``)],[`Inspection type`,c(d.inspectionType)]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t||`Not provided`)}</dd></div>`).join(``),g=t(i),y=g.length?g.map(t=>`
+  `}var h={satisfactory:`cond-ok`,marginal:`cond-marginal`,deficient:`cond-deficient`,not_present:`cond-na`,not_inspected:`cond-ni`};function g(t,s=!1){let d=t.request,p=t.property,m=[[`Client`,d.clientName],[`Phone`,d.phone],[`Email`,d.email],[`Property`,[p.address,p.city,p.state,p.postalCode].filter(Boolean).join(`, `)],[`Owner of record`,p.ownerName||``],[`Year built`,p.yearBuilt||``],[`Approx. area`,p.squareFeet?`${p.squareFeet} sq ft`:``],[`Occupancy`,p.occupancy||``],[`Inspection date`,t.inspectionDate||(d.appointmentStart?d.appointmentStart.slice(0,10):``)],[`Inspection type`,c(d.inspectionType)]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t||`Not provided`)}</dd></div>`).join(``),g=n(t),y=g.length?g.map(e=>`
         <tr>
-          <td>${v(t.systemLabel)}</td>
-          <td>${v(t.componentLabel)}</td>
-          <td><span class="cond ${h[t.condition]}">${v(e[t.condition])}</span></td>
-          <td>${v(t.comment||`See system section.`)}</td>
-        </tr>`).join(``):`<tr><td colspan="4">No deficiencies noted at the time of inspection.</td></tr>`,b=r.map(t=>{let n=t.components.map(t=>{let n=a(i,t.id);return`
+          <td>${v(e.systemLabel)}</td>
+          <td>${v(e.componentLabel)}</td>
+          <td><span class="cond ${h[e.condition]}">${v(r[e.condition])}</span></td>
+          <td>${v(e.comment||`See system section.`)}</td>
+        </tr>`).join(``):`<tr><td colspan="4">No deficiencies noted at the time of inspection.</td></tr>`,b=e.map(e=>{let n=e.components.map(e=>{let n=a(t,e.id);return`
           <tr>
-            <td>${v(t.label)}</td>
-            <td><span class="cond ${h[n.condition]}">${v(e[n.condition])}</span></td>
+            <td>${v(e.label)}</td>
+            <td><span class="cond ${h[n.condition]}">${v(r[n.condition])}</span></td>
             <td>${n.comment?v(n.comment):`<span class='muted'>—</span>`}</td>
           </tr>`}).join(``);return`
       <section class="system">
-        <h2>${v(t.label)} <span class="rule">${v(t.rule)}</span></h2>
-        <p class="scope">${v(t.scope)}</p>
+        <h2>${v(e.label)} <span class="rule">${v(e.rule)}</span></h2>
+        <p class="scope">${v(e.scope)}</p>
         <table>
           <thead><tr><th style="width:38%">Component</th><th style="width:22%">Condition</th><th>Comments</th></tr></thead>
           <tbody>${n}</tbody>
         </table>
-      </section>`}).join(``),x=i.photos.filter(e=>e.url||e.thumbnailUrl).map(e=>`
+      </section>`}).join(``),x=t.photos.filter(e=>e.url||e.thumbnailUrl).map(e=>`
         <figure>
           <img src="${v(e.thumbnailUrl||e.url)}" alt="${v(e.label)}" loading="lazy" />
           <figcaption>${v(e.label)}${e.location?` — ${v(e.location)}`:``}</figcaption>
-        </figure>`).join(``),S=s.map(e=>`<li>${v(e)}</li>`).join(``);return`
+        </figure>`).join(``),S=i.map(e=>`<li>${v(e)}</li>`).join(``);return`
     <!doctype html>
     <html>
       <head>
@@ -329,21 +329,21 @@ ${u}
         </style>
       </head>
       <body>
-        ${f(o)}
+        ${f(s)}
         <header>
           <div class="letterhead">
             <div>
               <h1>Full Home Inspection Report</h1>
-              <div class="brand-line">${v(i.inspector.company||`Inspector Gadgets`)}${i.inspector.license?` · ${v(i.inspector.license)}`:``}</div>
+              <div class="brand-line">${v(t.inspector.company||`Inspector Gadgets`)}${t.inspector.license?` · ${v(t.inspector.license)}`:``}</div>
             </div>
-            ${_(i.inspector.logoDataUrl)?`<img src="${_(i.inspector.logoDataUrl)}" alt="" width="72" style="max-height:72px;object-fit:contain;" />`:``}
+            ${_(t.inspector.logoDataUrl)?`<img src="${_(t.inspector.logoDataUrl)}" alt="" width="72" style="max-height:72px;object-fit:contain;" />`:``}
           </div>
           <dl class="header-facts">${m}</dl>
         </header>
 
         <section>
           <h2>Scope of Inspection</h2>
-          <p class="scope">${v(n)}</p>
+          <p class="scope">${v(l)}</p>
         </section>
 
         <section>
@@ -372,11 +372,11 @@ ${u}
           <p class="note">This inspection and report were prepared for the named client and reflect the condition of the readily accessible, visually observed systems and components at the date and time of inspection. It is not a warranty or guarantee of any kind.</p>
           <div class="sig">
             <div>
-              ${_(i.signatureDataUrl)?`<img src="${_(i.signatureDataUrl)}" alt="Inspector signature" />`:``}
-              <div class="line">Inspector — ${v(i.inspector.name||``)}${i.inspector.license?` (${v(i.inspector.license)})`:``}</div>
+              ${_(t.signatureDataUrl)?`<img src="${_(t.signatureDataUrl)}" alt="Inspector signature" />`:``}
+              <div class="line">Inspector — ${v(t.inspector.name||``)}${t.inspector.license?` (${v(t.inspector.license)})`:``}</div>
             </div>
             <div>
-              <div class="line">Date — ${v(i.signedAt?l(i.signedAt):i.inspectionDate||``)}</div>
+              <div class="line">Date — ${v(t.signedAt?o(t.signedAt):t.inspectionDate||``)}</div>
             </div>
           </div>
         </section>
