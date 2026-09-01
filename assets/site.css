@@ -122,6 +122,7 @@ section { padding: 62px 0; }
 
 /* pricing */
 .pricegrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; align-items: stretch; }
+.pricegrid.three { grid-template-columns: repeat(3, 1fr); max-width: 900px; margin: 0 auto; }
 .price-card { background: var(--white); border: 1px solid var(--line-strong); border-radius: 10px; padding: 24px 22px;
   display: flex; flex-direction: column; }
 .price-card.featured { border-color: var(--amber); box-shadow: 0 0 0 2px var(--amber-soft); position: relative; }
@@ -190,4 +191,18 @@ footer .foot-bottom { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-co
   .topbar .brand svg { width: 22px; height: 22px; }
   .topbar .navlinks { gap: 14px; font-size: 11px; }
   .topbar .navlinks a.navcta { padding: 8px 13px; font-size: 11px; letter-spacing: 0.03em; }
+  /* Inline-styled 3-up pricing grid (pricing.html) must collapse too. */
+  .pricegrid.three { grid-template-columns: 1fr; max-width: none; }
+}
+/* Narrow phones (320-520px): brand + "Coverage · Pricing · Get Started" was
+   ~450px wide, so the whole page scrolled sideways. Keep only the CTA in the
+   bar; every page link is repeated in the footer. */
+@media (max-width: 520px) {
+  .topbar .wrap { gap: 8px; min-width: 0; }
+  .topbar .brand { min-width: 0; }
+  .topbar .navlinks { min-width: 0; flex: 0 1 auto; }
+  .topbar .navlinks a:not(.navcta) { display: none; }
+  /* Long CTAs ("Start My First Inspection" on trust / wind-mitigation) wrap
+     to two lines inside the bar instead of pushing the page sideways. */
+  .topbar .navlinks a.navcta { flex: 0 1 auto; min-width: 0; white-space: normal; text-align: center; line-height: 1.25; }
 }
