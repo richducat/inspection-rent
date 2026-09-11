@@ -574,13 +574,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var href = a.getAttribute("href") || "";
     var section = a.closest("section, header, footer");
     var loc = section && section.querySelector("h1, h2") ? section.querySelector("h1, h2").textContent.slice(0, 40) : "page";
-    if (href.indexOf("app/") === 0) {
-      window.dataLayer.push({ event: "app_open_click", cta_location: loc });
-    } else if (href.indexOf("mailto:") === 0 && /trial/i.test(href)) {
+    if (href.indexOf("mailto:") === 0 && /trial/i.test(href)) {
       window.dataLayer.push({ event: "generate_lead", lead_source: loc });
     }
   }, true);
 })();
 </script>
+<script src="assets/marketing-analytics.js" defer></script>
 </body>
 </html>

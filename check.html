@@ -763,13 +763,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var a = ev.target && ev.target.closest ? ev.target.closest("a") : null;
     if (!a) return;
     var href = a.getAttribute("href") || "";
-    if (href.indexOf("app/") === 0) {
-      window.dataLayer.push({ event: "app_open_click", cta_location: a.id === "rAppCta" ? "check_results" : "check_page" });
-    } else if (href.indexOf("mailto:") === 0 && /trial/i.test(href)) {
+    if (href.indexOf("mailto:") === 0 && /trial/i.test(href)) {
       window.dataLayer.push({ event: "generate_lead", lead_source: a.id === "rTrialMail" ? "check_results" : "check_page" });
     }
   }, true);
 })();
 </script>
+<script src="assets/marketing-analytics.js" defer></script>
 </body>
 </html>
