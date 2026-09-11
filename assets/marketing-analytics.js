@@ -4,8 +4,10 @@
   "use strict";
   if (window.__igMarketingAnalyticsBound) return;
   window.__igMarketingAnalyticsBound = true;
+  var navigationPending = false;
 
   document.addEventListener("click", function (event) {
+    var finishNavigation = null;
     try {
       var anchor = event.target && event.target.closest ? event.target.closest("a") : null;
       if (!anchor || anchor.hasAttribute("download")) return;
@@ -23,14 +25,44 @@
       // Only static location labels/pathnames: never send a property's address,
       // a user's email, the clicked URL/query string, or dynamic link text.
       location = /^[a-z0-9_-]{1,64}$/i.test(location) ? location : "page";
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
+      var payload = {
         event: "app_open_click",
         cta_location: location,
         source_page: window.location.pathname
-      });
+      };
+
+      var base = document.querySelector ? document.querySelector("base[target]") : null;
+      var target = anchor.getAttribute("target") || base && base.getAttribute("target") || "_self";
+      var sameTab = target.toLowerCase() === "_self" && event.button === 0 && event.cancelable &&
+        !event.defaultPrevented && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+      if (sameTab) {
+        event.preventDefault();
+        // A rapid repeat click should not create another pending navigation.
+        if (navigationPending) return;
+        navigationPending = true;
+        var finished = false;
+        var timer = null;
+        finishNavigation = function () {
+          if (finished) return;
+          finished = true;
+          navigationPending = false;
+          if (timer !== null) {
+            try { window.clearTimeout(timer); } catch (_) { /* Navigation still wins. */ }
+          }
+          try { window.location.assign(destination.href); }
+          catch (_) { window.location.href = destination.href; }
+        };
+        // GTM can finish early. The independent timer also works when GTM is
+        // blocked, never loads, or never calls back. Query/hash stay intact.
+        timer = window.setTimeout(finishNavigation, 300);
+        payload.eventCallback = finishNavigation;
+        payload.eventTimeout = 250;
+      }
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(payload);
     } catch (_) {
-      // Analytics failure must never prevent navigation into the workstation.
+      // Even a broken queue or timer must not strand a canceled native click.
+      if (finishNavigation) finishNavigation();
     }
   }, true);
 })();
