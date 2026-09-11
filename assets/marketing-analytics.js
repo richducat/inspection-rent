@@ -1,5 +1,5 @@
 /* Marketing intent only. Account creation and payments are measured in the app.
-   Uses the existing GTM dataLayer; does not configure tags, consent, or cookies. */
+   Uses existing Google tags; does not configure tags, consent, or cookies. */
 (function () {
   "use strict";
   if (window.__igMarketingAnalyticsBound) return;
@@ -52,14 +52,27 @@
           try { window.location.assign(destination.href); }
           catch (_) { window.location.href = destination.href; }
         };
-        // GTM can finish early. The independent timer also works when GTM is
-        // blocked, never loads, or never calls back. Query/hash stay intact.
+        // Wait for the Google event command, not GTM's tag-completion callback.
+        // The independent timer still navigates if tags are blocked or silent.
         timer = window.setTimeout(finishNavigation, 300);
-        payload.eventCallback = finishNavigation;
-        payload.eventTimeout = 250;
       }
       window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push(payload);
+      if (sameTab) {
+        // One event path per click. The standard queue wrapper works when GTM
+        // loaded the Google tag without defining a global gtag function.
+        var send = typeof window.gtag === "function" ? window.gtag : function () {
+          window.dataLayer.push(arguments);
+        };
+        send.call(window, "event", "app_open_click", {
+          send_to: "G-36J97SMTD7",
+          cta_location: location,
+          event_callback: finishNavigation,
+          event_timeout: 250
+        });
+      } else {
+        // Existing GTM event route remains appropriate when this page stays open.
+        window.dataLayer.push(payload);
+      }
     } catch (_) {
       // Even a broken queue or timer must not strand a canceled native click.
       if (finishNavigation) finishNavigation();

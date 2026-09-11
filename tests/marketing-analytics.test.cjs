@@ -49,9 +49,11 @@ test('relative, root-relative, absolute and campaign app links produce one inten
   }
   assert.equal(s.window.dataLayer.length, 5);
   for (const event of s.window.dataLayer.slice(1)) {
-    assert.equal(event.event, 'app_open_click');
-    assert.equal(event.source_page, '/forms.html');
-    assert.equal(event.cta_location, 'header');
+    assert.equal(event[0], 'event');
+    assert.equal(event[1], 'app_open_click');
+    assert.equal(event[2].send_to, 'G-36J97SMTD7');
+    assert.equal(event[2].source_page, undefined);
+    assert.equal(event[2].cta_location, 'header');
   }
   assert.ok(!JSON.stringify(s.window.dataLayer).includes('private'));
   assert.equal(s.window.dataLayer[0].traffic_type, 'internal');
@@ -64,14 +66,14 @@ test('non-app, external, email, script and download links do not count as app in
   assert.equal(s.window.dataLayer.length, 1);
 });
 
-test('nested campaign pages and result CTAs retain useful static locations', () => {
+test('nested campaign pages and result CTAs retain static locations without custom page parameters', () => {
   const lp = setup('/lp/lp05.html'); lp.click('/app/?v=lp05', {'data-cta-location':'four_point_hero'});
-  assert.equal(lp.window.dataLayer[1].cta_location, 'four_point_hero');
-  assert.equal(lp.window.dataLayer[1].source_page, '/lp/lp05.html');
+  assert.equal(lp.window.dataLayer[1][2].cta_location, 'four_point_hero');
+  assert.equal(lp.window.dataLayer[1][2].source_page, undefined);
   const check = setup('/check.html'); check.click('app/', {id:'rAppCta'});
-  assert.equal(check.window.dataLayer[1].cta_location, 'check_results');
+  assert.equal(check.window.dataLayer[1][2].cta_location, 'check_results');
   check.advance(300);
-  check.click('app/'); assert.equal(check.window.dataLayer[2].cta_location, 'check_page');
+  check.click('app/'); assert.equal(check.window.dataLayer[2][2].cta_location, 'check_page');
 });
 
 test('duplicate script loads do not duplicate events and invalid labels contain no free text', () => {
@@ -79,7 +81,7 @@ test('duplicate script loads do not duplicate events and invalid labels contain 
   assert.equal(s.listeners.length, 1);
   s.click('app/', {'data-cta-location':'customer@example.com'});
   assert.equal(s.window.dataLayer.length, 2);
-  assert.equal(s.window.dataLayer[1].cta_location, 'page');
+  assert.equal(s.window.dataLayer[1][2].cta_location, 'page');
 });
 
 test('a failed analytics queue cannot throw into the navigation click', () => {
@@ -90,31 +92,64 @@ test('a failed analytics queue cannot throw into the navigation click', () => {
   s.advance(300); assert.equal(s.navigations.length, 1);
 });
 
+test('existing gtag receives exactly one routed event without a second GTM event or configuration changes', () => {
+  const s = setup();
+  const calls = [];
+  const gtag = function (...args) {calls.push(args);};
+  s.window.gtag = gtag;
+  s.click('/app/?email=private%40example.com', {'data-cta-location':'four_point_hero'});
+  assert.equal(s.window.gtag, gtag);
+  assert.equal(s.window.dataLayer.length, 1);
+  assert.equal(s.window.dataLayer[0].traffic_type, 'internal');
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0][0], 'event');
+  assert.equal(calls[0][1], 'app_open_click');
+  const parameters = calls[0][2];
+  assert.deepEqual(Object.keys(parameters).sort(), ['cta_location', 'event_callback', 'event_timeout', 'send_to']);
+  assert.equal(parameters.send_to, 'G-36J97SMTD7');
+  assert.equal(parameters.cta_location, 'four_point_hero');
+  assert.ok(!JSON.stringify(calls).includes('private'));
+  assert.equal(s.navigations.length, 0);
+  parameters.event_callback(); s.advance(300);
+  assert.deepEqual(s.navigations, ['https://inspection.rent/app/?email=private%40example.com']);
+});
+
+test('a throwing global gtag releases navigation and does not retry through another event path', () => {
+  const s = setup();
+  let calls = 0;
+  s.window.gtag = () => {calls++; throw new Error('Tag unavailable');};
+  assert.doesNotThrow(() => s.click('/app/?v=fallback#sample'));
+  s.advance(300);
+  assert.equal(calls, 1);
+  assert.equal(s.window.dataLayer.length, 1);
+  assert.deepEqual(s.navigations, ['https://inspection.rent/app/?v=fallback#sample']);
+});
+
 test('same-tab callback releases navigation early, preserving the complete destination once', () => {
   const s = setup(); s.click('/app/?v=four-point&utm_source=partner#sample');
-  const payload = s.window.dataLayer[1];
+  const payload = s.window.dataLayer[1][2];
   assert.equal(s.events[0].defaultPrevented, true);
-  assert.equal(payload.eventTimeout, 250);
-  assert.equal(typeof payload.eventCallback, 'function');
+  assert.equal(payload.event_timeout, 250);
+  assert.equal(typeof payload.event_callback, 'function');
   assert.equal(s.navigations.length, 0);
-  payload.eventCallback('GTM-PX3ZXWR6');
-  payload.eventCallback('another-container');
+  payload.event_callback('GTM-PX3ZXWR6');
+  payload.event_callback('another-container');
   s.advance(1000);
   assert.deepEqual(s.navigations, ['https://inspection.rent/app/?v=four-point&utm_source=partner#sample']);
   assert.equal(s.timers.size, 0);
 });
 
-test('blocked or unresponsive GTM has an independent 300ms navigation fallback', () => {
+test('blocked or unresponsive Google tag has an independent 300ms navigation fallback', () => {
   const s = setup(); s.click('app/');
-  const payload = s.window.dataLayer[1];
+  const payload = s.window.dataLayer[1][2];
   s.advance(299); assert.equal(s.navigations.length, 0);
   s.advance(1); assert.deepEqual(s.navigations, ['https://inspection.rent/app/']);
-  payload.eventCallback(); s.advance(1000);
+  payload.event_callback(); s.advance(1000);
   assert.equal(s.navigations.length, 1);
 });
 
 test('synchronous callbacks and an exception after callback cannot navigate twice', () => {
-  const s = setup('/pricing.html', {push(payload) {payload.eventCallback(); throw new Error('Later tag failure');}});
+  const s = setup('/pricing.html', {push(command) {command[2].event_callback(); throw new Error('Later tag failure');}});
   assert.doesNotThrow(() => s.click('/app/?plan=annual'));
   s.advance(300);
   assert.deepEqual(s.navigations, ['https://inspection.rent/app/?plan=annual']);
@@ -124,7 +159,10 @@ test('modified, non-primary, targeted and noncancelable clicks retain native beh
   for (const options of [{metaKey:true}, {ctrlKey:true}, {shiftKey:true}, {altKey:true}, {button:1}, {button:2}, {cancelable:false}, {defaultPrevented:true}]) {
     const s = setup(); s.click('app/', {}, undefined, options);
     assert.equal(s.events[0].defaultPrevented, options.defaultPrevented || false);
+    assert.equal(s.window.dataLayer.length, 2);
+    assert.equal(s.window.dataLayer[1].event, 'app_open_click');
     assert.equal(s.window.dataLayer[1].eventCallback, undefined);
+    assert.equal(s.window.dataLayer[1].event_callback, undefined);
     assert.equal(s.timers.size, 0);
     assert.equal(s.navigations.length, 0);
   }
@@ -135,6 +173,8 @@ test('modified, non-primary, targeted and noncancelable clicks retain native beh
   }
   const base = setup(); base.document.querySelector = () => ({getAttribute() {return '_blank';}});
   base.click('app/'); assert.equal(base.events[0].defaultPrevented, false);
+  const explicitSelf = setup(); explicitSelf.document.querySelector = () => ({getAttribute() {return '_blank';}});
+  explicitSelf.click('app/', {target:'_self'}); assert.equal(explicitSelf.events[0].defaultPrevented, true);
   const download = setup(); download.click('app/', {download:''});
   assert.equal(download.events[0].defaultPrevented, false);
   assert.equal(download.window.dataLayer.length, 1);
@@ -154,7 +194,7 @@ test('timer creation/cleanup failures still release a canceled click', () => {
   assert.doesNotThrow(() => creation.click('app/'));
   assert.deepEqual(creation.navigations, ['https://inspection.rent/app/']);
   const cleanup = setup(); cleanup.window.clearTimeout = () => {throw new Error('Cleanup failed');};
-  cleanup.click('app/'); cleanup.window.dataLayer[1].eventCallback(); cleanup.advance(300);
+  cleanup.click('app/'); cleanup.window.dataLayer[1][2].event_callback(); cleanup.advance(300);
   assert.deepEqual(cleanup.navigations, ['https://inspection.rent/app/']);
 });
 
@@ -164,7 +204,7 @@ test('location.assign failure falls back to href with the query and fragment int
   Object.defineProperty(s.window.location, 'href', {get() {return original;}, set(value) {s.navigations.push(value);}});
   s.window.location.assign = () => {throw new Error('assign unavailable');};
   s.click('/app/?v=fallback#sample');
-  s.window.dataLayer[1].eventCallback(); s.advance(300);
+  s.window.dataLayer[1][2].event_callback(); s.advance(300);
   assert.deepEqual(s.navigations, ['https://inspection.rent/app/?v=fallback#sample']);
 });
 
