@@ -23,14 +23,21 @@
  *     normal on the lp/ pages that link the fonts but never use them); a font
  *     that fails to load prints a warning because the run may under-report.
  *
- * Needs playwright (npm i -D playwright && npx playwright install chromium, or a
- * global install). MOBILECHECK_CHROMIUM=/path/to/chrome overrides the binary.
+ * Needs playwright: `npm install --no-save playwright && npx playwright install chromium`
+ * (--no-save keeps package.json and the lockfile untouched; node_modules/ is
+ * git-ignored), or a global install. MOBILECHECK_CHROMIUM=/path/to/chrome
+ * overrides the binary. Chromium refuses to start when TMPDIR is a very long
+ * path (its profile socket path overflows), so a long TMPDIR is replaced by /tmp.
+ * --shots writes PNGs wherever you point it; keep it outside the repo (shots/ is
+ * a tracked folder of product screenshots).
  */
 'use strict';
 const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 const { execFileSync } = require('node:child_process');
+
+if ((process.env.TMPDIR || '').length > 80) process.env.TMPDIR = '/tmp';
 
 const args = process.argv.slice(2);
 const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : undefined; };
