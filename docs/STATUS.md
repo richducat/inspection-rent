@@ -1,0 +1,137 @@
+# Status
+
+The living ledger. Update it at the end of every session, in the same PR as the work.
+Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
+
+## Last updated: 2026-09-19 (Claude session, branch `claude/relaxed-knuth-1vy6x9`)
+
+### This week, in order (owner)
+
+You never need to run a command for steps 1 to 3; each is a link and a button. Step 4 is
+the one command you already run.
+
+1. **Merge the app fix.** Open [home-inspection-assistant #5](https://github.com/richducat/home-inspection-assistant/pull/5),
+   scroll to the bottom, press the green **Merge pull request**, then **Confirm merge**.
+   Then open [#2](https://github.com/richducat/home-inspection-assistant/pull/2) and press
+   **Close pull request** (it is the same one-line change, written by Codex the same day).
+2. **Merge the two small ones.** Open [home-inspection-assistant #6](https://github.com/richducat/home-inspection-assistant/pull/6)
+   and [#7](https://github.com/richducat/home-inspection-assistant/pull/7) and merge each the
+   same way.
+3. **Merge this repository's pull request** (the one that added this file; its number is
+   in the table below). Then open [PR #3](https://github.com/richducat/inspection-rent/pull/3)
+   and press **Close pull request** with the comment "superseded". About 30 seconds later
+   the website is updated; the [Actions tab](https://github.com/richducat/inspection-rent/actions)
+   shows a green check next to "Deploy to GitHub Pages".
+4. **Rebuild the app from your Mac.** Open Terminal, go to the hip-app-work folder, run
+   `./deploy-hip.sh "Deploy the analytics guard"`. It ends with "DONE, inspection.rent
+   deployed and verified" in about a minute. If it prints ABORT, paste the message into a
+   new issue here.
+5. **Answer the pricing question** by replying on [issue #12](https://github.com/richducat/inspection-rent/issues/12)
+   with what $98 buys today.
+6. **Check the wind-mit service from your phone** and reply on [issue #8](https://github.com/richducat/inspection-rent/issues/8).
+7. **Two analytics checks** in your Google account, click by click in [issue #7](https://github.com/richducat/inspection-rent/issues/7).
+
+**What your inspector sees today:** sign-in, saved inspections, forms, billing and permit
+pulls answered their health checks on 2026-09-19 and are believed working; the wind-mit
+AI photo analysis is unknown (step 6); the marketing pages scroll sideways on phones until
+step 3 lands, which does not affect the app itself.
+
+### Production right now
+
+- `main` at `b35fa2d` is live (Pages run 52, green). Every Pages run since run 11 on
+  2026-08-10 has been green; runs 1 to 6 on 2026-08-06 failed while the workflow was being
+  introduced and run 10 was cancelled by a newer push.
+- The live pricing page still has the three-column grid that breaks on phones; seven
+  pages scroll sideways at 320 and 375 px. The fix is in the PR from this branch.
+- No GTM loader on the live site has the hostname guard yet (PR #3 was never merged), so
+  localhost and preview visits still reach GA4.
+- The accounts API runs on the shared cPanel host, not Render. The records API is on Render.
+- The wind-mitigation service on the owner's Mac could not be reached from the cloud
+  sandbox; that says nothing about its real state (issue #8).
+- A stale July copy of the app is still live at `eb28.co/HIP/app/` against production
+  backends (issue #13).
+- The Codex review bot reported "usage limits reached" on 2026-09-19; pull requests opened
+  today may not get its review.
+
+### Open pull requests, in the order to merge them
+
+| Order | PR | What | Why this order |
+|---|---|---|---|
+| 1 | [home-inspection-assistant #5](https://github.com/richducat/home-inspection-assistant/pull/5) | GTM guard in the app shell source; `checkout_return` records the real plan id | Must be on that repo's `main` before the next `deploy-hip.sh`, or the deploy erases the guard from `app/index.html` here. Supersedes [home-inspection-assistant #2](https://github.com/richducat/home-inspection-assistant/pull/2) (Codex, 2026-09-08, the same one line); close #2 |
+| 2 | [home-inspection-assistant #6](https://github.com/richducat/home-inspection-assistant/pull/6) and [#7](https://github.com/richducat/home-inspection-assistant/pull/7) | `AGENTS.md` pointer brief (part of issue #11); CI builds its artifact with the production base path (part of issue #10) | Docs and CI only, any time |
+| 3 | the PR from this repo's branch `claude/relaxed-knuth-1vy6x9` (number recorded in the PR itself) | PR #3's guard on all 24 loaders, the 320 px fix, charset first, the mobile check, and this documentation | Contains PR #3's commit, so [PR #3](https://github.com/richducat/inspection-rent/pull/3) can be merged first or closed as superseded; either way the resulting tree is identical |
+| 4 | run `./deploy-hip.sh` on the Mac | Rebuilds `app/` from a `main` that carries the guard | Makes the source and the published copy identical again |
+
+### Open items (GitHub issues are the source of truth; this list mirrors them)
+
+| Issue | What | Who can do it |
+|---|---|---|
+| [#12](https://github.com/richducat/inspection-rent/issues/12) | **Pricing contradiction:** website sells $98/yr unlimited; the backend's 2026-07-22 decision says $98/mo unlimited, $980/yr annual, $98/yr retired | Owner decides; then site, app and Stripe prices are aligned |
+| [#7](https://github.com/richducat/inspection-rent/issues/7) | Confirm in GA4 Realtime that `app_open_click` arrives from an ordinary same-tab click, and that the GA4 internal-traffic filter is Active | Owner (Google account) |
+| [#8](https://github.com/richducat/inspection-rent/issues/8) | Confirm the wind-mitigation service on the Mac is reachable and document how to restart it | Owner (Mac) |
+| [#13](https://github.com/richducat/inspection-rent/issues/13) | Take down the stale app copy at `eb28.co/HIP/app/` and drop `eb28.co` from both APIs' CORS lists | Owner (eb28.co repo) plus a small API change |
+| [#14](https://github.com/richducat/inspection-rent/issues/14) | Write down where every credential lives and add a second person to GitHub, Stripe, Render and Namecheap | Owner |
+| [#9](https://github.com/richducat/inspection-rent/issues/9) | Finish or formally shelve the accounts API move to Render | Owner decides; engineer runs the cutover runbook |
+| [#10](https://github.com/richducat/inspection-rent/issues/10) | Nothing critical only on the Mac: guides into git, document `hip-vision-api`, dry-run a non-Mac app deploy, write the "Mac is dead" runbook | Owner supplies files; engineer does the rest |
+| [#15](https://github.com/richducat/inspection-rent/issues/15) | Stale docs in the three sibling repos (deploy stories, prices, env examples), the "York Inspections" text in the app shell's meta description, the fate of the unmerged app branch `claude/app-issues-beth-aicohr` | Engineer or AI |
+| [#11](https://github.com/richducat/inspection-rent/issues/11) | `AGENTS.md` in the sibling repositories (the app repo's is PR #6; the two APIs remain) | Engineer or AI |
+
+### Verified this session (2026-09-19)
+
+- Tests: 15 of 15 pass on the branch (`npm test`) and on `main` (there via
+  `node --test tests/marketing-analytics.test.cjs`, because `main` has no `package.json`
+  until this PR merges).
+- Mobile: 0 of 115 page-widths overflow on the branch at 320, 375, 540, 600 and 601 px.
+  On `main` (measured with `node tests/mobile-overflow-check.cjs --root <main worktree>`),
+  14 of 46 overflow at 320 and 375 px: pricing, coverage, faq, forms, product, trust and
+  wind-mitigation.
+- Screenshots at 601, 768 and 1280 px are byte-identical to `main` on every page checked,
+  and the 4-point page is identical at every width. Only phone widths differ, and only in
+  the top bar, the home header and the stacked pricing cards.
+- All 24 GTM loaders carry the identical hostname guard; the internal-traffic flag precedes
+  the loader on all 23 marketing pages (the app shell has never had the flag); the tracker
+  script set is unchanged from `main`; the loader was executed in a sandbox and in real
+  Chromium for nine hostnames and loads on the two production hosts only.
+- `<meta charset>` is at byte 40 on every marketing page (was 1561 / 1429).
+- The only change under `app/` versus `main` is PR #3's one-line guard in `app/index.html`
+  (commit 35f40ca); the same line is in app PRs #2 and #5. The branch merges cleanly into
+  `main` in any order with PR #3.
+- App repo branch for PR #5: 427 tests, typecheck, build, budget (132,933 B gzip against a
+  133,120 target; `main` measured within 50 bytes of that in two builds), score 100 / 100.
+- Five independent verifiers audited the branch line by line (diff, analytics runtime,
+  visual regression, merge and deploy safety, HTML head integrity); two layout regressions
+  they found were fixed before the PR was opened. Five "fresh eyes" personas then tried to
+  work from these documents alone; their corrections are folded in.
+
+### Still unverified
+
+- `app_open_click` in production GA4 and the GA4 internal-traffic filter (issue #7).
+- Whether the GTM container has tags for the `lp_*`, `check_*` and app events.
+- The non-Mac app deploy paths in `RUNBOOK.md` section 6 have never been exercised, and
+  the CI-artifact one cannot work until [home-inspection-assistant #7](https://github.com/richducat/home-inspection-assistant/pull/7)
+  merges (it makes that workflow build with the production base path).
+- Anything on the owner's Mac (issue #8, #10).
+
+### In flight
+
+This documentation and the fixes are on branch `claude/relaxed-knuth-1vy6x9` until the PR
+merges. The stale branch `claude/app-error-review-o46y68` (2026-09-01): its one commit
+`058dcea` was cherry-picked here as `245741a`, so it is not an ancestor; delete it by name
+after the merge (`git push origin --delete claude/app-error-review-o46y68`). In the app
+repo, `claude/app-issues-beth-aicohr` (2026-08-26) was never merged; see issue #15.
+
+## Earlier
+
+- 2026-09-11 01:10 to 01:23: site PRs #4, #5, #6 merged (evening of 09-10 in Florida).
+- 2026-09-10: app deploys `0c7b78a` and `bfabccd` (app PRs #3 and #4); both APIs patched
+  for the query-parser advisories.
+- 2026-09-07: site PRs #1 and #2 merged within two minutes of opening; Codex's three
+  findings arrived afterwards and were never answered (charset position, fixed 2026-09-19;
+  patched bundle keeping its hash, moot after the 09-10 rebuild; single-report plan label,
+  fixed in app PR #5).
+- 2026-09-01: Claude session "App error review" produced the 320 px fix on a branch and
+  ended disconnected, so it was never reported or merged.
+- 2026-08-06 to 08-18: app deploys on 9 of those 13 days (permit correctness, cross-verification, wind
+  speed counties, offline hardening, free card-less signup); see `DECISIONS.md`.
+- 2026-07-18: the shared cPanel host wedged and took the accounts API down; the Render
+  migration was prepared in response and has not been run.
