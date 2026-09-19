@@ -17,8 +17,8 @@ the one command you already run.
 2. **Merge the two small ones.** Open [home-inspection-assistant #6](https://github.com/richducat/home-inspection-assistant/pull/6)
    and [#7](https://github.com/richducat/home-inspection-assistant/pull/7) and merge each the
    same way.
-3. **Merge this repository's pull request** (the one that added this file; its number is
-   in the table below). Then open [PR #3](https://github.com/richducat/inspection-rent/pull/3)
+3. **Merge this repository's pull request** [#16](https://github.com/richducat/inspection-rent/pull/16)
+   (the one that added this file). Then open [PR #3](https://github.com/richducat/inspection-rent/pull/3)
    and press **Close pull request** with the comment "superseded". About 30 seconds later
    the website is updated; the [Actions tab](https://github.com/richducat/inspection-rent/actions)
    shows a green check next to "Deploy to GitHub Pages".
@@ -59,7 +59,7 @@ step 3 lands, which does not affect the app itself.
 |---|---|---|---|
 | 1 | [home-inspection-assistant #5](https://github.com/richducat/home-inspection-assistant/pull/5) | GTM guard in the app shell source; `checkout_return` records the real plan id | Must be on that repo's `main` before the next `deploy-hip.sh`, or the deploy erases the guard from `app/index.html` here. Supersedes [home-inspection-assistant #2](https://github.com/richducat/home-inspection-assistant/pull/2) (Codex, 2026-09-08, the same one line); close #2 |
 | 2 | [home-inspection-assistant #6](https://github.com/richducat/home-inspection-assistant/pull/6) and [#7](https://github.com/richducat/home-inspection-assistant/pull/7) | `AGENTS.md` pointer brief (part of issue #11); CI builds its artifact with the production base path (part of issue #10) | Docs and CI only, any time |
-| 3 | the PR from this repo's branch `claude/relaxed-knuth-1vy6x9` (number recorded in the PR itself) | PR #3's guard on all 24 loaders, the 320 px fix, charset first, the mobile check, and this documentation | Contains PR #3's commit, so [PR #3](https://github.com/richducat/inspection-rent/pull/3) can be merged first or closed as superseded; either way the resulting tree is identical |
+| 3 | [inspection-rent #16](https://github.com/richducat/inspection-rent/pull/16) (branch `claude/relaxed-knuth-1vy6x9`) | PR #3's guard on all 24 loaders, the 320 px fix, charset first, the mobile check, and this documentation | Contains PR #3's commit, so [PR #3](https://github.com/richducat/inspection-rent/pull/3) can be merged first or closed as superseded; either way the resulting tree is identical |
 | 4 | run `./deploy-hip.sh` on the Mac | Rebuilds `app/` from a `main` that carries the guard | Makes the source and the published copy identical again |
 
 ### Open items (GitHub issues are the source of truth; this list mirrors them)
@@ -114,8 +114,8 @@ step 3 lands, which does not affect the app itself.
 
 ### In flight
 
-This documentation and the fixes are on branch `claude/relaxed-knuth-1vy6x9` until the PR
-merges. The stale branch `claude/app-error-review-o46y68` (2026-09-01): its one commit
+This documentation and the fixes are on branch `claude/relaxed-knuth-1vy6x9` until
+[PR #16](https://github.com/richducat/inspection-rent/pull/16) merges. The stale branch `claude/app-error-review-o46y68` (2026-09-01): its one commit
 `058dcea` was cherry-picked here as `245741a`, so it is not an ancestor; delete it by name
 after the merge (`git push origin --delete claude/app-error-review-o46y68`). In the app
 repo, `claude/app-issues-beth-aicohr` (2026-08-26) was never merged; see issue #15.
