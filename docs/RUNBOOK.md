@@ -199,8 +199,9 @@ reads the leads; the site promises those visitors a property report by email (is
 The live service is the cPanel Node app in `/home/tyfyprbm/hip-accounts-api` on the
 Namecheap host (SSH `tyfyprbm@162.213.253.62`, port 21098, key `~/.ssh/hip_deploy_ed25519`
 on the owner's Mac; see `hip-accounts-api/scripts/restore-db.sh` and
-`deploy/backup-and-watch.sh` for the exact connection). The app's own `CLAUDE.md` describes
-the deploy as `rsync src/` then `touch tmp/restart.txt`. Unknown and to be confirmed by the
+`deploy/backup-and-watch.sh` for the exact connection). `home-inspection-assistant/CLAUDE.md` (its
+backends table; `hip-accounts-api` has no `CLAUDE.md`) describes the deploy as
+`rsync src/` then `touch tmp/restart.txt`. Unknown and to be confirmed by the
 owner: the exact rsync source and flags, whether `npm install` runs on the host, and whether
 cPanel needs a manual restart. Always take a database backup first (`RESTORE.md` in that
 repo), and verify with `curl -sS https://accounts.eb28.co/health` afterwards. The Render
