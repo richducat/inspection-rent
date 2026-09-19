@@ -191,18 +191,24 @@ footer .foot-bottom { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-co
   .topbar .brand svg { width: 22px; height: 22px; }
   .topbar .navlinks { gap: 14px; font-size: 11px; }
   .topbar .navlinks a.navcta { padding: 8px 13px; font-size: 11px; letter-spacing: 0.03em; }
-  /* Inline-styled 3-up pricing grid (pricing.html) must collapse too. */
+}
+/* The 3-up pricing grid (pricing.html, class "three") needs ~550px for three
+   cards; below that it overflowed by up to 190px. Tablets (601px+) keep the
+   three columns they always had. */
+@media (max-width: 600px) {
   .pricegrid.three { grid-template-columns: 1fr; max-width: none; }
 }
 /* Narrow phones (320-520px): brand + "Coverage · Pricing · Get Started" was
    ~450px wide, so the whole page scrolled sideways. Keep only the CTA in the
-   bar; every page link is repeated in the footer. */
+   bar; every page link is repeated in the footer. A page whose own stylesheet
+   already handles the narrow bar opts out with class "nav-rows" on .topbar
+   (4-point-inspection-software.html wraps its bar to two rows instead). */
 @media (max-width: 520px) {
-  .topbar .wrap { gap: 8px; min-width: 0; }
-  .topbar .brand { min-width: 0; }
-  .topbar .navlinks { min-width: 0; flex: 0 1 auto; }
-  .topbar .navlinks a:not(.navcta) { display: none; }
+  .topbar:not(.nav-rows) .wrap { gap: 8px; min-width: 0; }
+  .topbar:not(.nav-rows) .brand { min-width: 0; }
+  .topbar:not(.nav-rows) .navlinks { min-width: 0; flex: 0 1 auto; }
+  .topbar:not(.nav-rows) .navlinks a:not(.navcta) { display: none; }
   /* Long CTAs ("Start My First Inspection" on trust / wind-mitigation) wrap
-     to two lines inside the bar instead of pushing the page sideways. */
-  .topbar .navlinks a.navcta { flex: 0 1 auto; min-width: 0; white-space: normal; text-align: center; line-height: 1.25; }
+     inside the bar instead of pushing the page sideways. */
+  .topbar:not(.nav-rows) .navlinks a.navcta { flex: 0 1 auto; min-width: 0; white-space: normal; text-align: center; line-height: 1.25; }
 }
