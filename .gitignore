@@ -5,3 +5,6 @@
 *.env
 !.env.example
 !*.env.example
+
+# Local tooling only (playwright for tests/mobile-overflow-check.cjs); never publish it
+node_modules/

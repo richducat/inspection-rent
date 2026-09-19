@@ -1,0 +1,10 @@
+{
+  "name": "inspection-rent",
+  "private": true,
+  "description": "Marketing site and built-app host for inspection.rent (GitHub Pages). Start with AGENTS.md.",
+  "scripts": {
+    "test": "node --test tests/marketing-analytics.test.cjs",
+    "mobilecheck": "node tests/mobile-overflow-check.cjs",
+    "check": "npm test && npm run mobilecheck"
+  }
+}
