@@ -19,8 +19,9 @@
  *     Sans, so with fonts blocked the top-bar nav "fits" and the report is green.
  *     The Google Fonts CSS and woff2 files are fetched with curl (honours the
  *     sandbox proxy) into a temp cache and served to the browser from there. The
- *     per-page "fonts=N" column shows how many webfonts actually loaded; a 0 on a
- *     page that links Google Fonts means the run may under-report.
+ *     per-page "fonts=N" column shows how many webfonts actually loaded (0 is
+ *     normal on the lp/ pages that link the fonts but never use them); a font
+ *     that fails to load prints a warning because the run may under-report.
  *
  * Needs playwright (npm i -D playwright && npx playwright install chromium, or a
  * global install). MOBILECHECK_CHROMIUM=/path/to/chrome overrides the binary.
@@ -110,8 +111,10 @@ function measure(W) {
       if (b.width > 0 && b.height > 0 && b.right > W + 1 && !contained(el)) { culprits.push(`${desc(el)}@${Math.round(b.right)}`); if (culprits.length >= 3) break; }
     }
   }
-  const fontsLoaded = [...document.fonts].filter((f) => f.status === 'loaded').length;
-  return { scrollWidth, culprits, fontsLoaded };
+  const faces = [...document.fonts];
+  const fontsLoaded = faces.filter((f) => f.status === 'loaded').length;
+  const fontsFailed = faces.filter((f) => f.status === 'error').length;
+  return { scrollWidth, culprits, fontsLoaded, fontsFailed };
 }
 
 (async () => {
@@ -156,10 +159,10 @@ function measure(W) {
   for (const r of rows) {
     if (r.error) { errors++; console.log(`${r.W}px  ${r.p.padEnd(36)} ERROR ${r.error}`); continue; }
     if (r.over) bad++;
-    if (fonts.linked && r.fontsLoaded === 0) fontWarn = true;
+    if (r.fontsFailed > 0) fontWarn = true;
     console.log(`${r.W}px  ${r.p.padEnd(36)} fonts=${String(r.fontsLoaded).padStart(2)}  ${r.over ? `OVERFLOW ${r.scrollWidth}>${r.W}  ${r.culprits.join(' | ') || '(text or pseudo-element)'}` : 'ok'}`);
   }
   console.log(`\n${bad} overflowing of ${rows.length} page-widths (${pages.length} pages x ${widths.length} widths)${errors ? `, ${errors} errors` : ''}`);
-  if (fontWarn) console.log('WARNING: webfonts did not load on at least one page (no network?). Fallback fonts are narrower; overflow may be under-reported.');
+  if (fontWarn) console.log('WARNING: at least one webfont failed to load (no network?). Fallback fonts are narrower; overflow may be under-reported.');
   process.exit(bad || errors ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(2); });
