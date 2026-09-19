@@ -40,12 +40,13 @@ analytics; only page views, clicks, and funnel events.
   `/app/`. New-tab or modified clicks push the GTM custom event and let the browser
   navigate. Ordinary same-tab clicks call `gtag('event', ...)` with `send_to: G-36J97SMTD7`
   and an `event_callback`, and navigate when the callback fires or after 300 ms, whichever
-  comes first. No query strings and no property details in the payload (the `?v=lpNN`
+  comes first (the GTM route also carries `source_page`, the pathname). No query strings and no property details in the payload (the `?v=lpNN`
   on campaign CTAs stays on the link and is used by the app, never sent as an event
   field); never blocks navigation. `tests/marketing-analytics.test.cjs` pins all of this.
 
 **`check.html`** (free property check): `check_search`, `check_found`, `check_failed`,
-`generate_lead`.
+`generate_lead`. **`how-it-works.html`** also pushes `generate_lead` (with the nearest
+heading as `lead_source`) when a trial `mailto:` link is clicked.
 
 **Campaign pages `lp/lp01` to `lp10`** (inline snippets, see `CAMPAIGNS.md`): `lp_view` on
 load and `lp_cta_click` on the call to action, both with `lp: "lpNN"`; `lp08` also pushes
@@ -55,7 +56,8 @@ load and `lp_cta_click` on the call to action, both with `lp: "lpNN"`; `lp08` al
 **The app** (`home-inspection-assistant/src/domain/analytics.ts`, pushed to `dataLayer`):
 
 - `sign_up` (method `free_signup` today; older values kept for old dashboards)
-- `begin_checkout` with `items[0].item_id` = `payg` | `monthly` | `annual`
+- `begin_checkout` with `items[0].item_id` = the plan key passed (`payg`, `single`,
+  `monthly`, `annual` or `trial`)
 - `checkout_return` with `plan` = the server plan id (`payg` | `monthly` | `annual` |
   `unlimited` | `trial`) after home-inspection-assistant PR #5; before it, single-report
   returns were mislabelled `monthly`
@@ -75,7 +77,7 @@ container itself; `analytics.ts` only documents the requirement.
 | Claim | Status |
 |---|---|
 | Container loads once on the two production hosts and never elsewhere | Verified in a sandbox across 161 scenarios (PR #3) and again on 2026-09-19 for all 24 loaders |
-| Internal-traffic flag runs before GTM on every page | Verified 2026-09-19 |
+| Internal-traffic flag runs before GTM on all 23 marketing pages (the app shell has no flag) | Verified 2026-09-19 |
 | `app_open_click` reaches GA4 from an ordinary same-tab click in production | **Unverified.** PR #6 saw the collection request locally; nobody has checked GA4 Realtime on the live site |
 | GA4 internal-traffic filter is active so `?internal=1` visits are excluded | **Unverified** (needs the owner's GA4 admin) |
 | Data collected before the guard is live includes localhost hits | Known: 9 pageviews and 30 events in the 30 days before 2026-09-08, and the guard is not live until the PR merges |

@@ -65,12 +65,15 @@ directory outside the repo, `shots/` is a tracked folder of product images).
 **Campaign page** (an ad or outreach destination under `lp/`):
 
 1. Copy the closest existing `lp/lpNN.html` to the next number (see `CAMPAIGNS.md`).
-2. Change `<title>`, the meta description, the inline `var LP = "lpNN"` (quoting varies by
-   page), and every CTA `href="/app/?v=lpNN"`. Leaving the old values makes the new page
-   report as the old campaign in three places.
+2. Change `<title>`, the meta description, every CTA `href="/app/?v=lpNN"`, and the campaign
+   id in the inline snippet: `lp01` to `lp05` set `var LP = "lpNN"` once; `lp06` to `lp10`
+   repeat `lp:'lpNN'` in each `dataLayer.push` (two pushes, three on `lp08`). Run
+   `grep -n lpNN lp/lpMM.html` on the copied page and change every hit, or the new page
+   reports as the old campaign.
 3. Keep `<meta name="robots" content="noindex,nofollow">`, no canonical, and the
-   `../assets/site.css` and `../assets/marketing-analytics.js` paths (a root-relative
-   `assets/...` would 404 from under `lp/`). Do not touch `sitemap.xml`.
+   `../assets/marketing-analytics.js` path (and `../assets/site.css` on `lp01` to `lp05`;
+   `lp06` to `lp10` carry their own styles). A root-relative `assets/...` would 404 from
+   under `lp/`. Do not touch `sitemap.xml`.
 4. Add a row to `CAMPAIGNS.md`.
 
 **Both:** run `npm run mobilecheck` (new pages are picked up automatically) and confirm
@@ -147,8 +150,8 @@ Never edit `app/` by hand for any other reason.
 
 Codex reviews every pull request. It reacts with 👀 while working, posts a "Codex Review
 Summary" comment, and leaves inline threads with a P1 (fix before merge) or P2 (fix or
-answer) badge. Observed timing: 2 to 8 minutes after opening. Do not merge until the
-summary says Completed and every thread has either a fix or a reply saying why not; then
+answer) badge. Observed timing: 2 to 8 minutes after opening when the bot has quota. Do not merge
+until the summary says Completed and every thread has either a fix or a reply saying why not; then
 resolve the threads. Comment `@codex review` to re-run it. On 2026-09-07 two PRs were merged
 within two minutes of opening and three findings were lost. Note: on 2026-09-19 the bot
 reported "usage limits reached"; if it stays silent, say so in the PR and ask the owner.
@@ -183,8 +186,9 @@ Needs the owner's Google account.
 
 Two admin accounts, `beth` and `richard`, are seeded from the host's `ADMIN_PASSWORD`
 (the server refuses to start with a default password). With an admin token,
-`POST /admin/accounts` takes `action` = `activate` | `deactivate` | `set_plan` |
-`add_credits` | `set_password` (the last one is missing from the server's own error text),
+`GET /admin/accounts` lists accounts and `POST /admin/accounts/<username>` takes `action` =
+`activate` | `deactivate` | `set_plan` | `add_credits` | `set_password` (the last one is
+missing from the server's own error text),
 `GET /admin/leads` lists the leads the marketing pages collect, and
 `GET /admin/client-errors` lists app crash reports. Inspectors delete their own account with
 `DELETE /account`. Routes and shapes: `hip-accounts-api/src/server.mjs`. Nobody currently

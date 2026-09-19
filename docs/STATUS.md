@@ -36,11 +36,11 @@ pulls answered their health checks on 2026-09-19 and are believed working; the w
 AI photo analysis is unknown (step 6); the marketing pages scroll sideways on phones until
 step 3 lands, which does not affect the app itself.
 
-### Production right now
+### Production right now (as of 2026-09-19 18:30 UTC)
 
 - `main` at `b35fa2d` is live (Pages run 52, green). Every Pages run since run 11 on
-  2026-08-10 has been green; runs 1 to 6 on 2026-08-06 failed while the workflow was being
-  introduced and run 10 was cancelled by a newer push.
+  2026-08-10 has been green; runs 1 to 4 and 6 on 2026-08-06 failed and run 5 was cancelled
+  while the workflow was being introduced, and run 10 was cancelled by a newer push.
 - The live pricing page still has the three-column grid that breaks on phones; seven
   pages scroll sideways at 320 and 375 px. The fix is in the PR from this branch.
 - No GTM loader on the live site has the hostname guard yet (PR #3 was never merged), so
@@ -48,8 +48,8 @@ step 3 lands, which does not affect the app itself.
 - The accounts API runs on the shared cPanel host, not Render. The records API is on Render.
 - The wind-mitigation service on the owner's Mac could not be reached from the cloud
   sandbox; that says nothing about its real state (issue #8).
-- A stale July copy of the app is still live at `eb28.co/HIP/app/` against production
-  backends (issue #13).
+- A stale copy of the app (built before 2026-08-06) is still live at `eb28.co/HIP/app/`
+  against production backends (issue #13).
 - The Codex review bot reported "usage limits reached" on 2026-09-19; pull requests opened
   today may not get its review.
 
@@ -85,9 +85,10 @@ step 3 lands, which does not affect the app itself.
   On `main` (measured with `node tests/mobile-overflow-check.cjs --root <main worktree>`),
   14 of 46 overflow at 320 and 375 px: pricing, coverage, faq, forms, product, trust and
   wind-mitigation.
-- Screenshots at 601, 768 and 1280 px are byte-identical to `main` on every page checked,
-  and the 4-point page is identical at every width. Only phone widths differ, and only in
-  the top bar, the home header and the stacked pricing cards.
+- Screenshots at 601, 768 and 1280 px are byte-identical to `main` on all 23 pages with
+  animations frozen (the home page animates, so compare it with animations disabled or by
+  eye), and the 4-point page is identical at every width. Only phone widths differ, and
+  only in the top bar, the home header and the stacked pricing cards.
 - All 24 GTM loaders carry the identical hostname guard; the internal-traffic flag precedes
   the loader on all 23 marketing pages (the app shell has never had the flag); the tracker
   script set is unchanged from `main`; the loader was executed in a sandbox and in real
@@ -96,8 +97,9 @@ step 3 lands, which does not affect the app itself.
 - The only change under `app/` versus `main` is PR #3's one-line guard in `app/index.html`
   (commit 35f40ca); the same line is in app PRs #2 and #5. The branch merges cleanly into
   `main` in any order with PR #3.
-- App repo branch for PR #5: 427 tests, typecheck, build, budget (132,933 B gzip against a
-  133,120 target; `main` measured within 50 bytes of that in two builds), score 100 / 100.
+- App repo branch for PR #5: 427 tests, typecheck, build, budget about 132.9 KB gzip
+  against a 133,120 B target (the figure drifts by tens of bytes between builds; `main`
+  measures the same to within 50 bytes), score 100 / 100.
 - Five independent verifiers audited the branch line by line (diff, analytics runtime,
   visual regression, merge and deploy safety, HTML head integrity); two layout regressions
   they found were fixed before the PR was opened. Five "fresh eyes" personas then tried to

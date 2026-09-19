@@ -53,7 +53,7 @@ function loadPlaywright() {
     const g = execFileSync('npm', ['root', '-g'], { encoding: 'utf8' }).trim();
     return require(path.join(g, 'playwright'));
   } catch { /* not global */ }
-  console.error('playwright is not installed. Run: npm i -D playwright && npx playwright install chromium');
+  console.error('playwright is not installed. Run: npm install --no-save playwright && npx playwright install chromium');
   process.exit(2);
 }
 const { chromium } = loadPlaywright();

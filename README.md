@@ -17,14 +17,14 @@ inspectors, and the host for its web app at `/app`. Live at https://inspection.r
    every event the site and app send.
 6. [`docs/DECISIONS.md`](docs/DECISIONS.md) — why things are the way they are, dated, with
    the commit or pull request that decided it.
-
 7. [`docs/CAMPAIGNS.md`](docs/CAMPAIGNS.md) — the ten campaign landing pages and their
    tracking values.
 
 Open work is tracked as GitHub issues in this repository; `docs/STATUS.md` links them.
 The other repositories have briefs of their own: the app repo has `CLAUDE.md` (and an
 `AGENTS.md` pointer in its PR #6), `hip-records-api` has `CLAUDE.md` and `RUNBOOK.md`,
-`hip-accounts-api` has `README.md`, `DEPLOY.md`, `RESTORE.md` and `docs/MIGRATION.md`.
+`hip-accounts-api` has `README.md`, `DEPLOY.md`, `RESTORE.md`, `STRIPE-SETUP.md` (stale prices)
+and `docs/MIGRATION.md`.
 The system map says which of those to trust, because several are out of date.
 
 ## What is in this repository

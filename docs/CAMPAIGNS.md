@@ -2,10 +2,12 @@
 
 The ten pages under `lp/` are ad and outreach destinations. They are `noindex,nofollow`,
 have no canonical link, are not in `sitemap.xml`, and load shared files with `../assets/`
-paths. Each carries an inline snippet with `var LP = "lpNN"` (some pages use single quotes) that pushes `lp_view` on load
-and `lp_cta_click` on the call to action, and its CTAs link to `/app/?v=lpNN` so the app
-can see which campaign sent the visitor (the `v` value is never put into an analytics
-event payload). Add a row here when you add a page; recipe in `RUNBOOK.md` section 4.
+paths. Each carries an inline snippet that pushes `lp_view` on load and `lp_cta_click` on
+the call to action with the campaign id: `lp01` to `lp05` set it once as `var LP = "lpNN"`,
+`lp06` to `lp10` repeat `lp:'lpNN'` inside each push. The CTAs link to `/app/?v=lpNN` so
+the app can see which campaign sent the visitor (the `v` value is never put into an
+analytics event payload). Only `lp01` to `lp05` share `../assets/site.css`; the others
+carry their own styles. Add a row here when you add a page; recipe in `RUNBOOK.md` section 4.
 
 | Page | Title (the promise) | Notes |
 |---|---|---|

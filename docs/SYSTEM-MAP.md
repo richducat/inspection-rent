@@ -22,17 +22,18 @@ this file in the same pull request.
 |---|---|---|---|---|
 | Marketing site | `richducat/inspection-rent` (public) | https://inspection.rent | GitHub Pages | push to `main` runs `.github/workflows/pages.yml` (no build, no tests) |
 | The app (built copy) | same repo, folder `app/` | https://inspection.rent/app | GitHub Pages | written by `deploy-hip.sh` from the app repo; **never hand-edited** |
-| The app (source) | `richducat/home-inspection-assistant` (private) | builds into the above | none of its own (its Pages site was retired 2026-09-10) | `./deploy-hip.sh` on the owner's Mac; its CI ("Validate app") only tests, builds, checks the bundle budget and uploads a `validated-app` artifact |
+| The app (source) | `richducat/home-inspection-assistant` (private) | builds into the above | none of its own (its Pages site was retired 2026-09-10) | `./deploy-hip.sh` on the owner's Mac; its CI ("Validate app") only tests, typechecks, builds, checks the bundle budget and uploads a `validated-app` artifact (built with the wrong base path until that repo's PR #7 merges) |
 | Accounts API | `richducat/hip-accounts-api` | https://accounts.eb28.co | **Namecheap shared cPanel host** (LiteSpeed + Passenger, account `tyfyprbm`, IP 162.213.253.62). The Render service described in its `DEPLOY.md` and `render.yaml` was never created (that URL is 404) | rsync the source to `/home/tyfyprbm/hip-accounts-api` over SSH (port 21098, key `~/.ssh/hip_deploy_ed25519` on the Mac) and `touch tmp/restart.txt`. Not documented in that repo; see `RUNBOOK.md` section 12 |
 | Records API | `richducat/hip-records-api` | https://hip-records-api.onrender.com | Render, Docker (Playwright image), plan Standard 2 GB | push to `main`; Render auto-deploys. Convention: bump the `deploy` marker in `GET /health` every deploy so the live build can be confirmed |
 | Wind-mitigation photo analysis | not in any repository | https://richards-macbook-pro.tail44c237.ts.net | the owner's Mac through a Tailscale funnel | unknown. *Unverified:* the cloud sandbox cannot reach that host at all, so its state is unknown (issue #8) |
 | Vision API | `richducat/hip-vision-api` (private, last push 2026-07-21; not attached to any session) | not wired: `VITE_VISION_API_URL` is unset in every build | unknown | unknown; open question for the owner (issue #10) |
-| iOS shell | `inspector-gadgets-ios` (*inference*; App Store wrapper around inspection.rent/app) | App Store | Apple | unknown |
-| Old company site | an `eb28.co` repository (location unknown) | https://eb28.co | GitHub Pages | **still serves a stale July build of the app at `/HIP/app/` against the production backends**, although `deploy-hip.sh` says it was retired 2026-07-14 |
+| iOS shell | repository name unknown (*inference* from the app code: a WKWebView wrapper around inspection.rent/app that hides purchase UI; no repo with "ios" in its name exists under `richducat` except an unrelated one) | App Store | Apple | unknown |
+| Old company site | `richducat/eb28.co` (public; Mac checkout `/Users/richardducat/GITHUB/eb28.co`, served from `docs/`) | https://eb28.co | GitHub Pages | **still serves a stale build of the app at `/HIP/app/` (from before 2026-08-06) against the production backends**, although `deploy-hip.sh` says it was retired 2026-07-14 (issue #13) |
 
 Local paths hard-coded in `deploy-hip.sh` on the owner's Mac: the app source checkout
-`/Users/richardducat/Documents/Codex/2026-06-24/is-it-possible-to-clone-our/hip-app-work`
-and this repository at `/Users/richardducat/GITHUB/inspection-rent`. A second checkout of
+`/Users/richardducat/Documents/Codex/2026-06-24/is-it-possible-to-clone-our/hip-app-work`,
+this repository at `/Users/richardducat/GITHUB/inspection-rent`, and the retired
+`/Users/richardducat/GITHUB/eb28.co`. A second checkout of
 the app repo at `/Users/richardducat/GITHUB/home-inspection-assistant` is named in that
 repo's `docs/isolation-policy.md`; which one is canonical is an open question for the owner.
 
@@ -58,7 +59,7 @@ Every page and the app ──> Google Tag Manager GTM-PX3ZXWR6 ──> GA4 G-36J
 | GitHub Pages | site, app | Hosting | `pages.yml`, repo Settings → Pages, `CNAME` | Site and app unreachable; an already-open app tab keeps working on its loaded code |
 | GitHub | all repos | Source of truth, Actions, Render's deploy webhook | | Losing the account loses the only copy of the private app source |
 | Namecheap | both domains, accounts API | Registrar and DNS for `inspection.rent` and `eb28.co` (nameservers `dns1/dns2.registrar-servers.com`); shared cPanel hosting for the accounts API | Namecheap account | DNS loss takes everything down at once. A cPanel process-limit lockout takes down sign-in, sync and billing; the `render.yaml` header in `hip-accounts-api` records one on 2026-07-18 and `docs/MIGRATION.md` says it happened twice that summer. While accounts is down, property research in the app also fails with "503 retryable", because the records API checks every session against accounts |
-| The owner's Mac as a monitor | accounts API, records API | An hourly launchd job (`co.eb28.hipbackup`) snapshots `accounts.db` over SSH, checks both health endpoints, keeps the records service warm, and iMessages the owner about outages and new signups | `hip-accounts-api/deploy/backup-and-watch.sh`, `~/bin/hip-keepwarm.sh` on the Mac | No backups and no alerts; nobody is paged. Inspectors notice nothing directly |
+| The owner's Mac as a monitor | accounts API, records API | An hourly launchd job (`co.eb28.hipbackup`) snapshots `accounts.db` over SSH, checks both health endpoints, and iMessages the owner about outages and new signups; a second agent (`co.eb28.hipkeepwarm`) runs `~/bin/hip-keepwarm.sh` every 10 minutes to keep the records service warm | `hip-accounts-api/deploy/backup-and-watch.sh`, `hip-records-api/deploy/co.eb28.hipkeepwarm.plist` | No backups and no alerts; nobody is paged. Inspectors notice nothing directly |
 | Render | records API | Hosting, auto-deploy, logs, one-click rollback | Render dashboard; `JWT_SECRET` must be pasted there | Property research loses the BCPAO card and permit history; the app falls back to link-only cards and says so |
 | Stripe | accounts API, app | Subscriptions, Checkout, Billing Portal, Connect for inspector client payments, two webhooks | `STRIPE_*` env vars on the cPanel host (names in `hip-accounts-api/.env.example`, several are missing there) | New customers cannot subscribe or unlock clean reports; a wrong webhook secret after a host move silently stops activations |
 | Google Cloud OAuth client | app | Sign-in for Calendar sync, Drive backup, Gmail drafts | public client id `732061845842-...apps.googleusercontent.com`, baked in by `deploy-hip.sh` and the CI variable `VITE_GOOGLE_CLIENT_ID` | Those three features fail; inspections and PDFs are unaffected. Sensitive-scope verification for calendar was "still under Google review" on 2026-08-11 |
@@ -80,7 +81,7 @@ in a repository, and there is no written "the Mac is dead" runbook (issue #10).
   besides the cPanel disk (launchd job `co.eb28.hipbackup`, snapshots in `~/hip-backups`,
   30-day retention), plus the health watch, outage alerts and new-signup alerts it sends
   by iMessage.
-- The records keep-warm job (`~/bin/hip-keepwarm.sh`).
+- The records keep-warm agent (`co.eb28.hipkeepwarm`, running `~/bin/hip-keepwarm.sh` every 10 minutes).
 - The wind-mitigation analysis service behind the Tailscale funnel.
 - The SSH key to the cPanel host and the credentials file for the synthetic-monitor account.
 - Guides referenced by the app's `CLAUDE.md` but not in git: `~/.buzz/GUIDES/EB28_OPERATING_CHARTER.md`,
@@ -95,7 +96,8 @@ Connect (iOS shell), the `richducat@gmail.com` mailbox, OpenAI/Codex (the PR rev
 Anthropic (Claude Code). No repository names a password manager or a second person with
 access (issue #14). Credentials are never stored in any repository; env var **names** are
 in each API repo's `.env.example`, but the example *values* there (paths, URLs, price
-variable names) are stale; `src/config.mjs` in each API is the truth (issue #15).
+variable names) are stale; the truth is `hip-accounts-api/src/config.mjs` and, for the
+records API, the env block near the end of `server.mjs` plus `render.yaml` (issue #15).
 
 ## Which documents to trust in the other repositories
 
@@ -103,8 +105,8 @@ Every repository carries some stale text. Read these first and treat the rest wi
 
 | Repository | Trust | Ignore or verify first |
 |---|---|---|
-| `home-inspection-assistant` | `CLAUDE.md` (rules, release gate), `deploy-hip.sh` (the real deploy), `.github/workflows/deploy-pages.yml`, `scripts/score.mjs`, `docs/WIND-SPEED-SOURCES.md` | `README.md` ("Isolated GitHub Pages deployment", localhost:4173 URL: retired), `docs/isolation-policy.md` (says the repo is public and names the other checkout), `docs/implementation-plan.md` (describes mid-2026 as future), `docs/MARKETING-LAUNCH-KIT.md` lines about a GA4 `purchase` event (removed 2026-09-07), `.env.example` (lists unused vars, omits `VITE_RECORDS_API_URL` and `VITE_GOOGLE_CLIENT_ID`), `CLAUDE.md`'s bundle figures (126 KB; measured 129.8 KB) |
-| `hip-accounts-api` | Read `RESTORE.md` and `docs/MIGRATION.md` first (the only files that describe the live cPanel host), then `src/config.mjs` and `src/entitlements.mjs` (the real plans and env var names), `scripts/restore-db.sh`, `deploy/backup-and-watch.sh` (what the Mac job really does) | `README.md` (says register creates `pending`; it creates a card-less `sample` account; lists one $20 plan and 17 of 34 routes; describes an EC2 deploy), `DEPLOY.md` (presents Render as the deployment; it is not), `.env.example` (old paths and price var names), `STRIPE-SETUP.md` (old price table), the comment in `src/server.mjs` about a Render disk |
+| `home-inspection-assistant` | `CLAUDE.md` (rules, release gate), `deploy-hip.sh` (the real deploy), `.github/workflows/deploy-pages.yml`, `scripts/score.mjs`, `docs/WIND-SPEED-SOURCES.md` | `README.md` ("Isolated GitHub Pages deployment", localhost:4173 URL: retired), `docs/isolation-policy.md` (says the repo is public and names the other checkout), `docs/implementation-plan.md` (an undated phase list from the first build; ignore), `docs/MARKETING-LAUNCH-KIT.md` lines about a GA4 `purchase` event (removed 2026-09-07), `.env.example` (lists unused vars, omits `VITE_RECORDS_API_URL` and `VITE_GOOGLE_CLIENT_ID`), `CLAUDE.md`'s bundle figures (126 KB; measured 129.8 KB) |
+| `hip-accounts-api` | Read `RESTORE.md` and `docs/MIGRATION.md` first (the only files that describe the live cPanel host), then `src/config.mjs` and `src/entitlements.mjs` (the real plans and env var names), `scripts/restore-db.sh`, `deploy/backup-and-watch.sh` (what the Mac job really does) | `README.md` (says register creates `pending`; it creates a card-less `sample` account; lists one $20 plan and 16 of the 33 routes; describes an EC2 deploy), `DEPLOY.md` (presents Render as the deployment; it is not), `.env.example` (old paths and price var names), `STRIPE-SETUP.md` (old price table), the comment in `src/server.mjs` about a Render disk |
 | `hip-records-api` | `CLAUDE.md`, `RUNBOOK.md` (the 401/503 emergency page; note it omits `JWT_SECRET`, `ALLOW_UNSIGNED_FAILOPEN`, `FAIL_OPEN_ON_ACCOUNTS_OUTAGE`, `REQUIRE_ENTITLEMENT`), `render.yaml`, `docs/PREFETCH.md` (except the "512 MB" instance size; it is 2 GB) | `README.md` (EC2 deploy at `records.eb28.co`, which does not resolve; `npm run dev` returns 401 unless `REQUIRE_AUTH=0`), `DEPLOY.md` frontend steps, `docs/BIG4-METRO-RECON.md` registry claims, `fixtures/coverage-baseline.json` (last recorded 2026-08-15) |
 
 ## Contradictions only the owner can settle

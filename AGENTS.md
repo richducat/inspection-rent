@@ -7,8 +7,9 @@ sees the same text. Edit this file, never a copy.
 ## What this repository is
 
 - The public marketing site for **Inspector Gadgets** at https://inspection.rent. Plain
-  HTML and CSS, no framework, no build step. 24 HTML files: 13 indexable pages at the root,
-  `refunds.html` (a redirect stub with no analytics), and 10 campaign landing pages
+  HTML and CSS, no framework, no build step. 24 HTML files: 14 root pages listed in
+  `sitemap.xml` (one of them `refunds.html`, a meta-refresh stub to `terms.html#refunds`
+  with no analytics, still marked `index,follow`), and 10 campaign landing pages
   `lp/lp01.html` to `lp/lp10.html` (`noindex,nofollow`, not in the sitemap, each with its
   own tracking snippet; registry in `docs/CAMPAIGNS.md`). So 23 pages carry analytics, and
   there are 24 GTM loaders because the app shell `app/index.html` has one too.
@@ -66,10 +67,12 @@ is the checklist every PR fills in.
 5. **Phones first.** No page may be wider than a 320 px or 375 px viewport.
    `npm run mobilecheck` must print `0 overflowing` before a pull request is opened.
 6. **All changes go through a pull request to `main`.** Codex reviews every PR and posts
-   a "Codex Review Summary" comment; wait until it says Completed (2 to 8 minutes observed;
-   comment `@codex review` to re-run it), then fix each finding or reply in its thread with
-   why not, before merging. Three valid findings from 2026-09-07 were lost because PRs #1
-   and #2 were merged within two minutes of opening, before Codex had posted: the charset
+   a "Codex Review Summary" comment; wait until it says Completed (2 to 8 minutes observed
+   when the bot has quota; comment `@codex review` to re-run it; if nothing appears within
+   ten minutes, say so in the PR, as on 2026-09-19 when it answered "usage limits reached"),
+   then fix each finding or reply in its thread with why not, before merging. Three valid
+   findings from 2026-09-07 were lost because PRs #1 and #2 were merged within two minutes
+   of opening, before Codex had posted (PRs #4 to #6 were merged within seconds): the charset
    position (fixed 2026-09-19), a patched bundle keeping its old hash (moot after the
    2026-09-10 rebuild), and the single-report plan label (fixed in the app repo's PR #5).
 7. **Never commit secrets.** Every file in this repository is served to the internet,
@@ -81,8 +84,10 @@ is the checklist every PR fills in.
 9. **Generated and hand-maintained files:** `app/` is regenerated (rule 1). `sitemap.xml`
    is hand-maintained; add indexable root pages to it, never campaign pages.
 10. **Campaign pages** (`lp/lpNN.html`): copy an existing one, change `<title>`, the meta
-    description, the inline `var LP = "lpNN"`, and every `href="/app/?v=lpNN"` CTA; keep
-    `noindex,nofollow`, no canonical, `../assets/` paths; add a row to `docs/CAMPAIGNS.md`.
+    description, every `href="/app/?v=lpNN"` CTA, and every occurrence of the campaign id
+    in the inline snippet (`grep -n lpNN` the copy: `lp01` to `lp05` set `var LP` once,
+    `lp06` to `lp10` repeat it in each push); keep `noindex,nofollow`, no canonical,
+    `../assets/` paths; add a row to `docs/CAMPAIGNS.md`.
     Full recipe in `docs/RUNBOOK.md` section 4.
 
 ## How a change flows
