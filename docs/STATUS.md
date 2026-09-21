@@ -210,12 +210,21 @@ unlimited, first address free with the report stamped SAMPLE, no $5 single repor
 (decision of 2026-09-21 in `DECISIONS.md`). Two plan cards replace three on `pricing.html` and
 `index.html`, both JSON-LD blocks now list 50.00 and 500.00, `terms.html` says existing
 subscribers keep their price and old credits stay usable, `lp01` and `lp02` are rewritten.
-Verified in that checkout: `npm test` 15 of 15, both JSON-LD blocks parse. **Not verified:**
-`npm run mobilecheck` (no Playwright there), so it must print `0 overflowing` before a PR is
-opened. It must NOT be merged before launch day: launch is one sitting, after the wind-mitigation
+After review the same day: the renewal line in `terms.html` now says plans renew at the price
+you subscribed at (it said "then-current price", which contradicted the promise to existing
+subscribers); the JSON-LD offers state the billing period (`unitCode` MON and ANN); the two
+home-page plan cards are equal height again.
+Verified in that checkout: `npm test` 20 of 20 (15 analytics, 5 for the new launch check), the
+JSON-LD blocks in `index.html` and `pricing.html` parse, `npm run mobilecheck` prints
+`0 overflowing of 46 page-widths` (run with the Mac's Google Chrome through
+`MOBILECHECK_CHROMIUM`), home plan cards measured 363 and 363 px at 1280 px, 397 and 397 px at
+620 px. **Not verified:** how search engines read the new JSON-LD (Google's Rich Results Test
+needs the live page). It must NOT be merged before launch day: launch is one sitting, after the wind-mitigation
 photo analysis service is back, together with the app and accounts-server branches of the same
-name. At launch, confirm the visible "Effective October 2026" date in `terms.html` and the
-`sitemap.xml` lastmod dates.
+name. **Two dates are deliberately unset:** `terms.html` shows "Effective LAUNCH-DATE-NOT-SET."
+and the 12 price-carrying `sitemap.xml` entries still say 2026-09-21. On launch day set both
+and run `npm run launchcheck -- <launch date>` (`RUNBOOK.md` section 2); it fails until they
+are right, so the token cannot reach the live site unnoticed.
 
 Nothing else half-done. Stale branches kept on purpose (the owner asked that nothing be deleted):
 here `claude/app-error-review-o46y68` (its one commit was cherry-picked into #16) and the

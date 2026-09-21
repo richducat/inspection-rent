@@ -121,7 +121,7 @@ The owner merges. Do not merge your own PR unless the owner has said so in writi
 ## Verification recipes
 
 ```bash
-npm test               # analytics click-handoff tests, node:test, no install needed
+npm test               # analytics click-handoff and launch-check tests, node:test, no install needed
 npm run mobilecheck    # every marketing page at 320 and 375 px, needs playwright
 npm run check          # both
 

@@ -28,7 +28,7 @@ the deploy run.
 ## 2. Run the checks
 
 ```bash
-npm test               # 15 tests on assets/marketing-analytics.js
+npm test               # 15 tests on assets/marketing-analytics.js, 5 on tests/launch-check.cjs
 npm run mobilecheck    # loads all 23 marketing pages at 320 and 375 px; must print "0 overflowing"
 ```
 
@@ -38,7 +38,20 @@ never commit either). In a Claude Code cloud session Playwright and Chromium are
 preinstalled; run it with `NODE_PATH=$(npm root -g) npm run mobilecheck`. Flags:
 `--widths 320,375,600`, `--only pricing.html,coverage.html`, `--root <other checkout>` (to
 measure `main` or a worktree), `--shots /tmp/shots` (full-page screenshots; keep the
-directory outside the repo, `shots/` is a tracked folder of product images).
+directory outside the repo, `shots/` is a tracked folder of product images). On a Mac with
+Google Chrome installed, the browser download can be skipped:
+`MOBILECHECK_CHROMIUM="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" npm run mobilecheck`.
+
+**Launch day of the $50 / $500 offer only** (branch `claude/pricing-50-500`): two dates cannot
+be known before launch, so the branch carries a token instead of guessing. Before merging:
+
+1. In `terms.html` replace `LAUNCH-DATE-NOT-SET` with the exact day, for example
+   `October 14, 2026`, so the line reads "Effective October 14, 2026."
+2. In `sitemap.xml` set `<lastmod>` to the same day (as `2026-10-14`) on the 12 pages that carry
+   the prices (every entry except `privacy.html` and `refunds.html`).
+3. Run `npm run launchcheck -- 2026-10-14` with that date. It must print `launchcheck: ok`; it
+   lists every page still wrong otherwise. `grep -rn LAUNCH-DATE-NOT-SET *.html lp/*.html` must
+   print nothing.
 
 ## 3. Change an existing marketing page
 

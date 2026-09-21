@@ -43,8 +43,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   "operatingSystem": "Web",
   "description": "Inspection software for licensed Florida home inspectors. Pulls the county record, permits, and flood zone for a Florida address, walks the inspection with guided checklists and required photos, and prepares the official 4-Point and OIR-B1-1802 wind mitigation forms as finished PDFs.",
   "offers": [
-    { "@type": "Offer", "price": "50.00", "priceCurrency": "USD", "description": "Unlimited plan — unlimited inspections, billed monthly", "url": "https://inspection.rent/pricing.html" },
-    { "@type": "Offer", "price": "500.00", "priceCurrency": "USD", "description": "Unlimited Annual plan — unlimited inspections, billed once per year", "url": "https://inspection.rent/pricing.html" }
+    { "@type": "Offer", "name": "Unlimited", "price": "50.00", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "50.00", "priceCurrency": "USD", "billingDuration": 1, "billingIncrement": 1, "unitCode": "MON" }, "description": "Unlimited plan — unlimited inspections, billed monthly", "url": "https://inspection.rent/pricing.html" },
+    { "@type": "Offer", "name": "Unlimited Annual", "price": "500.00", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "500.00", "priceCurrency": "USD", "billingDuration": 1, "billingIncrement": 1, "unitCode": "ANN" }, "description": "Unlimited Annual plan — unlimited inspections, billed once per year", "url": "https://inspection.rent/pricing.html" }
   ]
 }
 </script>
@@ -69,7 +69,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .g2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
   .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   .hero-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:48px;align-items:center}
-  .price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:start;max-width:780px}
+  .price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:stretch;max-width:780px}
+  .price-grid>div{display:flex;flex-direction:column}
+  .price-grid>div>a{margin-top:auto}
   .how-row{display:grid;grid-template-columns:64px 300px 1fr;gap:24px;align-items:start}
   .faq-row{display:grid;grid-template-columns:360px 1fr;gap:36px}
   .foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:32px}
