@@ -204,7 +204,20 @@ update, if it is not merged yet. Next action that changes production: run
 
 ### In flight
 
-Nothing half-done. Stale branches kept on purpose (the owner asked that nothing be deleted):
+**Branch `claude/pricing-50-500` (local commits only, not pushed, no PR yet; written 2026-09-21).**
+It rewrites the 22 pages that carry prices for the new offer: $50 a month or $500 a year, both
+unlimited, first address free with the report stamped SAMPLE, no $5 single report for sale
+(decision of 2026-09-21 in `DECISIONS.md`). Two plan cards replace three on `pricing.html` and
+`index.html`, both JSON-LD blocks now list 50.00 and 500.00, `terms.html` says existing
+subscribers keep their price and old credits stay usable, `lp01` and `lp02` are rewritten.
+Verified in that checkout: `npm test` 15 of 15, both JSON-LD blocks parse. **Not verified:**
+`npm run mobilecheck` (no Playwright there), so it must print `0 overflowing` before a PR is
+opened. It must NOT be merged before launch day: launch is one sitting, after the wind-mitigation
+photo analysis service is back, together with the app and accounts-server branches of the same
+name. At launch, confirm the visible "Effective October 2026" date in `terms.html` and the
+`sitemap.xml` lastmod dates.
+
+Nothing else half-done. Stale branches kept on purpose (the owner asked that nothing be deleted):
 here `claude/app-error-review-o46y68` (its one commit was cherry-picked into #16) and the
 merged PR branches; in the app repo `claude/app-issues-beth-aicohr` (2026-08-26, never
 merged; see issue #15) and the merged PR branches.

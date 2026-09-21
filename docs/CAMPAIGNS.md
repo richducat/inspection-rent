@@ -11,8 +11,8 @@ carry their own styles. Add a row here when you add a page; recipe in `RUNBOOK.m
 
 | Page | Title (the promise) | Notes |
 |---|---|---|
-| `lp/lp01.html` | Start Free, No Card Needed | |
-| `lp/lp02.html` | $98 a Year, Unlimited Inspections | States the $98/yr offer that issue #12 questions |
+| `lp/lp01.html` | Your First Address Is Free | Rewritten 2026-09-21 for the $50 / $500 offer (was "Start Free, No Card Needed", built on the $5 single report): first address free, see the finished report before you pay |
+| `lp/lp02.html` | $500 a Year, Unlimited Inspections | Rewritten 2026-09-21 (was "$98 a Year"): $500 a year unlimited against $900 to $1,800 a year elsewhere. Any ad or email that still quotes $98 or $5 and points here must be paused or updated at launch |
 | `lp/lp03.html` | See the Records Pull Work First | |
 | `lp/lp04.html` | Wind Mitigation Software — OIR-B1-1802 Pre-Filled | |
 | `lp/lp05.html` | Florida 4-Point Inspection Software — Form Pre-Filled | The indexable sibling is `4-point-inspection-software.html` at the root |

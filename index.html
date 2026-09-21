@@ -43,9 +43,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   "operatingSystem": "Web",
   "description": "Inspection software for licensed Florida home inspectors. Pulls the county record, permits, and flood zone for a Florida address, walks the inspection with guided checklists and required photos, and prepares the official 4-Point and OIR-B1-1802 wind mitigation forms as finished PDFs.",
   "offers": [
-    { "@type": "Offer", "price": "5.00", "priceCurrency": "USD", "description": "Unlock a single clean, submission-ready report", "url": "https://inspection.rent/pricing.html" },
-    { "@type": "Offer", "price": "20.00", "priceCurrency": "USD", "description": "Monthly plan — 10 inspections per month", "url": "https://inspection.rent/pricing.html" },
-    { "@type": "Offer", "price": "98.00", "priceCurrency": "USD", "description": "Annual plan — unlimited inspections for the year", "url": "https://inspection.rent/pricing.html" }
+    { "@type": "Offer", "price": "50.00", "priceCurrency": "USD", "description": "Unlimited plan — unlimited inspections, billed monthly", "url": "https://inspection.rent/pricing.html" },
+    { "@type": "Offer", "price": "500.00", "priceCurrency": "USD", "description": "Unlimited Annual plan — unlimited inspections, billed once per year", "url": "https://inspection.rent/pricing.html" }
   ]
 }
 </script>
@@ -70,7 +69,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .g2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
   .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   .hero-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:48px;align-items:center}
-  .price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start}
+  .price-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;align-items:start;max-width:780px}
   .how-row{display:grid;grid-template-columns:64px 300px 1fr;gap:24px;align-items:start}
   .faq-row{display:grid;grid-template-columns:360px 1fr;gap:36px}
   .foot-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:32px}
@@ -117,7 +116,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .chk-foot{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;font-size:12px;color:#8b9aab}
   @media(max-width:900px){
     .wrap{padding:0 24px}
-    .hero-grid,.g2,.g3,.price-grid,.cost-grid{grid-template-columns:1fr!important;gap:20px}
+    .hero-grid,.g2,.g3,.cost-grid{grid-template-columns:1fr!important;gap:20px}
     .how-row{grid-template-columns:44px 1fr!important;gap:8px 18px}
     .how-row p{grid-column:2}
     .faq-row{grid-template-columns:1fr!important;gap:10px}
@@ -130,6 +129,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     .chk-card{padding:28px 22px 26px;border-radius:20px}
     .chk-title{font-size:25px}
     .pad{padding-top:60px!important;padding-bottom:60px!important}
+  }
+  @media(max-width:600px){
+    /* Two plan cards: side by side from 601px, stacked on phones. */
+    .price-grid{grid-template-columns:1fr!important;max-width:none}
   }
   @media(max-width:400px){
     /* 320px phones: brand + Log in + Get Started overflowed the bar by 10px. */
@@ -182,7 +185,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a class="btn-p" href="/app/">Get Started</a>
         <a class="btn-s" href="#check" style="background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.2)">Run a Property Check →</a>
       </div>
-      <p style="margin:20px 0 0;font-size:13px;line-height:1.55;color:#7f93a7;max-width:460px">Create your free account — no card needed. Run your first inspection and see the finished report as a watermarked sample; pay only to download the clean, submission-ready PDF.</p>
+      <p style="margin:20px 0 0;font-size:13px;line-height:1.55;color:#7f93a7;max-width:460px">Create your free account — no card needed. Your first address is free: run it end to end and see the finished report, stamped SAMPLE. Clean, submission-ready PDFs come with a plan.</p>
       <p style="margin:10px 0 0;font-size:14px;color:#aebccb">Already have an account? <a href="/app/" style="color:#C7962B;font-weight:600;text-decoration:underline">Log in here</a>.</p>
     </div>
     <!-- LIVE light property check — the lead-gen tool. Real lookups run in the
@@ -486,13 +489,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div>
       <div class="kicker">What the desk work really costs</div>
       <h2 class="serif sec-h2" style="font-size:40px;margin-top:16px;max-width:560px">The desk work costs you more than the tool does.</h2>
-      <p style="margin:22px 0 0;font-size:16px;line-height:1.65;color:#3a4b5c;max-width:560px">Call the lookup-and-retype drill 25 minutes per insurance job, conservatively. At the ~$90 an hour a wind-mit/4-point combo actually pays you, that's about <strong>$35 of your time per report</strong>. Inspector Gadgets costs <strong>$2 a report</strong> on the monthly plan — and on the unlimited year, a 300-report year works out to about 33 cents each. Doing four insurance jobs a day? That's 100 minutes back — room for one more paid combo on the schedule.</p>
+      <p style="margin:22px 0 0;font-size:16px;line-height:1.65;color:#3a4b5c;max-width:560px">Call the lookup-and-retype drill 25 minutes per insurance job, conservatively. At the ~$90 an hour a wind-mit/4-point combo actually pays you, that's about <strong>$35 of your time per report</strong>. Inspector Gadgets is <strong>$50 a month</strong> with no cap on inspections — less than the desk time on two of those reports. Doing four insurance jobs a day? That's 100 minutes back — room for one more paid combo on the schedule.</p>
     </div>
     <div style="background:#0B1D31;border-radius:16px;padding:40px;text-align:center;color:#fff">
-      <div class="serif" style="font-size:72px;color:#C7962B;line-height:1">$2</div>
-      <div class="mono" style="font-size:13px;letter-spacing:.08em;color:#8fa3b8;margin-top:6px">A REPORT</div>
+      <div class="serif" style="font-size:72px;color:#C7962B;line-height:1">$50</div>
+      <div class="mono" style="font-size:13px;letter-spacing:.08em;color:#8fa3b8;margin-top:6px">A MONTH, UNLIMITED</div>
       <div style="height:1px;background:rgba(255,255,255,.14);margin:26px 0"></div>
-      <p style="font-size:14.5px;line-height:1.6;color:#b9c6d3;margin:0">$20/mo covers 10 inspections. $98/yr makes it unlimited — or unlock a single clean report for $5.</p>
+      <p style="font-size:14.5px;line-height:1.6;color:#b9c6d3;margin:0">Or $500 a year — two months free. Either way, your first address is free.</p>
     </div>
   </div>
 </section>
@@ -500,17 +503,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ================= PRICING ================= -->
 <section id="pricing" class="sec-dark">
   <div class="wrap pad" style="padding-top:92px;padding-bottom:92px">
-    <div class="eyebrow">Sec 09 — Choose what fits your schedule</div>
-    <h2 class="serif sec-h2" style="font-size:44px;margin-top:16px;color:#fff">Start free. Pay only when you unlock.</h2>
-    <p style="margin:22px 0 0;font-size:16.5px;line-height:1.6;color:#b9c6d3;max-width:720px">Create your free account — no card needed. Run your first inspection end to end and preview the finished report as a watermarked SAMPLE. Pay only to download the clean, submission-ready file: $5 for a single report, $20/mo for 10 a month, or $98/yr unlimited.</p>
+    <div class="eyebrow">Sec 09 — One plan, two ways to pay</div>
+    <h2 class="serif sec-h2" style="font-size:44px;margin-top:16px;color:#fff">Your first address is free. Then one unlimited plan.</h2>
+    <p style="margin:22px 0 0;font-size:16.5px;line-height:1.6;color:#b9c6d3;max-width:720px">Create your free account — no card needed. Run your first address end to end — records, permits, photos, forms — and see the finished report, stamped SAMPLE. Clean, submission-ready reports come with a plan: $50 a month or $500 a year, both unlimited.</p>
     <div class="price-grid" style="margin-top:48px">
-      <!-- Professional -->
+      <!-- Unlimited, monthly -->
       <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:32px">
-        <div style="font-size:15px;font-weight:600;color:#fff">Professional</div>
-        <div style="margin-top:14px"><span class="serif" style="font-size:44px;color:#fff">$20</span><span style="font-size:14px;color:#8fa3b8"> / month</span></div>
-        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#b9c6d3">For the working inspector — covers a steady week-in, week-out schedule.</p>
+        <div style="font-size:15px;font-weight:600;color:#fff">Unlimited</div>
+        <div style="margin-top:14px"><span class="serif" style="font-size:44px;color:#fff">$50</span><span style="font-size:14px;color:#8fa3b8"> / month</span></div>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#b9c6d3">Pay month to month, with no cap on inspections.</p>
         <ul style="margin:22px 0 24px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
-          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>Up to 10 inspections a month</li>
+          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>Unlimited inspections</li>
           <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>Every feature in the tool</li>
           <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>Cancel anytime</li>
         </ul>
@@ -518,31 +521,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <!-- Unlimited Annual — the anchor -->
       <div style="background:#fff;border:1px solid #C7962B;border-radius:14px;padding:32px;position:relative;box-shadow:0 30px 60px -30px rgba(0,0,0,.5)">
-        <span style="position:absolute;top:-12px;left:32px;background:#C7962B;color:#0B1D31;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:20px">Best value</span>
-        <div style="font-size:15px;font-weight:600;color:#0B1D31">Unlimited</div>
-        <div style="margin-top:14px"><span class="serif" style="font-size:44px;color:#0B1D31">$98</span><span style="font-size:14px;color:#8296a8"> / year</span></div>
-        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#3a4b5c">Less than 5 months of the monthly plan covers your whole year, uncapped.</p>
+        <span style="position:absolute;top:-12px;left:32px;background:#C7962B;color:#0B1D31;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:20px">Two months free</span>
+        <div style="font-size:15px;font-weight:600;color:#0B1D31">Unlimited Annual</div>
+        <div style="margin-top:14px"><span class="serif" style="font-size:44px;color:#0B1D31">$500</span><span style="font-size:14px;color:#8296a8"> / year</span></div>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#3a4b5c">The same plan, paid once a year: $500 instead of $600.</p>
         <ul style="margin:22px 0 24px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
           <li style="font-size:14px;color:#0B1D31;display:flex;gap:9px"><span style="color:#1E6F5C">✓</span>Unlimited inspections, all year</li>
           <li style="font-size:14px;color:#0B1D31;display:flex;gap:9px"><span style="color:#1E6F5C">✓</span>Every feature in the tool</li>
-          <li style="font-size:14px;color:#0B1D31;display:flex;gap:9px"><span style="color:#1E6F5C">✓</span>Works out to pennies a report</li>
+          <li style="font-size:14px;color:#0B1D31;display:flex;gap:9px"><span style="color:#1E6F5C">✓</span>Renews yearly, cancel anytime</li>
         </ul>
         <a class="btn-p" href="/app/" style="width:100%;justify-content:center">Get Started</a>
       </div>
-      <!-- Single report -->
-      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:32px">
-        <div style="font-size:15px;font-weight:600;color:#fff">Single report</div>
-        <div style="margin-top:14px"><span class="serif" style="font-size:44px;color:#fff">$5</span><span style="font-size:14px;color:#8fa3b8"> / report</span></div>
-        <p style="margin:14px 0 0;font-size:14px;line-height:1.55;color:#b9c6d3">Just one job? Unlock a single clean, submission-ready report.</p>
-        <ul style="margin:22px 0 24px;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px">
-          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>One clean 4-Point or Wind-Mit export</li>
-          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>Every feature in the tool</li>
-          <li style="font-size:14px;color:#e7edf3;display:flex;gap:9px"><span style="color:#1E9E77">✓</span>No subscription — pay as you go</li>
-        </ul>
-        <a class="btn-s" href="/app/" style="width:100%;justify-content:center;background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.24)">Get Started</a>
-      </div>
     </div>
-    <p style="margin:26px 0 0;font-size:12.5px;color:#7f93a7;line-height:1.65;max-width:900px">Start free — no card needed. You pay only when you unlock a clean report or choose a plan. Nothing to install. Cancel anytime — your saved work stays yours. For reference: mainstream inspection platforms run $90–109/month and still hand you a blank wind mit template. <span style="color:#aebccb">Company Accounts — multiple inspectors under one firm — coming soon.</span></p>
+    <p style="margin:26px 0 0;font-size:12.5px;color:#7f93a7;line-height:1.65;max-width:900px">Start free — no card needed. Your first address is free, with its report stamped SAMPLE; you pay only when you choose a plan. Nothing to install. Cancel anytime — your saved work stays yours. For reference: mainstream inspection platforms run $90–109/month and still hand you a blank wind mit template. <span style="color:#aebccb">Company Accounts — multiple inspectors under one firm — coming soon.</span></p>
   </div>
 </section>
 
@@ -558,7 +549,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
       <div class="faq-row" style="padding:26px 0;border-top:1px solid rgba(11,29,49,.14)">
         <h3 style="font-size:18px;font-weight:600;line-height:1.35">How does the pricing actually work?</h3>
-        <p style="font-size:15px;line-height:1.65;color:#3a4b5c;margin:0">You create a free account — no card needed. Run your first inspection and preview the finished report as a watermarked sample — then pay only to download the clean, submission-ready file. Unlock a single report for $5, run 10 a month for $20, or go unlimited for the year at $98. Compare it to one evening, not to other apps: skip a single drive-back and the year's already covered.</p>
+        <p style="font-size:15px;line-height:1.65;color:#3a4b5c;margin:0">You create a free account — no card needed. Your first address is free: run it end to end and see the finished report, stamped SAMPLE. Clean, submission-ready reports come with a plan — $50 a month or $500 a year, both with unlimited inspections. The yearly plan is the monthly one with two months free.</p>
       </div>
       <div class="faq-row" style="padding:26px 0;border-top:1px solid rgba(11,29,49,.14)">
         <h3 style="font-size:18px;font-weight:600;line-height:1.35">Do I have to install anything or learn new software?</h3>
@@ -589,7 +580,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div style="display:flex;gap:14px;justify-content:center;margin-top:34px">
       <a class="btn-p" href="/app/">Get Started</a>
     </div>
-    <div class="mono" style="margin-top:22px;font-size:12px;color:#7f93a7;letter-spacing:.04em">START FREE · NO CARD NEEDED · $98/YR UNLIMITED · $20/MO FOR 10 JOBS · $5 A SINGLE REPORT</div>
+    <div class="mono" style="margin-top:22px;font-size:12px;color:#7f93a7;letter-spacing:.04em">START FREE · NO CARD NEEDED · FIRST ADDRESS FREE · $50/MO OR $500/YR UNLIMITED</div>
     <div style="display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-top:34px">
       <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:#aebccb"><span style="color:#1E9E77">✓</span>Start free — no card needed</span>
       <span style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:#aebccb"><span style="color:#1E9E77">✓</span>Nothing to install</span>

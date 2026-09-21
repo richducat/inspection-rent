@@ -45,8 +45,10 @@ directory outside the repo, `shots/` is a tracked folder of product images).
 1. Branch from `main`. Edit the page. Keep the `<head>` order (charset, internal-traffic
    flag, guarded GTM loader) untouched.
 2. If you changed a price or a plan name, grep for the old value across every page
-   (`grep -rln '\$20' *.html lp/*.html`): the $20 price alone appears on 22 of the 23
-   analytics pages, every page except `privacy.html`. Pricing is also under review (issue #12).
+   (`grep -rln '\$50' *.html lp/*.html`): the $50 and $500 prices appear on 22 of the 23
+   analytics pages, every page except `privacy.html`. `index.html` and `pricing.html` also
+   carry them as `50.00` and `500.00` in their JSON-LD blocks, and `terms.html` lists the plans
+   (decision of 2026-09-21 in `DECISIONS.md`).
 3. Run the checks (section 2). Open the PR with the template. Update `docs/STATUS.md`.
 
 ## 4. Add a new page
