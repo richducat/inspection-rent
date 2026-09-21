@@ -109,8 +109,8 @@ does, is a question only the owner can answer.**
 | `node`, `npm` | absent in the morning; **Node 22.23.2 installed about 16:45 UTC** with `brew install node@22`. It is keg-only: run things with `PATH="/opt/homebrew/opt/node@22/bin:$PATH"` |
 | Homebrew, `gh` | absent in the morning; **installed by the owner at about 16:15 UTC** (Homebrew 7.0.5, `gh` 2.101.0; `~/.zprofile` now puts Homebrew on the PATH) |
 | Saved GitHub sign-in for `git` | absent in the morning; **present since about 16:20 UTC** (`gh auth login` as `richducat`, stored in the macOS keychain, scopes `repo`, `read:org`, `gist`; `gh auth setup-git` run). The private repos can be fetched and this repo pushed |
-| `~/.ssh/hip_deploy_ed25519` (and any other SSH key) | **absent**; the cPanel host refuses SSH from this Mac |
-| launchd jobs `co.eb28.hipbackup` and `co.eb28.hipkeepwarm`, `~/hip-backups`, `~/bin/hip-keepwarm.sh` | **absent**: this Mac takes no backups and sends no alerts |
+| SSH to the cPanel host | `hip_deploy_ed25519` is absent here (it lives on the older Mac and is authorized in cPanel). Since 2026-09-21 18:10 UTC this Mac has its own pair, `~/.ssh/hip_claude_ed25519`, imported and authorized in cPanel by the owner; login verified |
+| launchd jobs `co.eb28.hipbackup` and `co.eb28.hipkeepwarm`, `~/bin/hip-keepwarm.sh` | **absent**: this Mac takes no automatic backups and sends no alerts. `~/hip-backups` now exists and holds the manual backup of 2026-09-21 18:35 UTC. The older Mac's hourly job last reached the server on 2026-09-03 (evidence in `STATUS.md`) |
 | Tailscale, the wind-mit service | **absent**; nothing is listening |
 | `~/.buzz/GUIDES`, `/Users/richardducat/GITHUB/eb28.co` | **absent** |
 

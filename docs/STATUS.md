@@ -3,7 +3,7 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-21 17:35 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+## Last updated: 2026-09-21 18:45 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
 
 ### Done today (2026-09-21): all five pull requests are merged and the website fix is live
 
@@ -37,8 +37,8 @@ Mac". The table is in `SYSTEM-MAP.md` under "Which Mac?". What it means for you:
 | What | State on 2026-09-21 | Verified or believed |
 |---|---|---|
 | SSH key `~/.ssh/hip_deploy_ed25519` | Not on this Mac; the hosting server refused the login | Verified |
-| A key named `hip_claude_ed25519` | Seen in cPanel at 17:25 UTC: **no key of that name existed.** `hip_deploy_ed25519` is there and authorized (so the older Mac can get in and cPanel needed no change for it), along with two other authorized deploy keys whose holders the owner should identify (issue #14); no private keys are stored on the server. A new pair named `hip_claude_ed25519` was then created on the current Mac (private half stays in `~/.ssh`), and its public half was put into cPanel's Import form for the owner to press Import and then Authorize | Verified. Whether the owner completed the import: check with the SSH test in `RUNBOOK.md` section 12 |
-| Hourly backup of the accounts database, outage and signup alerts, keep-warm | Not set up on this Mac | Verified for this Mac. Whether an older Mac still does them: only you know |
+| A key named `hip_claude_ed25519` | Seen in cPanel at 17:25 UTC: **no key of that name existed.** `hip_deploy_ed25519` is there and authorized (so the older Mac can get in and cPanel needed no change for it), along with two other authorized deploy keys whose holders the owner should identify (issue #14); no private keys are stored on the server. A new pair named `hip_claude_ed25519` was then created on the current Mac (private half stays in `~/.ssh`), and its public half was put into cPanel's Import form for the owner to press Import and then Authorize | Verified. The owner imported and authorized it; **SSH from the current Mac works since 18:10 UTC** (`whoami` answered) |
+| Hourly backup of the accounts database, outage and signup alerts, keep-warm | Not set up on this Mac, and **not running on the older Mac either since 2026-09-03** (see question 1 below). Manual backup taken 2026-09-21 18:35 UTC | Verified from the server |
 | Wind-mit AI photo analysis | Its address no longer exists on the internet (`NXDOMAIN` from three DNS resolvers) | Verified it cannot be reached; believed failing for every inspector |
 | `deploy-hip.sh` (step 4 below) | Could not run in the morning. By 16:53 UTC it had: Homebrew, `gh`, a GitHub sign-in, Node 22 (`brew install node@22`, keg-only, so prefix `PATH` with `/opt/homebrew/opt/node@22/bin`), and a fresh app clone outside iCloud at `~/GITHUB/home-inspection-assistant` | Verified by deploying |
 | Sign-in, sync, billing (accounts) and property research (records) | Both health checks answered `ok` at about 2026-09-21 15:45 UTC | Verified |
@@ -46,10 +46,18 @@ Mac". The table is in `SYSTEM-MAP.md` under "Which Mac?". What it means for you:
 
 **Two questions only you can answer** (reply on [issue #10](https://github.com/richducat/inspection-rent/issues/10)):
 
-1. ~~Is the older Mac still switched on?~~ **Answered 2026-09-21: yes, it is on.** So the
-   hourly backups and alerts are believed to be running there. Still worth one look on that
-   Mac: the newest file in `~/hip-backups` should be less than an hour old. The wind-mit
-   service also lives there and is unreachable (step 6), so something on that Mac changed.
+1. ~~Is the older Mac still switched on?~~ Answered 2026-09-21: yes. **But its hourly backup
+   has not run since 2026-09-03** (verified from the server at 18:11 UTC: every run creates
+   and removes a snapshot in the host's `backups` folder, and that folder was last changed
+   on 2026-09-03 17:45 UTC; three leftover `auto-*.db` files there are debris from failed
+   runs). For 18 days the accounts database had no copy off the hosting disk. **A manual
+   backup was taken at 18:35 UTC** with the script's own method (`sqlite3 .backup` on the
+   host, copied over SSH, `PRAGMA integrity_check` = ok, newest record 14:24 UTC the same
+   day) into `~/hip-backups` on the owner's current Mac. Until the hourly job is repaired
+   there is no automatic backup and no outage or signup alert: take a manual one before any
+   change to the accounts host, and at least weekly (`RUNBOOK.md` section 12 has the key;
+   `hip-accounts-api/deploy/backup-and-watch.sh` is the job). The wind-mit service on the
+   same Mac is also unreachable (step 6), so something on that Mac changed around then.
 2. Where did the cPanel key named `hip_claude_ed25519` come from? A key in that list lets
    whoever holds its private half into the server once authorized. If you do not know who
    holds it, delete it instead of authorizing it. The safe way to give this Mac access is
