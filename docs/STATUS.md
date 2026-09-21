@@ -3,7 +3,27 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-21 (Claude Code session on the owner's Mac, branch `claude/relaxed-knuth-1vy6x9`)
+## Last updated: 2026-09-21 16:40 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+
+### Done today (2026-09-21): all five pull requests are merged and the website fix is live
+
+The owner asked for a check that no pull request erases an earlier fix and that nothing
+breaks, then delegated the decision in writing. What was done, in order (times UTC):
+
+| When | What | Proof |
+|---|---|---|
+| 16:27 | The exact result of merging app #5 + #6 + #7 was pushed as a temporary branch and the app's full CI run on it **before** anything touched `main` | [run 35625737494](https://github.com/richducat/home-inspection-assistant/actions/runs/35625737494): 56 test files, production build with `/app/` base, bundle budget, typecheck, all green. Temporary branch deleted afterwards |
+| 16:29 to 16:30 | App [#5](https://github.com/richducat/home-inspection-assistant/pull/5), [#6](https://github.com/richducat/home-inspection-assistant/pull/6), [#7](https://github.com/richducat/home-inspection-assistant/pull/7) merged; [#2](https://github.com/richducat/home-inspection-assistant/pull/2) closed as a pure duplicate of #5 | App `main` is `0a1c173`; its tree hash equals the tree CI had validated; CI on `main` green too |
+| 16:30 | Site [#16](https://github.com/richducat/inspection-rent/pull/16) merged (`c4860e0`); [#3](https://github.com/richducat/inspection-rent/pull/3) closed, its commit is inside #16 | Pages run 53 green |
+| 16:33 | Live check | All 23 analytics pages HTTP 200 with exactly one guard and one tracker tag; `/app/` 200 with the guard and its bundle 200; both API health checks `ok`; **46 of 46 live page-widths (23 pages at 320 and 375 px) have no sideways scroll**, measured in a real browser with stylesheets loaded, which also covers `lp01` to `lp05` that the repo's check could not measure |
+
+Why it was safe, in one paragraph: every PR branch sat directly on top of its `main` (0
+commits behind), so nothing on `main` could be lost by merging; across all 38 files #16
+removed only four distinct lines from `main` (the old loader line, the charset tag that
+moved up, one `<div>` that gained a class, the pricing grid's inline style that moved into
+the stylesheet); no file was deleted in either repository; the only change under `app/` is
+the one guard line; and the app merges cannot reach inspectors until `deploy-hip.sh` runs.
+No branch was deleted.
 
 ### Read this first: the Mac you use now is not "the owner's Mac" in these documents (found 2026-09-21)
 
@@ -18,9 +38,9 @@ Mac". The table is in `SYSTEM-MAP.md` under "Which Mac?". What it means for you:
 | A key named `hip_claude_ed25519` | Not on this Mac either, so authorizing it in cPanel would not let this Mac in. **Not authorized by this session**; see the note below | Verified it is not here; where its private half lives is unknown |
 | Hourly backup of the accounts database, outage and signup alerts, keep-warm | Not set up on this Mac | Verified for this Mac. Whether an older Mac still does them: only you know |
 | Wind-mit AI photo analysis | Its address no longer exists on the internet (`NXDOMAIN` from three DNS resolvers) | Verified it cannot be reached; believed failing for every inspector |
-| `deploy-hip.sh` (step 4 below) | Cannot run here yet: no `node`/`npm`, and this folder is on the PR branch instead of `main`. The GitHub sign-in was added the same afternoon (Homebrew and `gh` installed by the owner) | Verified |
+| `deploy-hip.sh` (step 4 below) | Cannot run here yet: no `node`/`npm`. The GitHub sign-in was added the same afternoon (Homebrew and `gh` installed by the owner) and the folder was put back on `main` after the merges | Verified |
 | Sign-in, sync, billing (accounts) and property research (records) | Both health checks answered `ok` at about 2026-09-21 15:45 UTC | Verified |
-| The live website | Up (HTTP 200); still without the analytics guard because PR #16 is not merged | Verified |
+| The live website | Up (HTTP 200), with the analytics guard and the phone fix since 16:31 UTC | Verified |
 
 **Two questions only you can answer** (reply on [issue #10](https://github.com/richducat/inspection-rent/issues/10)):
 
@@ -35,29 +55,19 @@ Mac". The table is in `SYSTEM-MAP.md` under "Which Mac?". What it means for you:
 
 ### This week, in order (owner)
 
-You never need to run a command for steps 1 to 3; each is a link and a button, and they
-work from any browser. **Step 4 cannot be done from your current Mac yet** (see above); do
-steps 1 to 3 anyway, the website fix does not depend on step 4.
+Steps 1 to 3 are done. **Step 4 cannot be done from your current Mac yet** (it still needs
+`node`); nothing is waiting on it except that the app's own copy of the guard line gets
+rebuilt from source, and inspectors see no difference either way.
 
-1. **Merge the app fix.** Open [home-inspection-assistant #5](https://github.com/richducat/home-inspection-assistant/pull/5),
-   scroll to the bottom, press the green **Merge pull request**, then **Confirm merge**.
-   Then open [#2](https://github.com/richducat/home-inspection-assistant/pull/2) and press
-   **Close pull request** (it is the same one-line change, written by Codex the same day).
-2. **Merge the two small ones.** Open [home-inspection-assistant #6](https://github.com/richducat/home-inspection-assistant/pull/6)
-   and [#7](https://github.com/richducat/home-inspection-assistant/pull/7) and merge each the
-   same way.
-3. **Merge this repository's pull request** [#16](https://github.com/richducat/inspection-rent/pull/16)
-   (the one that added this file). Then open [PR #3](https://github.com/richducat/inspection-rent/pull/3)
-   and press **Close pull request** with the comment "superseded". About 30 seconds later
-   the website is updated; the [Actions tab](https://github.com/richducat/inspection-rent/actions)
-   shows a green check next to "Deploy to GitHub Pages".
+1. ~~Merge the app fix~~, 2. ~~merge the two small ones~~, 3. ~~merge this repository's
+   pull request~~: **done 2026-09-21**, see the table above. Nothing for you to click.
 4. **Rebuild the app from a Mac that can.** On the Mac that did the 2026-09-10 deploys: open
    Terminal, go to the hip-app-work folder, run
    `./deploy-hip.sh "Deploy the analytics guard"`. It ends with "DONE, inspection.rent
    deployed and verified" in about a minute. If it prints ABORT, paste the message into a
    new issue here. On your current Mac this cannot work until three things are set up
-   (`RUNBOOK.md` section 6 lists them; the GitHub sign-in is done, `node` and switching the
-   website folder to `main` remain); ask an engineer or a Claude session on the Mac to do that
+   (`RUNBOOK.md` section 6 lists them; the GitHub sign-in is done and the website folder is
+   back on `main`, so only `node` remains: `brew install node`); ask an engineer or a Claude session on the Mac to do that
    with you. Nothing breaks for inspectors while step 4 waits; the app keeps running the
    2026-09-10 build.
 5. **Answer the pricing question** by replying on [issue #12](https://github.com/richducat/inspection-rent/issues/12)
@@ -71,35 +81,32 @@ steps 1 to 3 anyway, the website fix does not depend on step 4.
 **What your inspector sees today:** sign-in, saved inspections, forms, billing and permit
 pulls answered their health checks on 2026-09-21 and are believed working; the wind-mit
 AI photo analysis is believed down for everyone (step 6), so she answers those questions
-from the photos herself; the marketing pages scroll sideways on phones until step 3 lands,
-which does not affect the app itself.
+from the photos herself; the marketing pages no longer scroll sideways on phones (fixed live
+2026-09-21 16:31 UTC).
 
-### Production right now (as of 2026-09-19 18:30 UTC; re-checked 2026-09-21 15:45 UTC: `main` still `b35fa2d`, Pages run 52 still the latest and green, site HTTP 200, guard still absent live)
+### Production right now (as of 2026-09-21 16:35 UTC)
 
-- `main` at `b35fa2d` is live (Pages run 52, green). Every Pages run since run 11 on
-  2026-08-10 has been green; runs 1 to 4 and 6 on 2026-08-06 failed and run 5 was cancelled
-  while the workflow was being introduced, and run 10 was cancelled by a newer push.
-- The live pricing page still has the three-column grid that breaks on phones; seven
-  pages scroll sideways at 320 and 375 px. The fix is in the PR from this branch.
-- No GTM loader on the live site has the hostname guard yet (PR #3 was never merged), so
-  localhost and preview visits still reach GA4.
+- Site `main` at `c4860e0` is live (Pages run 53, green). All 24 GTM loaders carry the
+  hostname guard live, so localhost and preview visits no longer reach GA4.
+- The phone layout fix is live: 0 of 46 live page-widths overflow at 320 and 375 px.
+- The app at `/app` is still the 2026-09-10 build plus the one-line guard. App `main`
+  (`0a1c173`) is ahead of it by PRs #5, #6, #7; the next `deploy-hip.sh` publishes that.
 - The accounts API runs on the shared cPanel host, not Render. The records API is on Render.
+  Both answered `ok` at 16:33 UTC.
 - The wind-mitigation service: on 2026-09-21 its hostname returned `NXDOMAIN` from the
   owner's own network and from 1.1.1.1 and 8.8.8.8, so it is unreachable for everyone
-  (issue #8). On 2026-09-19 it had only been unreachable from the cloud sandbox.
+  (issue #8).
 - A stale copy of the app (built before 2026-08-06) is still live at `eb28.co/HIP/app/`
   against production backends (issue #13).
-- The Codex review bot reported "usage limits reached" on 2026-09-19; pull requests opened
-  today may not get its review.
+- The Codex review bot has been out of quota since 2026-09-19 ("usage limits reached");
+  none of today's five pull requests got its review. Add credits or expect the same on the
+  next PR.
 
-### Open pull requests, in the order to merge them
+### Open pull requests
 
-| Order | PR | What | Why this order |
-|---|---|---|---|
-| 1 | [home-inspection-assistant #5](https://github.com/richducat/home-inspection-assistant/pull/5) | GTM guard in the app shell source; `checkout_return` records the real plan id | Must be on that repo's `main` before the next `deploy-hip.sh`, or the deploy erases the guard from `app/index.html` here. Supersedes [home-inspection-assistant #2](https://github.com/richducat/home-inspection-assistant/pull/2) (Codex, 2026-09-08, the same one line); close #2 |
-| 2 | [home-inspection-assistant #6](https://github.com/richducat/home-inspection-assistant/pull/6) and [#7](https://github.com/richducat/home-inspection-assistant/pull/7) | `AGENTS.md` pointer brief (part of issue #11); CI builds its artifact with the production base path (part of issue #10) | Docs and CI only, any time |
-| 3 | [inspection-rent #16](https://github.com/richducat/inspection-rent/pull/16) (branch `claude/relaxed-knuth-1vy6x9`) | PR #3's guard on all 24 loaders, the 320 px fix, charset first, the mobile check, and this documentation | Contains PR #3's commit, so [PR #3](https://github.com/richducat/inspection-rent/pull/3) can be merged first or closed as superseded; either way the resulting tree is identical |
-| 4 | run `./deploy-hip.sh` on the Mac | Rebuilds `app/` from a `main` that carries the guard | Makes the source and the published copy identical again |
+None in the app repository. Here: only the small pull request that carries this status
+update, if it is not merged yet. Next action that changes production: run
+`./deploy-hip.sh` from a Mac with `node` (step 4).
 
 ### Open items (GitHub issues are the source of truth; this list mirrors them)
 
@@ -203,11 +210,10 @@ which does not affect the app itself.
 
 ### In flight
 
-This documentation and the fixes are on branch `claude/relaxed-knuth-1vy6x9` until
-[PR #16](https://github.com/richducat/inspection-rent/pull/16) merges. The stale branch `claude/app-error-review-o46y68` (2026-09-01): its one commit
-`058dcea` was cherry-picked here as `245741a`, so it is not an ancestor; delete it by name
-after the merge (`git push origin --delete claude/app-error-review-o46y68`). In the app
-repo, `claude/app-issues-beth-aicohr` (2026-08-26) was never merged; see issue #15.
+Nothing half-done. Stale branches kept on purpose (the owner asked that nothing be deleted):
+here `claude/app-error-review-o46y68` (its one commit was cherry-picked into #16) and the
+merged PR branches; in the app repo `claude/app-issues-beth-aicohr` (2026-08-26, never
+merged; see issue #15) and the merged PR branches.
 
 ## Earlier
 
