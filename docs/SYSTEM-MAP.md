@@ -106,8 +106,9 @@ does, is a question only the owner can answer.**
 |---|---|
 | This repository at `/Users/richardducat/GITHUB/inspection-rent` | present (checked out on the PR #16 branch, not `main`; see `RUNBOOK.md` section 6) |
 | App source checkout at the path hard-coded in `deploy-hip.sh` | present, with `node_modules`, but last fetched 2026-08-18 (`3ff099f`), before the two 2026-09-10 deploys. The script fast-forwards it before building, so that alone is safe |
-| `node`, `npm`, `gh`, Homebrew | **absent**: `deploy-hip.sh`, `npm test` and `npm run mobilecheck` cannot run here |
-| Saved GitHub sign-in for `git` | **absent**: the private app repo cannot be fetched and nothing can be pushed |
+| `node`, `npm` | **absent**: `deploy-hip.sh`, `npm test` and `npm run mobilecheck` cannot run here |
+| Homebrew, `gh` | absent in the morning; **installed by the owner at about 16:15 UTC** (Homebrew 7.0.5, `gh` 2.101.0; `~/.zprofile` now puts Homebrew on the PATH) |
+| Saved GitHub sign-in for `git` | absent in the morning; **present since about 16:20 UTC** (`gh auth login` as `richducat`, stored in the macOS keychain, scopes `repo`, `read:org`, `gist`; `gh auth setup-git` run). The private repos can be fetched and this repo pushed |
 | `~/.ssh/hip_deploy_ed25519` (and any other SSH key) | **absent**; the cPanel host refuses SSH from this Mac |
 | launchd jobs `co.eb28.hipbackup` and `co.eb28.hipkeepwarm`, `~/hip-backups`, `~/bin/hip-keepwarm.sh` | **absent**: this Mac takes no backups and sends no alerts |
 | Tailscale, the wind-mit service | **absent**; nothing is listening |

@@ -18,7 +18,7 @@ Mac". The table is in `SYSTEM-MAP.md` under "Which Mac?". What it means for you:
 | A key named `hip_claude_ed25519` | Not on this Mac either, so authorizing it in cPanel would not let this Mac in. **Not authorized by this session**; see the note below | Verified it is not here; where its private half lives is unknown |
 | Hourly backup of the accounts database, outage and signup alerts, keep-warm | Not set up on this Mac | Verified for this Mac. Whether an older Mac still does them: only you know |
 | Wind-mit AI photo analysis | Its address no longer exists on the internet (`NXDOMAIN` from three DNS resolvers) | Verified it cannot be reached; believed failing for every inspector |
-| `deploy-hip.sh` (step 4 below) | Cannot run here: no `node`/`npm`, no saved GitHub sign-in, and this folder is on the PR branch instead of `main` | Verified |
+| `deploy-hip.sh` (step 4 below) | Cannot run here yet: no `node`/`npm`, and this folder is on the PR branch instead of `main`. The GitHub sign-in was added the same afternoon (Homebrew and `gh` installed by the owner) | Verified |
 | Sign-in, sync, billing (accounts) and property research (records) | Both health checks answered `ok` at about 2026-09-21 15:45 UTC | Verified |
 | The live website | Up (HTTP 200); still without the analytics guard because PR #16 is not merged | Verified |
 
@@ -56,8 +56,8 @@ steps 1 to 3 anyway, the website fix does not depend on step 4.
    `./deploy-hip.sh "Deploy the analytics guard"`. It ends with "DONE, inspection.rent
    deployed and verified" in about a minute. If it prints ABORT, paste the message into a
    new issue here. On your current Mac this cannot work until three things are set up
-   (`RUNBOOK.md` section 6 lists them: `node`, a GitHub sign-in for `git`, and the website
-   folder switched to `main`); ask an engineer or a Claude session on the Mac to do that
+   (`RUNBOOK.md` section 6 lists them; the GitHub sign-in is done, `node` and switching the
+   website folder to `main` remain); ask an engineer or a Claude session on the Mac to do that
    with you. Nothing breaks for inspectors while step 4 waits; the app keeps running the
    2026-09-10 build.
 5. **Answer the pricing question** by replying on [issue #12](https://github.com/richducat/inspection-rent/issues/12)
@@ -138,6 +138,22 @@ which does not affect the app itself.
   documents, because every file here is served on the public website. They remain in this
   public repository's git history; none of them is a password.
 
+- The three open app pull requests have had **no Codex review and no CI run** either (same
+  "usage limits" comment, 2026-09-19). #6 is one document, #7 is four lines of CI
+  configuration, #2 is the one guard line; read in full, all as described. For
+  [#5](https://github.com/richducat/home-inspection-assistant/pull/5) (48 lines of app code)
+  three independent reviewers and four skeptics found **no defect**: the accounts server
+  does send `planId` (since 2026-07-09, always one of `trial`, `payg`, `monthly`,
+  `unlimited`, `annual`), no username or email reaches analytics, nothing else builds an
+  account without the new field, and the guard is byte-identical to the website's. Static
+  reading only; its tests were not run here. Merging #5 puts it on that repo's `main`,
+  where the "Validate app" workflow runs the tests; nothing reaches inspectors until
+  `deploy-hip.sh` runs.
+- Seen in passing in the accounts API and **not verified**: a legacy account still in
+  `trialing` status that buys a $5 single report keeps that status, and clean (unwatermarked)
+  reports appear to require `active`, so that customer may stay watermarked after paying
+  (`hip-accounts-api/src/stripe.mjs`, `activateFromCheckout`). Worth a look by an engineer.
+
 ### Found by the 2026-09-21 review, not fixed yet (needs a session that can run `npm run mobilecheck`)
 
 | Severity | What | Where |
@@ -186,13 +202,6 @@ which does not affect the app itself.
 - Anything on the owner's Mac (issue #8, #10).
 
 ### In flight
-
-**Unpushed work on the owner's Mac (2026-09-21):** the newest commit on this branch (the
-one that added this paragraph, "Docs: what is really on the owner's Mac") exists only in
-`/Users/richardducat/GITHUB/inspection-rent` on that Mac, because the Mac has no GitHub
-sign-in for `git`. If PR #16 on GitHub does not show it, it still needs
-`git push origin claude/relaxed-knuth-1vy6x9` from that folder once a sign-in exists. If
-PR #16 is merged first, open a new PR from the same branch for that one commit.
 
 This documentation and the fixes are on branch `claude/relaxed-knuth-1vy6x9` until
 [PR #16](https://github.com/richducat/inspection-rent/pull/16) merges. The stale branch `claude/app-error-review-o46y68` (2026-09-01): its one commit
