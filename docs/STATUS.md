@@ -3,7 +3,7 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-21 19:00 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+## Last updated: 2026-09-21 17:35 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
 
 ### Done today (2026-09-21): all five pull requests are merged and the website fix is live
 
