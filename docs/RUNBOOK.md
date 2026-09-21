@@ -99,6 +99,20 @@ succeeds with the production `VITE_*` values it exports; the built `index.html` 
 the shipped JavaScript. It then rsyncs `dist/` over `app/` (deleting stale files), commits,
 and pushes `main` here, which triggers the Pages deploy.
 
+Three things the script assumes and does not check (read from the script on 2026-09-21;
+none of them was true on the owner's current Mac that day, see `SYSTEM-MAP.md`
+"Which Mac?"):
+
+1. `node` and `npm` are installed. Without them the build step aborts; nothing is harmed.
+2. `git` has a saved GitHub sign-in, because the script fetches the private app repo and
+   pushes here. Without it the script stops at "1/3 sync source".
+3. **This repository's folder is on the `main` branch.** The script runs
+   `git pull --ff-only origin main`, commits the build into whatever branch is checked
+   out, then runs `git push origin main`. On any other branch (for example a Claude PR
+   branch left checked out) the new build is committed to that branch and is never
+   published. Run `git -C /Users/richardducat/GITHUB/inspection-rent status -sb` first; the
+   first line must start with `## main`.
+
 **Fallback A, by hand from any machine (not yet exercised):** clone both repositories side
 by side, then in the app repository:
 
@@ -184,7 +198,8 @@ Needs the owner's Google account.
 
 ## 11. Admin operations on the accounts API
 
-Two admin accounts, `beth` and `richard`, are seeded from the host's `ADMIN_PASSWORD`
+Two admin accounts (their usernames are in the private `hip-accounts-api` repository, not
+here, because this file is served publicly) are seeded from the host's `ADMIN_PASSWORD`
 (the server refuses to start with a default password). With an admin token,
 `GET /admin/accounts` lists accounts and `POST /admin/accounts/<username>` takes `action` =
 `activate` | `deactivate` | `set_plan` | `add_credits` | `set_password` (the last one is
@@ -196,16 +211,27 @@ reads the leads; the site promises those visitors a property report by email (is
 
 ## 12. Deploy the accounts API (what is known)
 
-The live service is the cPanel Node app in `/home/tyfyprbm/hip-accounts-api` on the
-Namecheap host (SSH `tyfyprbm@162.213.253.62`, port 21098, key `~/.ssh/hip_deploy_ed25519`
-on the owner's Mac; see `hip-accounts-api/scripts/restore-db.sh` and
-`deploy/backup-and-watch.sh` for the exact connection). `home-inspection-assistant/CLAUDE.md` (its
+The live service is the cPanel Node app in `~/hip-accounts-api` on the Namecheap host. The
+SSH user, address and port are in `hip-accounts-api/scripts/restore-db.sh` and
+`deploy/backup-and-watch.sh` (a private repository); they are left out of this file on
+purpose because it is served publicly. The key is `~/.ssh/hip_deploy_ed25519` on the
+owner's Mac. `home-inspection-assistant/CLAUDE.md` (its
 backends table; `hip-accounts-api` has no `CLAUDE.md`) describes the deploy as
 `rsync src/` then `touch tmp/restart.txt`. Unknown and to be confirmed by the
 owner: the exact rsync source and flags, whether `npm install` runs on the host, and whether
 cPanel needs a manual restart. Always take a database backup first (`RESTORE.md` in that
 repo), and verify with `curl -sS https://accounts.eb28.co/health` afterwards. The Render
 deployment described in that repo's `DEPLOY.md` does not exist (issue #9).
+
+Checked 2026-09-21: the owner's current Mac has no `~/.ssh/hip_deploy_ed25519` and the host
+refuses its SSH login, so this deploy, `restore-db.sh` and the hourly backup cannot run from
+it. To give a Mac access: create a key pair **on that Mac** (`ssh-keygen -t ed25519 -f
+~/.ssh/hip_deploy_ed25519`), then in cPanel (open it from the Namecheap dashboard)
+→ Security → SSH Access → Manage SSH Keys → Import Key, paste the contents of the `.pub`
+file only, then Manage → Authorize. Authorizing a key whose private half is not on the Mac
+does nothing for the Mac and lets whoever holds that private half into the server, so
+before authorizing any key already listed there, know where its private half is. cPanel's
+File Manager and Terminal work without any SSH key.
 
 ## 13. Deploy the records API
 

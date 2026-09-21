@@ -5,6 +5,12 @@ reading the four repositories, their GitHub history, and the live endpoints; lin
 *inference* or *unverified* were not. When you learn that something here is wrong, fix
 this file in the same pull request.
 
+**Re-checked on 2026-09-21 from a Claude Code session running on the owner's Mac itself**
+(not the cloud sandbox). The short version: the Mac the owner works on today is not set up
+as "the owner's Mac" this file describes. Details are in
+[Which Mac? (checked 2026-09-21)](#which-mac-checked-2026-09-21) below, and the rows it
+changes are marked "2026-09-21".
+
 ## The people
 
 - **Owner:** Richard Ducat, GitHub `richducat`, `richducat@gmail.com` (also the only
@@ -23,9 +29,9 @@ this file in the same pull request.
 | Marketing site | `richducat/inspection-rent` (public) | https://inspection.rent | GitHub Pages | push to `main` runs `.github/workflows/pages.yml` (no build, no tests) |
 | The app (built copy) | same repo, folder `app/` | https://inspection.rent/app | GitHub Pages | written by `deploy-hip.sh` from the app repo; **never hand-edited** |
 | The app (source) | `richducat/home-inspection-assistant` (private) | builds into the above | none of its own (its Pages site was retired 2026-09-10) | `./deploy-hip.sh` on the owner's Mac; its CI ("Validate app") only tests, typechecks, builds, checks the bundle budget and uploads a `validated-app` artifact (built with the wrong base path until that repo's PR #7 merges) |
-| Accounts API | `richducat/hip-accounts-api` | https://accounts.eb28.co | **Namecheap shared cPanel host** (LiteSpeed + Passenger, account `tyfyprbm`, IP 162.213.253.62). The Render service described in its `DEPLOY.md` and `render.yaml` was never created (that URL is 404) | rsync the source to `/home/tyfyprbm/hip-accounts-api` over SSH (port 21098, key `~/.ssh/hip_deploy_ed25519` on the Mac) and `touch tmp/restart.txt`. Not documented in that repo; see `RUNBOOK.md` section 12 |
+| Accounts API | `richducat/hip-accounts-api` | https://accounts.eb28.co | **Namecheap shared cPanel host** (LiteSpeed + Passenger). The Render service described in its `DEPLOY.md` and `render.yaml` was never created (that URL is 404) | rsync the source to `~/hip-accounts-api` on that host over SSH (key `~/.ssh/hip_deploy_ed25519` on the Mac; the SSH user, address and port are kept in the private repo's `scripts/restore-db.sh`, not in this public file) and `touch tmp/restart.txt`. Not documented in that repo; see `RUNBOOK.md` section 12. **2026-09-21:** that key file does not exist on the owner's current Mac (there was no `~/.ssh` folder at all), and an SSH login from it was refused with `Permission denied (publickey,...)`. The service itself is healthy (`/health` answered `ok:true`) |
 | Records API | `richducat/hip-records-api` | https://hip-records-api.onrender.com | Render, Docker (Playwright image), plan Standard 2 GB | push to `main`; Render auto-deploys. Convention: bump the `deploy` marker in `GET /health` every deploy so the live build can be confirmed |
-| Wind-mitigation photo analysis | not in any repository | https://richards-macbook-pro.tail44c237.ts.net | the owner's Mac through a Tailscale funnel | unknown. *Unverified:* the cloud sandbox cannot reach that host at all, so its state is unknown (issue #8) |
+| Wind-mitigation photo analysis | not in any repository | https://richards-macbook-pro.tail44c237.ts.net | the owner's Mac through a Tailscale funnel | unknown. *Unverified:* the cloud sandbox cannot reach that host at all, so its state is unknown (issue #8). **2026-09-21, from the owner's own network (not the sandbox):** the hostname does not exist in public DNS (`NXDOMAIN` from the local resolver, 1.1.1.1 and 8.8.8.8), so no phone can reach it either; the app's wind-mit AI suggestions are therefore believed to be failing for every inspector. Tailscale is not installed on the owner's current Mac |
 | Vision API | `richducat/hip-vision-api` (private, last push 2026-07-21; not attached to any session) | not wired: `VITE_VISION_API_URL` is unset in every build | unknown | unknown; open question for the owner (issue #10) |
 | iOS shell | repository name unknown (*inference* from the app code: a WKWebView wrapper around inspection.rent/app that hides purchase UI; no repo with "ios" in its name exists under `richducat` except an unrelated one) | App Store | Apple | unknown |
 | Old company site | `richducat/eb28.co` (public; Mac checkout `/Users/richardducat/GITHUB/eb28.co`, served from `docs/`) | https://eb28.co | GitHub Pages | **still serves a stale build of the app at `/HIP/app/` (from before 2026-08-06) against the production backends**, although `deploy-hip.sh` says it was retired 2026-07-14 (issue #13) |
@@ -86,6 +92,32 @@ in a repository, and there is no written "the Mac is dead" runbook (issue #10).
 - The SSH key to the cPanel host and the credentials file for the synthetic-monitor account.
 - Guides referenced by the app's `CLAUDE.md` but not in git: `~/.buzz/GUIDES/EB28_OPERATING_CHARTER.md`,
   `~/.buzz/GUIDES/SOP_PERMIT_COVERAGE.md`, and a "hip-deploy-paths-and-breakit" note.
+
+### Which Mac? (checked 2026-09-21)
+
+Everything above was written from the sibling repositories' documents; nobody had looked at
+the Mac. On 2026-09-21 a Claude Code desktop session ran on the Mac the owner uses now (a
+MacBook Pro whose user account was created on 2026-09-11, the day after the last app
+deploy) and looked. The wind-mit hostname says `richards-macbook-pro`, so an older Mac
+probably exists or existed. **Which machine does the jobs above today, or whether anything
+does, is a question only the owner can answer.**
+
+| On the owner's current Mac | 2026-09-21 |
+|---|---|
+| This repository at `/Users/richardducat/GITHUB/inspection-rent` | present (checked out on the PR #16 branch, not `main`; see `RUNBOOK.md` section 6) |
+| App source checkout at the path hard-coded in `deploy-hip.sh` | present, with `node_modules`, but last fetched 2026-08-18 (`3ff099f`), before the two 2026-09-10 deploys. The script fast-forwards it before building, so that alone is safe |
+| `node`, `npm`, `gh`, Homebrew | **absent**: `deploy-hip.sh`, `npm test` and `npm run mobilecheck` cannot run here |
+| Saved GitHub sign-in for `git` | **absent**: the private app repo cannot be fetched and nothing can be pushed |
+| `~/.ssh/hip_deploy_ed25519` (and any other SSH key) | **absent**; the cPanel host refuses SSH from this Mac |
+| launchd jobs `co.eb28.hipbackup` and `co.eb28.hipkeepwarm`, `~/hip-backups`, `~/bin/hip-keepwarm.sh` | **absent**: this Mac takes no backups and sends no alerts |
+| Tailscale, the wind-mit service | **absent**; nothing is listening |
+| `~/.buzz/GUIDES`, `/Users/richardducat/GITHUB/eb28.co` | **absent** |
+
+If the older Mac is switched off or gone, then since about 2026-09-11 there has been **no
+hourly backup of `accounts.db`**, no outage or signup alert, no keep-warm, no wind-mit
+analysis, and no machine that can deploy the app or the accounts API. That is believed,
+not verified: it cannot be checked from this Mac. `RUNBOOK.md` section 14 lists what to do
+by hand in the meantime.
 
 ## Accounts the owner must keep access to
 

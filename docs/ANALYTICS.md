@@ -34,7 +34,7 @@ analytics; only page views, clicks, and funnel events.
 ## Events
 
 **Marketing pages** (`assets/marketing-analytics.js`, loaded on all 23 analytics pages;
-12 of them have no link into the app, which is harmless):
+every one of them has at least one link into the app, counted 2026-09-21):
 
 - `app_open_click` with a static `cta_location` label, once per click on any link into
   `/app/`. New-tab or modified clicks push the GTM custom event and let the browser
@@ -50,7 +50,8 @@ heading as `lead_source`) when a trial `mailto:` link is clicked.
 
 **Campaign pages `lp/lp01` to `lp10`** (inline snippets, see `CAMPAIGNS.md`): `lp_view` on
 load and `lp_cta_click` on the call to action, both with `lp: "lpNN"`; `lp08` also pushes
-`lp_lead_submit` from its lead form. The home page pushes `hero_check_search` and `lp_lead`;
+`lp_lead_submit` from its lead form. The home page pushes `hero_check_search`, then `hero_check_found` or `hero_check_failed`
+when its property check finishes, and `lp_lead`;
 `check.html` pushes `lp_lead` too. Leads themselves go to `accounts.eb28.co/leads`.
 
 **The app** (`home-inspection-assistant/src/domain/analytics.ts`, pushed to `dataLayer`):
@@ -62,7 +63,9 @@ load and `lp_cta_click` on the call to action, both with `lp: "lpNN"`; `lp08` al
   `unlimited` | `trial`) after home-inspection-assistant PR #5; before it, single-report
   returns were mislabelled `monthly`
 - `checkout_error` with `step` and HTTP `status`
-- `trial_start`
+- `trial_start` is defined in the source (`method: "card_required"`, from before card-less
+  signup) but the published build does not contain it (`grep -r trial_start app/` finds
+  nothing on 2026-09-21), so it is never sent. Do not build a GTM tag for it.
 - **No `purchase` event by design.** A billing return is not a verified payment; revenue
   needs server-side Stripe receipt validation, which does not exist yet.
 
