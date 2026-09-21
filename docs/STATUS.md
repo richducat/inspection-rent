@@ -3,7 +3,7 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-21 16:40 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+## Last updated: 2026-09-21 17:20 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
 
 ### Done today (2026-09-21): all five pull requests are merged and the website fix is live
 
@@ -16,6 +16,8 @@ breaks, then delegated the decision in writing. What was done, in order (times U
 | 16:29 to 16:30 | App [#5](https://github.com/richducat/home-inspection-assistant/pull/5), [#6](https://github.com/richducat/home-inspection-assistant/pull/6), [#7](https://github.com/richducat/home-inspection-assistant/pull/7) merged; [#2](https://github.com/richducat/home-inspection-assistant/pull/2) closed as a pure duplicate of #5 | App `main` is `0a1c173`; its tree hash equals the tree CI had validated; CI on `main` green too |
 | 16:30 | Site [#16](https://github.com/richducat/inspection-rent/pull/16) merged (`c4860e0`); [#3](https://github.com/richducat/inspection-rent/pull/3) closed, its commit is inside #16 | Pages run 53 green |
 | 16:33 | Live check | All 23 analytics pages HTTP 200 with exactly one guard and one tracker tag; `/app/` 200 with the guard and its bundle 200; both API health checks `ok`; **46 of 46 live page-widths (23 pages at 320 and 375 px) have no sideways scroll**, measured in a real browser with stylesheets loaded, which also covers `lp01` to `lp05` that the repo's check could not measure |
+| 16:51 | App [#8](https://github.com/richducat/home-inspection-assistant/pull/8) merged: one line in `deploy-hip.sh`. Its feature checklist still looked for the words "inspection filing cabinet", but the 2026-09-10 update had reworded that heading to "Find a previous inspection", so the script aborted a healthy build (before committing anything). The live 2026-09-10 build did not contain the old words either | The other seven markers matched the live build file for file |
+| 16:53 | **App deployed** from app `main` `0a12b04` as site commit `599aea5`, with the repo's own `deploy-hip.sh` and all 8 feature checks passing. Before it: `npm test` 427 of 427, `npm run score` 100 / 100, on Node 22.23.2 | Pages run 55 green; live `/app/` 200 with the guard; new bundle `index-CT4qL3J5.js` and every referenced asset 200; the app boots at 375 px in a real browser with no console errors and no sideways scroll |
 
 Why it was safe, in one paragraph: every PR branch sat directly on top of its `main` (0
 commits behind), so nothing on `main` could be lost by merging; across all 38 files #16
@@ -35,19 +37,19 @@ Mac". The table is in `SYSTEM-MAP.md` under "Which Mac?". What it means for you:
 | What | State on 2026-09-21 | Verified or believed |
 |---|---|---|
 | SSH key `~/.ssh/hip_deploy_ed25519` | Not on this Mac; the hosting server refused the login | Verified |
-| A key named `hip_claude_ed25519` | Not on this Mac either, so authorizing it in cPanel would not let this Mac in. **Not authorized by this session**; see the note below | Verified it is not here; where its private half lives is unknown |
+| A key named `hip_claude_ed25519` | Seen in cPanel at 17:25 UTC: **no key of that name existed.** `hip_deploy_ed25519` is there and authorized (so the older Mac can get in and cPanel needed no change for it), along with two other authorized deploy keys whose holders the owner should identify (issue #14); no private keys are stored on the server. A new pair named `hip_claude_ed25519` was then created on the current Mac (private half stays in `~/.ssh`), and its public half was put into cPanel's Import form for the owner to press Import and then Authorize | Verified. Whether the owner completed the import: check with the SSH test in `RUNBOOK.md` section 12 |
 | Hourly backup of the accounts database, outage and signup alerts, keep-warm | Not set up on this Mac | Verified for this Mac. Whether an older Mac still does them: only you know |
 | Wind-mit AI photo analysis | Its address no longer exists on the internet (`NXDOMAIN` from three DNS resolvers) | Verified it cannot be reached; believed failing for every inspector |
-| `deploy-hip.sh` (step 4 below) | Cannot run here yet: no `node`/`npm`. The GitHub sign-in was added the same afternoon (Homebrew and `gh` installed by the owner) and the folder was put back on `main` after the merges | Verified |
+| `deploy-hip.sh` (step 4 below) | Could not run in the morning. By 16:53 UTC it had: Homebrew, `gh`, a GitHub sign-in, Node 22 (`brew install node@22`, keg-only, so prefix `PATH` with `/opt/homebrew/opt/node@22/bin`), and a fresh app clone outside iCloud at `~/GITHUB/home-inspection-assistant` | Verified by deploying |
 | Sign-in, sync, billing (accounts) and property research (records) | Both health checks answered `ok` at about 2026-09-21 15:45 UTC | Verified |
 | The live website | Up (HTTP 200), with the analytics guard and the phone fix since 16:31 UTC | Verified |
 
 **Two questions only you can answer** (reply on [issue #10](https://github.com/richducat/inspection-rent/issues/10)):
 
-1. Is the older Mac (the one named "richards-macbook-pro") still switched on somewhere? If
-   yes, the backups and alerts are probably still running there and the SSH key is on it.
-   If no, there has been **no backup of the accounts database since about 2026-09-11**:
-   take one by hand today (cPanel → File Manager, `RUNBOOK.md` section 14 step 2).
+1. ~~Is the older Mac still switched on?~~ **Answered 2026-09-21: yes, it is on.** So the
+   hourly backups and alerts are believed to be running there. Still worth one look on that
+   Mac: the newest file in `~/hip-backups` should be less than an hour old. The wind-mit
+   service also lives there and is unreachable (step 6), so something on that Mac changed.
 2. Where did the cPanel key named `hip_claude_ed25519` come from? A key in that list lets
    whoever holds its private half into the server once authorized. If you do not know who
    holds it, delete it instead of authorizing it. The safe way to give this Mac access is
@@ -55,21 +57,13 @@ Mac". The table is in `SYSTEM-MAP.md` under "Which Mac?". What it means for you:
 
 ### This week, in order (owner)
 
-Steps 1 to 3 are done. **Step 4 cannot be done from your current Mac yet** (it still needs
-`node`); nothing is waiting on it except that the app's own copy of the guard line gets
-rebuilt from source, and inspectors see no difference either way.
+Steps 1 to 4 are done. What is left is yours: 5 (now a decision list, see issue #12), 6 and 7.
 
 1. ~~Merge the app fix~~, 2. ~~merge the two small ones~~, 3. ~~merge this repository's
    pull request~~: **done 2026-09-21**, see the table above. Nothing for you to click.
-4. **Rebuild the app from a Mac that can.** On the Mac that did the 2026-09-10 deploys: open
-   Terminal, go to the hip-app-work folder, run
-   `./deploy-hip.sh "Deploy the analytics guard"`. It ends with "DONE, inspection.rent
-   deployed and verified" in about a minute. If it prints ABORT, paste the message into a
-   new issue here. On your current Mac this cannot work until three things are set up
-   (`RUNBOOK.md` section 6 lists them; the GitHub sign-in is done and the website folder is
-   back on `main`, so only `node` remains: `brew install node`); ask an engineer or a Claude session on the Mac to do that
-   with you. Nothing breaks for inspectors while step 4 waits; the app keeps running the
-   2026-09-10 build.
+4. ~~Rebuild the app~~: **done 2026-09-21 16:53 UTC** from your current Mac (see the table
+   above). How to do it again is in `RUNBOOK.md` section 6, including the two traps found
+   today: the old source folder is inside iCloud, and the script's checklist can go stale.
 5. **Answer the pricing question** by replying on [issue #12](https://github.com/richducat/inspection-rent/issues/12)
    with what $98 buys today.
 6. **Wind-mit service:** no need to test from your phone any more. On 2026-09-21 its
@@ -89,8 +83,8 @@ from the photos herself; the marketing pages no longer scroll sideways on phones
 - Site `main` at `c4860e0` is live (Pages run 53, green). All 24 GTM loaders carry the
   hostname guard live, so localhost and preview visits no longer reach GA4.
 - The phone layout fix is live: 0 of 46 live page-widths overflow at 320 and 375 px.
-- The app at `/app` is still the 2026-09-10 build plus the one-line guard. App `main`
-  (`0a1c173`) is ahead of it by PRs #5, #6, #7; the next `deploy-hip.sh` publishes that.
+- The app at `/app` is the build of app `main` `0a12b04`, deployed 2026-09-21 16:53 UTC
+  (site commit `599aea5`, Pages run 55). Source and published copy match again.
 - The accounts API runs on the shared cPanel host, not Render. The records API is on Render.
   Both answered `ok` at 16:33 UTC.
 - The wind-mitigation service: on 2026-09-21 its hostname returned `NXDOMAIN` from the

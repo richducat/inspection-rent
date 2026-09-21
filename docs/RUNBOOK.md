@@ -113,6 +113,28 @@ none of them was true on the owner's current Mac that day, see `SYSTEM-MAP.md`
    published. Run `git -C /Users/richardducat/GITHUB/inspection-rent status -sb` first; the
    first line must start with `## main`.
 
+How the 2026-09-21 deploy was run on the owner's current Mac, and how to repeat it:
+
+```bash
+export PATH="/opt/homebrew/opt/node@22/bin:$PATH"          # Node 22, the version CI uses
+cd ~/GITHUB/home-inspection-assistant                     # the clone OUTSIDE iCloud
+git checkout main && git pull --ff-only && npm ci
+npm test && npm run score                                 # 427 tests; score must be 100 / 100
+git -C ~/GITHUB/inspection-rent status -sb                # must start with "## main" and be clean
+# the script hard-codes the iCloud folder as SRC; run a copy that points at this clone instead:
+sed 's|^SRC=.*|SRC="'$HOME'/GITHUB/home-inspection-assistant"|' deploy-hip.sh > /tmp/deploy-hip-here.sh
+bash /tmp/deploy-hip-here.sh "Deploy <what> from source $(git rev-parse --short HEAD)"
+```
+
+Two more traps, both met that day. (1) The script's `FEATURES` list is a list of on-screen
+words; when a heading is reworded the list must change in the same PR, or the next deploy
+aborts with "MISSING feature marker" on a healthy build (it aborts before committing; restore
+the local copy with `git checkout -- app && git clean -fd app`). Never delete a marker to get
+past it: find the new wording and prove the feature is still there. (2) If the last step
+fails with `index.lock`, another git process (an editor, another session) touched the folder
+at that moment; nothing was pushed. Check `git status`, then finish by hand exactly as the
+script does: `git add app && git commit -m "..." && git push origin main`.
+
 **Fallback A, by hand from any machine (not yet exercised):** clone both repositories side
 by side, then in the app repository:
 

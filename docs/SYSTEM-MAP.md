@@ -105,8 +105,8 @@ does, is a question only the owner can answer.**
 | On the owner's current Mac | 2026-09-21 |
 |---|---|
 | This repository at `/Users/richardducat/GITHUB/inspection-rent` | present. It was on the PR #16 branch in the morning; put back on `main` after the merges (16:35 UTC). Check again before any deploy, see `RUNBOOK.md` section 6 |
-| App source checkout at the path hard-coded in `deploy-hip.sh` | present, with `node_modules`, but last fetched 2026-08-18 (`3ff099f`), before the two 2026-09-10 deploys. The script fast-forwards it before building, so that alone is safe |
-| `node`, `npm` | **absent**: `deploy-hip.sh`, `npm test` and `npm run mobilecheck` cannot run here |
+| App source checkout at the path hard-coded in `deploy-hip.sh` | present, last fetched 2026-08-18 (`3ff099f`), **but it lives inside iCloud-synced Documents and more than 1,600 of its `.git` files were not downloaded** (`ls -lO` flag `dataless`); `git fetch` there hung for minutes. The owner's older Mac shares the same iCloud folder. Two Macs and iCloud writing one git repository is how repositories get corrupted, so **do not build or deploy from that folder**. A clean clone now lives at `/Users/richardducat/GITHUB/home-inspection-assistant` (outside iCloud); the 2026-09-21 deploy ran from it |
+| `node`, `npm` | absent in the morning; **Node 22.23.2 installed about 16:45 UTC** with `brew install node@22`. It is keg-only: run things with `PATH="/opt/homebrew/opt/node@22/bin:$PATH"` |
 | Homebrew, `gh` | absent in the morning; **installed by the owner at about 16:15 UTC** (Homebrew 7.0.5, `gh` 2.101.0; `~/.zprofile` now puts Homebrew on the PATH) |
 | Saved GitHub sign-in for `git` | absent in the morning; **present since about 16:20 UTC** (`gh auth login` as `richducat`, stored in the macOS keychain, scopes `repo`, `read:org`, `gist`; `gh auth setup-git` run). The private repos can be fetched and this repo pushed |
 | `~/.ssh/hip_deploy_ed25519` (and any other SSH key) | **absent**; the cPanel host refuses SSH from this Mac |
