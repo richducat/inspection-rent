@@ -104,7 +104,7 @@ does, is a question only the owner can answer.**
 
 | On the owner's current Mac | 2026-09-21 |
 |---|---|
-| This repository at `/Users/richardducat/GITHUB/inspection-rent` | present (checked out on the PR #16 branch, not `main`; see `RUNBOOK.md` section 6) |
+| This repository at `/Users/richardducat/GITHUB/inspection-rent` | present. It was on the PR #16 branch in the morning; put back on `main` after the merges (16:35 UTC). Check again before any deploy, see `RUNBOOK.md` section 6 |
 | App source checkout at the path hard-coded in `deploy-hip.sh` | present, with `node_modules`, but last fetched 2026-08-18 (`3ff099f`), before the two 2026-09-10 deploys. The script fast-forwards it before building, so that alone is safe |
 | `node`, `npm` | **absent**: `deploy-hip.sh`, `npm test` and `npm run mobilecheck` cannot run here |
 | Homebrew, `gh` | absent in the morning; **installed by the owner at about 16:15 UTC** (Homebrew 7.0.5, `gh` 2.101.0; `~/.zprofile` now puts Homebrew on the PATH) |
