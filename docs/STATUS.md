@@ -3,7 +3,7 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-21 17:20 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+## Last updated: 2026-09-21 17:35 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
 
 ### Done today (2026-09-21): all five pull requests are merged and the website fix is live
 
@@ -64,8 +64,12 @@ Steps 1 to 4 are done. What is left is yours: 5 (now a decision list, see issue 
 4. ~~Rebuild the app~~: **done 2026-09-21 16:53 UTC** from your current Mac (see the table
    above). How to do it again is in `RUNBOOK.md` section 6, including the two traps found
    today: the old source folder is inside iCloud, and the script's checklist can go stale.
-5. **Answer the pricing question** by replying on [issue #12](https://github.com/richducat/inspection-rent/issues/12)
-   with what $98 buys today.
+5. ~~Answer the pricing question~~: **decided 2026-09-21** (a new offer, relayed from Beth;
+   the details stay out of this public repository until launch day). Everything is built and
+   waiting; see "In flight". What is left for you before launch: get wind-mit back (step 6),
+   then one sitting with an engineer or a Claude session: create two prices in Stripe, add two
+   settings in cPanel, press merge. The checklist is in the accounts repo's `STRIPE-SETUP.md`
+   on the pull request below.
 6. **Wind-mit service:** no need to test from your phone any more. On 2026-09-21 its
    address did not exist on the internet at all, so it is down for everyone. What is left
    for you on [issue #8](https://github.com/richducat/inspection-rent/issues/8): say whether
@@ -204,7 +208,20 @@ update, if it is not merged yet. Next action that changes production: run
 
 ### In flight
 
-Nothing half-done. Stale branches kept on purpose (the owner asked that nothing be deleted):
+**The pricing change (prepared 2026-09-21, not launched).** Four coordinated changes, built
+and adversarially reviewed together; none is merged, none is visible to customers:
+
+| Where | State |
+|---|---|
+| Accounts API | [hip-accounts-api #2](https://github.com/richducat/hip-accounts-api/pull/2), CI green (69 tests). Behaves exactly as today until the new app asks for the new offer. Goes on the host first, after a database backup |
+| Records API | [hip-records-api #2](https://github.com/richducat/hip-records-api/pull/2), CI green. One sentence; merging auto-deploys to Render |
+| App | [home-inspection-assistant #9](https://github.com/richducat/home-inspection-assistant/pull/9), CI green (442 tests, score 100). Refuses to open Stripe unless the server confirms the new offer, so a wrong-order deploy cannot sell a wrong price. Deploy only at launch |
+| This website | branch `claude/pricing-50-500`, **held locally** on the owner's Mac in `~/GITHUB/_pricing_work/inspection-rent` (this repository is public, so pushing it would announce the prices early). 20 tests pass; 0 of 69 page-widths overflow at 320, 375 and 768 px; no old price visible on any page. Before merging: `npm run launchcheck -- <launch date>` sets the terms date and sitemap dates |
+
+Launch is gated on the wind-mit service being back (owner's decision). Existing subscribers,
+their prices and limits, and credits already bought are untouched by all four changes.
+
+Otherwise nothing half-done. Stale branches kept on purpose (the owner asked that nothing be deleted):
 here `claude/app-error-review-o46y68` (its one commit was cherry-picked into #16) and the
 merged PR branches; in the app repo `claude/app-issues-beth-aicohr` (2026-08-26, never
 merged; see issue #15) and the merged PR branches.
