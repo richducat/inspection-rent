@@ -3,7 +3,22 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-21 18:45 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+## Last updated: 2026-09-23 17:45 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+
+### Launched 2026-09-23 (UTC): new pricing live, Wind-Mit AI shelved, backups restored
+
+| When | What | Verified |
+|---|---|---|
+| 15:53 | Hourly backup restored: `co.eb28.hipbackup-standin` on the owner's current Mac (backup only, 30 days, `~/hip-backups`) | First run integrity ok; the older Mac's job had not run since 2026-09-03 |
+| ~16:30 | Wind-Mit AI photo analysis shelved (app #10, `WINDMIT_AI_ENABLED=false`; nothing deleted) and its step taken off How it works (#21) | 427 tests, score 100; live app shows no AI claim; records/permit autofill code untouched |
+| 17:2x | Stripe: new products/prices $50/month `price_1UIsldJ77pBbyOYYwUcJ2rn5` and $500/year `price_1UIsljJ77pBbyOYY2Aqz3sBJ`; host settings `STRIPE_PRICE_UNLIMITED_MONTHLY_50` and `STRIPE_PRICE_ANNUAL_500` added | All seven price settings on the host match Stripe |
+| 17:26 | Owner: the only subscriber (a $20/month customer) set to cancel at period end (2026-10-17) | Stripe `cancel_at_period_end=true`; account still active until then |
+| 17:27 | Accounts API offer v2 live (hip-accounts-api #2) | Host code == GitHub main; restart 17:27; health ok; rollback copy `~/hip-accounts-api-src-before-pricing-20260923.tgz` on the host |
+| 17:29 | Records API paywall wording live (hip-records-api #2) | `/health` deploy `2026-09-21-paywall-wording` |
+| ~17:35 | App with the new prices deployed (app #9) | 442 tests, score 100, 8 deploy markers; live bundle sends `offer: v2` and keeps the wrong-price guard |
+| ~17:40 | Website with the new prices (#22), terms effective September 23, 2026 | Launch check ok; 46 live page-widths clean; no old price on any page |
+
+**Still unverified:** a real end-to-end checkout at $50 and $500 (needs a signed-in free account; the owner can open the app, choose a plan, confirm Stripe shows the amount, and close without paying). The GA4 view of `begin_checkout` values 50/500.
 
 ### Done today (2026-09-21): all five pull requests are merged and the website fix is live
 
