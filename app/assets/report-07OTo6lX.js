@@ -1,4 +1,4 @@
-import{Ct as e,F as t,M as n,N as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt as l}from"./index-DzpGYLYx.js";var u=`
+import{Ct as e,F as t,L as n,P as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt as l}from"./index-B07tcBW5.js";var u=`
           :root { color-scheme: only light; }
           html, body { background: #ffffff; }
           @page { size: letter; margin: 0.6in 0.5in; }
@@ -68,7 +68,7 @@ import{Ct as e,F as t,M as n,N as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt a
           <td><a href="${y(e.url)}" rel="noopener noreferrer">${v(e.url)}</a></td>
           <td>${v(e.detail)}</td>
         </tr>
-      `).join(``),g=[[`Client`,n(i.request)],[`Insured`,i.request.insuredName],[`Phone`,i.request.phone],[`Email`,i.request.email],[`Inspection type`,t(i.request.inspectionType)],[`Price`,i.request.price],...i.clientPayment||i.request.paymentStatus!==`unpaid`?[[`Payment`,i.request.paymentStatus.replace(`_`,` `)]]:[],[`Appointment`,i.request.appointmentStart]].map(([e,t])=>`<tr><td>${v(e)}</td><td>${v(t||`Not populated`)}</td></tr>`).join(``),b=i.permitCandidates.filter(e=>e.status===`selected`).map(e=>`
+      `).join(``),g=[[`Client`,r(i.request)],[`Insured`,i.request.insuredName],[`Phone`,i.request.phone],[`Email`,i.request.email],[`Inspection type`,n(i.request.inspectionType)],[`Price`,i.request.price],...i.clientPayment||i.request.paymentStatus!==`unpaid`?[[`Payment`,i.request.paymentStatus.replace(`_`,` `)]]:[],[`Appointment`,i.request.appointmentStart]].map(([e,t])=>`<tr><td>${v(e)}</td><td>${v(t||`Not populated`)}</td></tr>`).join(``),b=i.permitCandidates.filter(e=>e.status===`selected`).map(e=>`
         <tr>
           <td>${v(e.type)}</td>
           <td>${v(e.permitNumber||`No permit number`)}</td>
@@ -81,7 +81,7 @@ import{Ct as e,F as t,M as n,N as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt a
           <td>${v(e.replace(/([A-Z])/g,` $1`))}</td>
           <td>${v(t||`Blank`)}</td>
         </tr>
-      `).join(``),S=[[`Property`,`${i.property.address}, ${i.property.city}, ${i.property.state} ${i.property.postalCode}`],[`Owner`,i.property.ownerName||`Not populated`],[`County / parcel`,`${i.property.county||`Not populated`} / ${i.property.parcelId||`Not populated`}`],[`Legal description`,i.property.legalDescription||`Not populated`],[`Flood zone`,`${i.property.floodZone||`Not populated`}${i.property.sfha?` — SFHA ${i.property.sfha}`:``}`],[`Inspection date`,i.inspectionDate||`Not set`],[`Inspector`,`${i.inspector.name} — ${i.inspector.license}`],[`Company`,`${i.inspector.company||`Not set`} — ${i.inspector.email||`No email`}`],[`State pack`,`${a.name} ${a.version}`],[`Scope`,i.scope||`Not set`],[`Signoff`,i.signedAt?`${i.signatureName||i.inspector.name} at ${r(i.signedAt)}`:`Pending inspector finalization`]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
+      `).join(``),S=[[`Property`,`${i.property.address}, ${i.property.city}, ${i.property.state} ${i.property.postalCode}`],[`Owner`,i.property.ownerName||`Not populated`],[`County / parcel`,`${i.property.county||`Not populated`} / ${i.property.parcelId||`Not populated`}`],[`Legal description`,i.property.legalDescription||`Not populated`],[`Flood zone`,`${i.property.floodZone||`Not populated`}${i.property.sfha?` — SFHA ${i.property.sfha}`:``}`],[`Inspection date`,i.inspectionDate||`Not set`],[`Inspector`,`${i.inspector.name} — ${i.inspector.license}`],[`Company`,`${i.inspector.company||`Not set`} — ${i.inspector.email||`No email`}`],[`State pack`,`${a.name} ${a.version}`],[`Scope`,i.scope||`Not set`],[`Signoff`,i.signedAt?`${i.signatureName||i.inspector.name} at ${t(i.signedAt)}`:`Pending inspector finalization`]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
     <!doctype html>
     <html>
       <head>
@@ -201,12 +201,12 @@ ${u}
         <section>
           <h2>Audit Trail</h2>
           <p>Inspection ID: ${v(i.id)}</p>
-          <p>Signed at: ${v(i.signedAt?r(i.signedAt):`Pending`)}</p>
-          <p>Exported at: ${v(i.exportedAt?r(i.exportedAt):`Pending`)}</p>
+          <p>Signed at: ${v(i.signedAt?t(i.signedAt):`Pending`)}</p>
+          <p>Exported at: ${v(i.exportedAt?t(i.exportedAt):`Pending`)}</p>
         </section>
       </body>
     </html>
-  `}function m(e,t=!1){let n=e.permitCandidates.map(e=>`
+  `}function m(e,n=!1){let r=e.permitCandidates.map(e=>`
         <tr>
           <td>${v(e.type)}</td>
           <td>${v(e.permitNumber||`—`)}</td>
@@ -218,7 +218,7 @@ ${u}
           <td>${e.status===`selected`?`Selected`:`On file`}</td>
           <td>${e.sourceUrl?`<a href="${y(e.sourceUrl)}" rel="noopener noreferrer">source</a>`:`—`}</td>
         </tr>
-      `).join(``),i=[[`Property`,`${e.property.address}, ${e.property.city}, ${e.property.state} ${e.property.postalCode}`],[`Owner`,e.property.ownerName||`Not populated`],[`Parcel / tax acct`,`${e.property.parcelId||`—`} / ${e.property.taxAccount||`—`}`],[`Inspector`,`${e.inspector.name} — ${e.inspector.license}`],[`Prepared`,r(new Date().toISOString())]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
+      `).join(``),i=[[`Property`,`${e.property.address}, ${e.property.city}, ${e.property.state} ${e.property.postalCode}`],[`Owner`,e.property.ownerName||`Not populated`],[`Parcel / tax acct`,`${e.property.parcelId||`—`} / ${e.property.taxAccount||`—`}`],[`Inspector`,`${e.inspector.name} — ${e.inspector.license}`],[`Prepared`,t(new Date().toISOString())]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
     <!doctype html>
     <html>
       <head>
@@ -243,7 +243,7 @@ ${u}
         </style>
       </head>
       <body>
-        ${f(t)}
+        ${f(n)}
         <header>
           <h1>Permit History</h1>
           <div class="brand-line">${v(e.inspector.company||`Inspector Gadgets`)}${e.inspector.license?` · ${v(e.inspector.license)}`:``}</div>
@@ -254,11 +254,11 @@ ${u}
           <thead>
             <tr><th>Type</th><th>Permit #</th><th>Application date</th><th>Scope of work</th><th>Issued</th><th>Final</th><th>Contractor</th><th>Status</th><th>Source</th></tr>
           </thead>
-          <tbody>${n||`<tr><td colspan="9">No permits on file.</td></tr>`}</tbody>
+          <tbody>${r||`<tr><td colspan="9">No permits on file.</td></tr>`}</tbody>
         </table>
       </body>
     </html>
-  `}var h={satisfactory:`cond-ok`,marginal:`cond-marginal`,deficient:`cond-deficient`,not_present:`cond-na`,not_inspected:`cond-ni`};function g(e,n=!1){let d=e.request,p=e.property,m=[[`Client`,d.clientName],[`Phone`,d.phone],[`Email`,d.email],[`Property`,[p.address,p.city,p.state,p.postalCode].filter(Boolean).join(`, `)],[`Owner of record`,p.ownerName||``],[`Year built`,p.yearBuilt||``],[`Approx. area`,p.squareFeet?`${p.squareFeet} sq ft`:``],[`Occupancy`,p.occupancy||``],[`Inspection date`,e.inspectionDate||(d.appointmentStart?d.appointmentStart.slice(0,10):``)],[`Inspection type`,t(d.inspectionType)]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t||`Not provided`)}</dd></div>`).join(``),g=i(e),y=g.length?g.map(e=>`
+  `}var h={satisfactory:`cond-ok`,marginal:`cond-marginal`,deficient:`cond-deficient`,not_present:`cond-na`,not_inspected:`cond-ni`};function g(e,r=!1){let d=e.request,p=e.property,m=[[`Client`,d.clientName],[`Phone`,d.phone],[`Email`,d.email],[`Property`,[p.address,p.city,p.state,p.postalCode].filter(Boolean).join(`, `)],[`Owner of record`,p.ownerName||``],[`Year built`,p.yearBuilt||``],[`Approx. area`,p.squareFeet?`${p.squareFeet} sq ft`:``],[`Occupancy`,p.occupancy||``],[`Inspection date`,e.inspectionDate||(d.appointmentStart?d.appointmentStart.slice(0,10):``)],[`Inspection type`,n(d.inspectionType)]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t||`Not provided`)}</dd></div>`).join(``),g=i(e),y=g.length?g.map(e=>`
         <tr>
           <td>${v(e.systemLabel)}</td>
           <td>${v(e.componentLabel)}</td>
@@ -329,7 +329,7 @@ ${u}
         </style>
       </head>
       <body>
-        ${f(n)}
+        ${f(r)}
         <header>
           <div class="letterhead">
             <div>
@@ -376,7 +376,7 @@ ${u}
               <div class="line">Inspector — ${v(e.inspector.name||``)}${e.inspector.license?` (${v(e.inspector.license)})`:``}</div>
             </div>
             <div>
-              <div class="line">Date — ${v(e.signedAt?r(e.signedAt):e.inspectionDate||``)}</div>
+              <div class="line">Date — ${v(e.signedAt?t(e.signedAt):e.inspectionDate||``)}</div>
             </div>
           </div>
         </section>
