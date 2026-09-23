@@ -3,7 +3,7 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-21 17:20 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+## Last updated: 2026-09-21 18:45 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
 
 ### Done today (2026-09-21): all five pull requests are merged and the website fix is live
 
@@ -37,8 +37,8 @@ Mac". The table is in `SYSTEM-MAP.md` under "Which Mac?". What it means for you:
 | What | State on 2026-09-21 | Verified or believed |
 |---|---|---|
 | SSH key `~/.ssh/hip_deploy_ed25519` | Not on this Mac; the hosting server refused the login | Verified |
-| A key named `hip_claude_ed25519` | Seen in cPanel at 17:25 UTC: **no key of that name existed.** `hip_deploy_ed25519` is there and authorized (so the older Mac can get in and cPanel needed no change for it), along with two other authorized deploy keys whose holders the owner should identify (issue #14); no private keys are stored on the server. A new pair named `hip_claude_ed25519` was then created on the current Mac (private half stays in `~/.ssh`), and its public half was put into cPanel's Import form for the owner to press Import and then Authorize | Verified. Whether the owner completed the import: check with the SSH test in `RUNBOOK.md` section 12 |
-| Hourly backup of the accounts database, outage and signup alerts, keep-warm | Not set up on this Mac | Verified for this Mac. Whether an older Mac still does them: only you know |
+| A key named `hip_claude_ed25519` | Seen in cPanel at 17:25 UTC: **no key of that name existed.** `hip_deploy_ed25519` is there and authorized (so the older Mac can get in and cPanel needed no change for it), along with two other authorized deploy keys whose holders the owner should identify (issue #14); no private keys are stored on the server. A new pair named `hip_claude_ed25519` was then created on the current Mac (private half stays in `~/.ssh`), and its public half was put into cPanel's Import form for the owner to press Import and then Authorize | Verified. The owner imported and authorized it; **SSH from the current Mac works since 18:10 UTC** (`whoami` answered) |
+| Hourly backup of the accounts database, outage and signup alerts, keep-warm | Not set up on this Mac, and **not running on the older Mac either since 2026-09-03** (see question 1 below). Manual backup taken 2026-09-21 18:35 UTC | Verified from the server |
 | Wind-mit AI photo analysis | Its address no longer exists on the internet (`NXDOMAIN` from three DNS resolvers) | Verified it cannot be reached; believed failing for every inspector |
 | `deploy-hip.sh` (step 4 below) | Could not run in the morning. By 16:53 UTC it had: Homebrew, `gh`, a GitHub sign-in, Node 22 (`brew install node@22`, keg-only, so prefix `PATH` with `/opt/homebrew/opt/node@22/bin`), and a fresh app clone outside iCloud at `~/GITHUB/home-inspection-assistant` | Verified by deploying |
 | Sign-in, sync, billing (accounts) and property research (records) | Both health checks answered `ok` at about 2026-09-21 15:45 UTC | Verified |
@@ -46,10 +46,18 @@ Mac". The table is in `SYSTEM-MAP.md` under "Which Mac?". What it means for you:
 
 **Two questions only you can answer** (reply on [issue #10](https://github.com/richducat/inspection-rent/issues/10)):
 
-1. ~~Is the older Mac still switched on?~~ **Answered 2026-09-21: yes, it is on.** So the
-   hourly backups and alerts are believed to be running there. Still worth one look on that
-   Mac: the newest file in `~/hip-backups` should be less than an hour old. The wind-mit
-   service also lives there and is unreachable (step 6), so something on that Mac changed.
+1. ~~Is the older Mac still switched on?~~ Answered 2026-09-21: yes. **But its hourly backup
+   has not run since 2026-09-03** (verified from the server at 18:11 UTC: every run creates
+   and removes a snapshot in the host's `backups` folder, and that folder was last changed
+   on 2026-09-03 17:45 UTC; three leftover `auto-*.db` files there are debris from failed
+   runs). For 18 days the accounts database had no copy off the hosting disk. **A manual
+   backup was taken at 18:35 UTC** with the script's own method (`sqlite3 .backup` on the
+   host, copied over SSH, `PRAGMA integrity_check` = ok, newest record 14:24 UTC the same
+   day) into `~/hip-backups` on the owner's current Mac. Until the hourly job is repaired
+   there is no automatic backup and no outage or signup alert: take a manual one before any
+   change to the accounts host, and at least weekly (`RUNBOOK.md` section 12 has the key;
+   `hip-accounts-api/deploy/backup-and-watch.sh` is the job). The wind-mit service on the
+   same Mac is also unreachable (step 6), so something on that Mac changed around then.
 2. Where did the cPanel key named `hip_claude_ed25519` come from? A key in that list lets
    whoever holds its private half into the server once authorized. If you do not know who
    holds it, delete it instead of authorizing it. The safe way to give this Mac access is
@@ -64,8 +72,12 @@ Steps 1 to 4 are done. What is left is yours: 5 (now a decision list, see issue 
 4. ~~Rebuild the app~~: **done 2026-09-21 16:53 UTC** from your current Mac (see the table
    above). How to do it again is in `RUNBOOK.md` section 6, including the two traps found
    today: the old source folder is inside iCloud, and the script's checklist can go stale.
-5. **Answer the pricing question** by replying on [issue #12](https://github.com/richducat/inspection-rent/issues/12)
-   with what $98 buys today.
+5. ~~Answer the pricing question~~: **decided 2026-09-21** (a new offer, relayed from Beth;
+   the details stay out of this public repository until launch day). Everything is built and
+   waiting; see "In flight". What is left for you before launch: get wind-mit back (step 6),
+   then one sitting with an engineer or a Claude session: create two prices in Stripe, add two
+   settings in cPanel, press merge. The checklist is in the accounts repo's `STRIPE-SETUP.md`
+   on the pull request below.
 6. **Wind-mit service:** no need to test from your phone any more. On 2026-09-21 its
    address did not exist on the internet at all, so it is down for everyone. What is left
    for you on [issue #8](https://github.com/richducat/inspection-rent/issues/8): say whether
@@ -204,29 +216,20 @@ update, if it is not merged yet. Next action that changes production: run
 
 ### In flight
 
-**Branch `claude/pricing-50-500` (local commits only, not pushed, no PR yet; written 2026-09-21).**
-It rewrites the 22 pages that carry prices for the new offer: $50 a month or $500 a year, both
-unlimited, first address free with the report stamped SAMPLE, no $5 single report for sale
-(decision of 2026-09-21 in `DECISIONS.md`). Two plan cards replace three on `pricing.html` and
-`index.html`, both JSON-LD blocks now list 50.00 and 500.00, `terms.html` says existing
-subscribers keep their price and old credits stay usable, `lp01` and `lp02` are rewritten.
-After review the same day: the renewal line in `terms.html` now says plans renew at the price
-you subscribed at (it said "then-current price", which contradicted the promise to existing
-subscribers); the JSON-LD offers state the billing period (`unitCode` MON and ANN); the two
-home-page plan cards are equal height again.
-Verified in that checkout: `npm test` 20 of 20 (15 analytics, 5 for the new launch check), the
-JSON-LD blocks in `index.html` and `pricing.html` parse, `npm run mobilecheck` prints
-`0 overflowing of 46 page-widths` (run with the Mac's Google Chrome through
-`MOBILECHECK_CHROMIUM`), home plan cards measured 363 and 363 px at 1280 px, 397 and 397 px at
-620 px. **Not verified:** how search engines read the new JSON-LD (Google's Rich Results Test
-needs the live page). It must NOT be merged before launch day: launch is one sitting, after the wind-mitigation
-photo analysis service is back, together with the app and accounts-server branches of the same
-name. **Two dates are deliberately unset:** `terms.html` shows "Effective LAUNCH-DATE-NOT-SET."
-and the 12 price-carrying `sitemap.xml` entries still say 2026-09-21. On launch day set both
-and run `npm run launchcheck -- <launch date>` (`RUNBOOK.md` section 2); it fails until they
-are right, so the token cannot reach the live site unnoticed.
+**The pricing change (prepared 2026-09-21, not launched).** Four coordinated changes, built
+and adversarially reviewed together; none is merged, none is visible to customers:
 
-Nothing else half-done. Stale branches kept on purpose (the owner asked that nothing be deleted):
+| Where | State |
+|---|---|
+| Accounts API | [hip-accounts-api #2](https://github.com/richducat/hip-accounts-api/pull/2), CI green (69 tests). Behaves exactly as today until the new app asks for the new offer. Goes on the host first, after a database backup |
+| Records API | [hip-records-api #2](https://github.com/richducat/hip-records-api/pull/2), CI green. One sentence; merging auto-deploys to Render |
+| App | [home-inspection-assistant #9](https://github.com/richducat/home-inspection-assistant/pull/9), CI green (442 tests, score 100). Refuses to open Stripe unless the server confirms the new offer, so a wrong-order deploy cannot sell a wrong price. Deploy only at launch |
+| This website | branch `claude/pricing-50-500`, **held locally** on the owner's Mac in `~/GITHUB/_pricing_work/inspection-rent` (this repository is public, so pushing it would announce the prices early). 20 tests pass; 0 of 69 page-widths overflow at 320, 375 and 768 px; no old price visible on any page. Before merging: `npm run launchcheck -- <launch date>` sets the terms date and sitemap dates |
+
+Launch is gated on the wind-mit service being back (owner's decision). Existing subscribers,
+their prices and limits, and credits already bought are untouched by all four changes.
+
+Otherwise nothing half-done. Stale branches kept on purpose (the owner asked that nothing be deleted):
 here `claude/app-error-review-o46y68` (its one commit was cherry-picked into #16) and the
 merged PR branches; in the app repo `claude/app-issues-beth-aicohr` (2026-08-26, never
 merged; see issue #15) and the merged PR branches.
