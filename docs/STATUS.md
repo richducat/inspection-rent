@@ -3,7 +3,19 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-23 17:45 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+## Last updated: 2026-09-24 22:05 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+
+### Permit coverage and Beth's audit (2026-09-23/24 UTC)
+
+| What | Live | Verified |
+|---|---|---|
+| Beth audit: every request she made that reached `main` is live; five never-merged August fixes ported (free-address wall first, blank permit cards as search tasks, empty cards can't be selected, 'why empty' note); warning when one permit portal fails | app #11 | 468 tests, score 100, mobile check at 375 px |
+| BS&A (Satellite Beach, West Melbourne, Melbourne Beach, Titusville, Cape Canaveral) was refusing every lookup (HTTP 403): now reuses the search session and sends the property token | records #3, #4 (18:37) | Old code 403 confirmed; new flow not yet seen end to end from production (this Mac is behind BS&A's human check) |
+| Lifetime history, Brevard: Indialantic, Grant-Valkaria, county Legacy Permit Search 1990–2007, Cocoa archive 2008–2021, older-records contacts per town | records #5 (20:33), app #12 'Older permits' | Old vs new: Viera 100→122, Cocoa 0→12, Grant-Valkaria 2→7, others identical |
+| Central Florida: Osceola County, Seminole County, Oviedo, Lake Mary, Sanford & St. Cloud archives, Orlando, Winter Park, Winter Garden, Maitland, Ocoee, Altamonte Springs, Longwood, Port Orange, Orange City, Holly Hill, Palm Coast, Vero Beach; strict address matching for Click2Gov/Clear Village | records #6 (21:57) | Two independent reviews, all findings fixed; old vs new identical for Brevard |
+
+**Link only (human-check or login gated):** Orange County, Volusia County, Port St. Lucie, Daytona Beach, Cocoa Beach, Malabar, and the current portals of Cocoa, Sanford, St. Cloud, Casselberry. **No online records:** Indian Harbour Beach, Palm Shores.
+**Open:** Palm Bay's public data stops mid-2022; app wording for `coverageScope: city-unconfirmed`; the amps option "<250A" (Beth dictated it; confirm whether she meant ">250A"); app bundle has ~0.45 KB headroom.
 
 ### Launched 2026-09-23 (UTC): new pricing live, Wind-Mit AI shelved, backups restored
 
