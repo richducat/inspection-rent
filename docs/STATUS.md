@@ -3,7 +3,13 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-24 22:05 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+## Last updated: 2026-09-24 23:35 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+
+### Instant permit lookups (2026-09-24 UTC)
+
+- **Records API #8, live 23:31:** every good permit result is kept per address. Repeat lookups answer in about 0.03 s instead of 10–45 s, and addresses are re-checked nightly (02:00–05:00 ET). A glitch can never shrink or empty a good list; lists older than 7 days are pulled live first. Old vs new on Viera, Melbourne, Cocoa and Rockledge gave identical permit numbers. Store health: `https://hip-records-api.onrender.com/health/store` (counts only).
+- **App #13:** 'Refresh records' sends `fresh=1`, so it always pulls live.
+- **Owner/engineer step still open:** add a Render persistent disk (1 GB, mount `/var/data`) and set `PERMIT_STORE_DIR=/var/data` and `CACHE_DIR=/var/data/cache` on `hip-records-api`. Until then the saved copy is emptied on every deploy (lookups still work; they are just slow again the first time).
 
 ### Permit coverage and Beth's audit (2026-09-23/24 UTC)
 
