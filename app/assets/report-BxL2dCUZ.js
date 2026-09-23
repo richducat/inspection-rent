@@ -1,4 +1,4 @@
-import{Ct as e,F as t,L as n,P as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt as l}from"./index-B07tcBW5.js";var u=`
+import{F as e,I as t,R as n,ft as r,gt as i,ht as a,mt as o,pt as s,vt as c,wt as l}from"./index-Fq42uOMj.js";var u=`
           :root { color-scheme: only light; }
           html, body { background: #ffffff; }
           @page { size: letter; margin: 0.6in 0.5in; }
@@ -27,19 +27,19 @@ import{Ct as e,F as t,L as n,P as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt a
             /* Printed links should read as text, not blue underlines. */
             a { color: inherit; text-decoration: none; }
             .no-print { display: none !important; }
-          }`,d=`<svg xmlns='http://www.w3.org/2000/svg' width='360' height='210'><text x='8' y='150' transform='rotate(-30 180 105)' fill='rgba(200,28,28,0.13)' font-family='Arial, Helvetica, sans-serif' font-size='27' font-weight='700'>SAMPLE - NOT FOR SUBMISSION</text></svg>`;function f(e){return e?`<style>.wm-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,${encodeURIComponent(d)}");background-repeat:repeat;}.wm-footer{position:fixed;left:0;right:0;bottom:0;z-index:10000;pointer-events:none;background:rgba(255,255,255,.92);color:#b91c1c;text-align:center;font:600 10.5px/1.5 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em;padding:5px 8px;border-top:1px solid #eab8b8;}@media print{.wm-overlay,.wm-footer{position:fixed;}body{padding-bottom:34px;}}</style><div class="wm-overlay" aria-hidden="true"></div><div class="wm-footer">PREVIEW - not for submission. Subscribe at inspection.rent to download the clean, submission-ready report.</div>`:``}function p(i,a,o,s=!1){let c=i.findings.map(e=>`
+          }`,d=`<svg xmlns='http://www.w3.org/2000/svg' width='360' height='210'><text x='8' y='150' transform='rotate(-30 180 105)' fill='rgba(200,28,28,0.13)' font-family='Arial, Helvetica, sans-serif' font-size='27' font-weight='700'>SAMPLE - NOT FOR SUBMISSION</text></svg>`;function f(e){return e?`<style>.wm-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;background-image:url("data:image/svg+xml,${encodeURIComponent(d)}");background-repeat:repeat;}.wm-footer{position:fixed;left:0;right:0;bottom:0;z-index:10000;pointer-events:none;background:rgba(255,255,255,.92);color:#b91c1c;text-align:center;font:600 10.5px/1.5 'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em;padding:5px 8px;border-top:1px solid #eab8b8;}@media print{.wm-overlay,.wm-footer{position:fixed;}body{padding-bottom:34px;}}</style><div class="wm-overlay" aria-hidden="true"></div><div class="wm-footer">PREVIEW - not for submission. Subscribe at inspection.rent to download the clean, submission-ready report.</div>`:``}function p(r,i,a,o=!1){let s=r.findings.map(e=>`
         <section>
           <h3>${v(e.title)}</h3>
           <p><strong>Severity:</strong> ${v(e.severity)}</p>
           <p>${v(e.narrative)}</p>
           <p><strong>Recommendation:</strong> ${v(e.recommendation)}</p>
         </section>
-      `).join(``),l=i.photos.map(e=>`
+      `).join(``),c=r.photos.map(e=>`
         <figure>
           <img src="${v(e.url)}" alt="${v(e.label)}" />
           <figcaption>${v(e.label)} - ${v(e.location)}${e.analysis?` - Scan: ${v(e.analysis.detectedIssue)}`:``}</figcaption>
         </figure>
-      `).join(``),d=i.photos.filter(e=>e.slotId?.startsWith(`defect`)).map(e=>{let t=(i.photoRecommendations??{})[e.id]?.trim();return`
+      `).join(``),d=r.photos.filter(e=>e.slotId?.startsWith(`defect`)).map(e=>{let t=(r.photoRecommendations??{})[e.id]?.trim();return`
         <figure>
           ${e.url?`<img src="${v(e.url)}" alt="${v(e.label)}" />`:``}
           <figcaption>
@@ -52,7 +52,7 @@ import{Ct as e,F as t,L as n,P as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt a
           <h2>Defect Recommendations</h2>
           ${d}
         </section>
-      `:``,m=i.photos.filter(e=>e.analysis).map(e=>`
+      `:``,m=r.photos.filter(e=>e.analysis).map(e=>`
         <section>
           <h3>${v(e.analysis?.detectedIssue??`Image scan result`)}</h3>
           <p><strong>Photo:</strong> ${v(e.label)} - ${v(e.location)}</p>
@@ -61,14 +61,14 @@ import{Ct as e,F as t,L as n,P as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt a
           <p>${v(e.analysis?.summary??``)}</p>
           <p><strong>Recommendation:</strong> ${v(e.analysis?.recommendation??``)}</p>
         </section>
-      `).join(``),h=i.researchPacket?.sources.map(e=>`
+      `).join(``),h=r.researchPacket?.sources.map(e=>`
         <tr>
           <td>${v(e.title)}</td>
           <td>${v(e.status.replace(/_/g,` `))}</td>
           <td><a href="${y(e.url)}" rel="noopener noreferrer">${v(e.url)}</a></td>
           <td>${v(e.detail)}</td>
         </tr>
-      `).join(``),g=[[`Client`,r(i.request)],[`Insured`,i.request.insuredName],[`Phone`,i.request.phone],[`Email`,i.request.email],[`Inspection type`,n(i.request.inspectionType)],[`Price`,i.request.price],...i.clientPayment||i.request.paymentStatus!==`unpaid`?[[`Payment`,i.request.paymentStatus.replace(`_`,` `)]]:[],[`Appointment`,i.request.appointmentStart]].map(([e,t])=>`<tr><td>${v(e)}</td><td>${v(t||`Not populated`)}</td></tr>`).join(``),b=i.permitCandidates.filter(e=>e.status===`selected`).map(e=>`
+      `).join(``),g=[[`Client`,e(r.request)],[`Insured`,r.request.insuredName],[`Phone`,r.request.phone],[`Email`,r.request.email],[`Inspection type`,n(r.request.inspectionType)],[`Price`,r.request.price],...r.clientPayment||r.request.paymentStatus!==`unpaid`?[[`Payment`,r.request.paymentStatus.replace(`_`,` `)]]:[],[`Appointment`,r.request.appointmentStart]].map(([e,t])=>`<tr><td>${v(e)}</td><td>${v(t||`Not populated`)}</td></tr>`).join(``),b=r.permitCandidates.filter(e=>e.status===`selected`).map(e=>`
         <tr>
           <td>${v(e.type)}</td>
           <td>${v(e.permitNumber||`No permit number`)}</td>
@@ -76,17 +76,17 @@ import{Ct as e,F as t,L as n,P as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt a
           <td>${v(e.finalDate||`Unknown`)}</td>
           <td>${v(e.notes)}</td>
         </tr>
-      `).join(``),x=Object.entries(i.officialFields).filter(([t,n])=>e(t,i.request.inspectionType,!!(n??``).trim())).map(([e,t])=>`
+      `).join(``),x=Object.entries(r.officialFields).filter(([e,t])=>l(e,r.request.inspectionType,!!(t??``).trim())).map(([e,t])=>`
         <tr>
           <td>${v(e.replace(/([A-Z])/g,` $1`))}</td>
           <td>${v(t||`Blank`)}</td>
         </tr>
-      `).join(``),S=[[`Property`,`${i.property.address}, ${i.property.city}, ${i.property.state} ${i.property.postalCode}`],[`Owner`,i.property.ownerName||`Not populated`],[`County / parcel`,`${i.property.county||`Not populated`} / ${i.property.parcelId||`Not populated`}`],[`Legal description`,i.property.legalDescription||`Not populated`],[`Flood zone`,`${i.property.floodZone||`Not populated`}${i.property.sfha?` — SFHA ${i.property.sfha}`:``}`],[`Inspection date`,i.inspectionDate||`Not set`],[`Inspector`,`${i.inspector.name} — ${i.inspector.license}`],[`Company`,`${i.inspector.company||`Not set`} — ${i.inspector.email||`No email`}`],[`State pack`,`${a.name} ${a.version}`],[`Scope`,i.scope||`Not set`],[`Signoff`,i.signedAt?`${i.signatureName||i.inspector.name} at ${t(i.signedAt)}`:`Pending inspector finalization`]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
+      `).join(``),S=[[`Property`,`${r.property.address}, ${r.property.city}, ${r.property.state} ${r.property.postalCode}`],[`Owner`,r.property.ownerName||`Not populated`],[`County / parcel`,`${r.property.county||`Not populated`} / ${r.property.parcelId||`Not populated`}`],[`Legal description`,r.property.legalDescription||`Not populated`],[`Flood zone`,`${r.property.floodZone||`Not populated`}${r.property.sfha?` — SFHA ${r.property.sfha}`:``}`],[`Inspection date`,r.inspectionDate||`Not set`],[`Inspector`,`${r.inspector.name} — ${r.inspector.license}`],[`Company`,`${r.inspector.company||`Not set`} — ${r.inspector.email||`No email`}`],[`State pack`,`${i.name} ${i.version}`],[`Scope`,r.scope||`Not set`],[`Signoff`,r.signedAt?`${r.signatureName||r.inspector.name} at ${t(r.signedAt)}`:`Pending inspector finalization`]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t)}</dd></div>`).join(``);return`
     <!doctype html>
     <html>
       <head>
         <meta charset="utf-8" />
-        <title>Inspection Report - ${v(i.property.address)}</title>
+        <title>Inspection Report - ${v(r.property.address)}</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" />
@@ -123,22 +123,22 @@ import{Ct as e,F as t,L as n,P as r,_t as i,dt as a,ft as o,ht as s,mt as c,pt a
           .status {
             display: inline-block; padding: 7px 12px; border-radius: 3px; margin-top: 12px;
             font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-            color: ${o.ready?`#177342`:`#9a5b00`};
-            background: ${o.ready?`#e1f2e8`:`#fcefd3`};
-            border: 1px solid ${o.ready?`#9cc7ae`:`#e3c27e`};
+            color: ${a.ready?`#177342`:`#9a5b00`};
+            background: ${a.ready?`#e1f2e8`:`#fcefd3`};
+            border: 1px solid ${a.ready?`#9cc7ae`:`#e3c27e`};
           }
 ${u}
         </style>
       </head>
       <body>
-        ${f(s)}
+        ${f(o)}
         <header>
           <div class="letterhead">
             <div>
               <h1>Home Inspection Report</h1>
-              <div class="brand-line">${v(i.inspector.company||`Inspector Gadgets`)}${i.inspector.license?` · ${v(i.inspector.license)}`:``}</div>
+              <div class="brand-line">${v(r.inspector.company||`Inspector Gadgets`)}${r.inspector.license?` · ${v(r.inspector.license)}`:``}</div>
             </div>
-            ${_(i.inspector.logoDataUrl)?`<img src="${_(i.inspector.logoDataUrl)}" alt="" width="72" style="max-height:72px;object-fit:contain;" />`:`<svg viewBox="0 0 44 44" width="52" height="52" fill="none" aria-hidden="true">
+            ${_(r.inspector.logoDataUrl)?`<img src="${_(r.inspector.logoDataUrl)}" alt="" width="72" style="max-height:72px;object-fit:contain;" />`:`<svg viewBox="0 0 44 44" width="52" height="52" fill="none" aria-hidden="true">
               <path d="M4 4h27l9 9v27H4z" stroke="#0b1d31" stroke-width="2.5" stroke-linejoin="round" />
               <path d="M12 22 22 12l10 10" stroke="#0b1d31" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
               <path d="M16 24.5 20.5 29 31 18" stroke="#f5a300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -146,7 +146,7 @@ ${u}
             </svg>`}
           </div>
           <dl class="header-facts">${S}</dl>
-          <p class="status">${o.ready?`Ready for inspector final export`:`Inspector review required before final export`}</p>
+          <p class="status">${a.ready?`Ready for inspector final export`:`Inspector review required before final export`}</p>
         </header>
         <section>
           <h2>Booking Intake</h2>
@@ -154,12 +154,12 @@ ${u}
         </section>
         <section>
           <h2>Findings</h2>
-          ${c||`<p>No approved findings yet.</p>`}
+          ${s||`<p>No approved findings yet.</p>`}
         </section>
         ${p}
         <section>
           <h2>Photo Evidence</h2>
-          ${l}
+          ${c}
         </section>
         <section>
           <h2>Image Scan Evidence</h2>
@@ -167,8 +167,8 @@ ${u}
         </section>
         <section>
           <h2>Public Records Research</h2>
-          <p>Status: ${v(i.researchPacket?.status||`Not run`)}</p>
-          <p>Matched address: ${v(i.researchPacket?.normalizedAddress||`Not populated`)}</p>
+          <p>Status: ${v(r.researchPacket?.status||`Not run`)}</p>
+          <p>Matched address: ${v(r.researchPacket?.normalizedAddress||`Not populated`)}</p>
           <table>
             <thead>
               <tr>
@@ -196,13 +196,13 @@ ${u}
         </section>
         <section>
           <h2>Compliance Notes</h2>
-          <ul>${a.disclaimers.map(e=>`<li>${v(e)}</li>`).join(``)}</ul>
+          <ul>${i.disclaimers.map(e=>`<li>${v(e)}</li>`).join(``)}</ul>
         </section>
         <section>
           <h2>Audit Trail</h2>
-          <p>Inspection ID: ${v(i.id)}</p>
-          <p>Signed at: ${v(i.signedAt?t(i.signedAt):`Pending`)}</p>
-          <p>Exported at: ${v(i.exportedAt?t(i.exportedAt):`Pending`)}</p>
+          <p>Inspection ID: ${v(r.id)}</p>
+          <p>Signed at: ${v(r.signedAt?t(r.signedAt):`Pending`)}</p>
+          <p>Exported at: ${v(r.exportedAt?t(r.exportedAt):`Pending`)}</p>
         </section>
       </body>
     </html>
@@ -258,16 +258,16 @@ ${u}
         </table>
       </body>
     </html>
-  `}var h={satisfactory:`cond-ok`,marginal:`cond-marginal`,deficient:`cond-deficient`,not_present:`cond-na`,not_inspected:`cond-ni`};function g(e,r=!1){let d=e.request,p=e.property,m=[[`Client`,d.clientName],[`Phone`,d.phone],[`Email`,d.email],[`Property`,[p.address,p.city,p.state,p.postalCode].filter(Boolean).join(`, `)],[`Owner of record`,p.ownerName||``],[`Year built`,p.yearBuilt||``],[`Approx. area`,p.squareFeet?`${p.squareFeet} sq ft`:``],[`Occupancy`,p.occupancy||``],[`Inspection date`,e.inspectionDate||(d.appointmentStart?d.appointmentStart.slice(0,10):``)],[`Inspection type`,n(d.inspectionType)]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t||`Not provided`)}</dd></div>`).join(``),g=i(e),y=g.length?g.map(e=>`
+  `}var h={satisfactory:`cond-ok`,marginal:`cond-marginal`,deficient:`cond-deficient`,not_present:`cond-na`,not_inspected:`cond-ni`};function g(e,l=!1){let d=e.request,p=e.property,m=[[`Client`,d.clientName],[`Phone`,d.phone],[`Email`,d.email],[`Property`,[p.address,p.city,p.state,p.postalCode].filter(Boolean).join(`, `)],[`Owner of record`,p.ownerName||``],[`Year built`,p.yearBuilt||``],[`Approx. area`,p.squareFeet?`${p.squareFeet} sq ft`:``],[`Occupancy`,p.occupancy||``],[`Inspection date`,e.inspectionDate||(d.appointmentStart?d.appointmentStart.slice(0,10):``)],[`Inspection type`,n(d.inspectionType)]].map(([e,t])=>`<div class="fact"><dt>${v(e)}</dt><dd>${v(t||`Not provided`)}</dd></div>`).join(``),g=c(e),y=g.length?g.map(e=>`
         <tr>
           <td>${v(e.systemLabel)}</td>
           <td>${v(e.componentLabel)}</td>
-          <td><span class="cond ${h[e.condition]}">${v(a[e.condition])}</span></td>
+          <td><span class="cond ${h[e.condition]}">${v(r[e.condition])}</span></td>
           <td>${v(e.comment||`See system section.`)}</td>
-        </tr>`).join(``):`<tr><td colspan="4">No deficiencies noted at the time of inspection.</td></tr>`,b=c.map(t=>{let n=t.components.map(t=>{let n=s(e,t.id);return`
+        </tr>`).join(``):`<tr><td colspan="4">No deficiencies noted at the time of inspection.</td></tr>`,b=a.map(t=>{let n=t.components.map(t=>{let n=i(e,t.id);return`
           <tr>
             <td>${v(t.label)}</td>
-            <td><span class="cond ${h[n.condition]}">${v(a[n.condition])}</span></td>
+            <td><span class="cond ${h[n.condition]}">${v(r[n.condition])}</span></td>
             <td>${n.comment?v(n.comment):`<span class='muted'>—</span>`}</td>
           </tr>`}).join(``);return`
       <section class="system">
@@ -281,7 +281,7 @@ ${u}
         <figure>
           <img src="${v(e.thumbnailUrl||e.url)}" alt="${v(e.label)}" loading="lazy" />
           <figcaption>${v(e.label)}${e.location?` — ${v(e.location)}`:``}</figcaption>
-        </figure>`).join(``),S=o.map(e=>`<li>${v(e)}</li>`).join(``);return`
+        </figure>`).join(``),S=s.map(e=>`<li>${v(e)}</li>`).join(``);return`
     <!doctype html>
     <html>
       <head>
@@ -329,7 +329,7 @@ ${u}
         </style>
       </head>
       <body>
-        ${f(r)}
+        ${f(l)}
         <header>
           <div class="letterhead">
             <div>
@@ -343,7 +343,7 @@ ${u}
 
         <section>
           <h2>Scope of Inspection</h2>
-          <p class="scope">${v(l)}</p>
+          <p class="scope">${v(o)}</p>
         </section>
 
         <section>
