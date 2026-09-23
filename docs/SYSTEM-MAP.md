@@ -144,8 +144,11 @@ Every repository carries some stale text. Read these first and treat the rest wi
 
 ## Contradictions only the owner can settle
 
-1. **What does $98 buy?** The website, `index.html`'s structured data and the app's
-   `PLAN_VALUE` say $98 a year unlimited. The accounts API's pricing decision of
+1. **What does $98 buy?** Settled for new sales on 2026-09-21 (`DECISIONS.md`): the offer
+   becomes $50 a month or $500 a year, both unlimited, and existing subscribers keep what
+   they have. The website side is on branch `claude/pricing-50-500`; until that launches,
+   the live site, its structured data and the live app's `PLAN_VALUE` still say $98 a year
+   unlimited. What old subscribers are actually charged is still only visible in Stripe. The accounts API's pricing decision of
    2026-07-22 (`src/entitlements.mjs` header, `src/config.mjs`) says unlimited is $98 a
    month, annual is $980 a year, and the $98-a-year Stripe price is "legacy, retired".
    Which Stripe price ids are actually set on the cPanel host is unknown. Issue #12.

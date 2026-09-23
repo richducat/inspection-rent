@@ -123,6 +123,7 @@ section { padding: 62px 0; }
 /* pricing */
 .pricegrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; align-items: stretch; }
 .pricegrid.three { grid-template-columns: repeat(3, 1fr); max-width: 900px; margin: 0 auto; }
+.pricegrid.two { grid-template-columns: repeat(2, 1fr); max-width: 660px; margin: 0 auto; }
 .price-card { background: var(--white); border: 1px solid var(--line-strong); border-radius: 10px; padding: 24px 22px;
   display: flex; flex-direction: column; }
 .price-card.featured { border-color: var(--amber); box-shadow: 0 0 0 2px var(--amber-soft); position: relative; }
@@ -192,11 +193,12 @@ footer .foot-bottom { display: flex; flex-wrap: wrap; gap: 10px 20px; justify-co
   .topbar .navlinks { gap: 14px; font-size: 11px; }
   .topbar .navlinks a.navcta { padding: 8px 13px; font-size: 11px; letter-spacing: 0.03em; }
 }
-/* The 3-up pricing grid (pricing.html, class "three") needs ~550px for three
-   cards; below that it overflowed by up to 190px. Tablets (601px+) keep the
-   three columns they always had. */
+/* The 3-up pricing grid (class "three") needs ~550px for three cards; below
+   that it overflowed by up to 190px. Tablets (601px+) keep their columns.
+   pricing.html now uses the 2-up grid (class "two"): side by side from 601px,
+   stacked below. */
 @media (max-width: 600px) {
-  .pricegrid.three { grid-template-columns: 1fr; max-width: none; }
+  .pricegrid.three, .pricegrid.two { grid-template-columns: 1fr; max-width: none; }
 }
 /* Narrow phones (320-520px): brand + "Coverage · Pricing · Get Started" was
    ~450px wide, so the whole page scrolled sideways. Keep only the CTA in the

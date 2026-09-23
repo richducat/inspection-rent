@@ -62,7 +62,7 @@ each deploy's result; **GTM / GA4** are Google's visitor-counting tools.
 ## For engineers only: quick commands
 
 ```bash
-npm test               # analytics tracker tests (node 22, no install)
+npm test               # analytics tracker and launch-check tests (node 22, no install)
 npm run mobilecheck    # every page at 320 px and 375 px; needs playwright (see AGENTS.md)
 npm run check          # both
 ```

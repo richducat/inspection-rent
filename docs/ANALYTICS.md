@@ -58,7 +58,10 @@ when its property check finishes, and `lp_lead`;
 
 - `sign_up` (method `free_signup` today; older values kept for old dashboards)
 - `begin_checkout` with `items[0].item_id` = the plan key passed (`payg`, `single`,
-  `monthly`, `annual` or `trial`)
+  `monthly`, `annual` or `trial`). With the $50 / $500 offer (decision of 2026-09-21; app
+  branch `claude/pricing-50-500`, not deployed when this was written) the keys become
+  `unlimited` (value 50) and `annual` (value 500), matching what `checkout_return` reports.
+  Check that no GTM or GA4 conversion depends on the old values or on `payg` / `single`
 - `checkout_return` with `plan` = the server plan id (`payg` | `monthly` | `annual` |
   `unlimited` | `trial`) after home-inspection-assistant PR #5; before it, single-report
   returns were mislabelled `monthly`
