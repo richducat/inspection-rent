@@ -34,6 +34,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" />
 <link rel="stylesheet" href="assets/site.css" />
+<style>
+  /* The three "01 · CURRENT EDITION" cards: these classes live only in check.html's
+     own stylesheet, so here they rendered as three plain paragraphs. */
+  .strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .strip .cell { background: var(--white); border: 1px solid var(--line); border-radius: 6px; padding: 20px; }
+  .strip .cell h3 { font-size: 16.5px; margin: 6px 0; }
+  .strip .cell p { margin: 0; color: var(--muted); font-size: 14px; }
+  .strip .cell .num { font-family: var(--font-mono); color: var(--amber-strong); font-weight: 600; font-size: 12px; letter-spacing: 0.08em; }
+  @media (max-width: 760px) { .strip { grid-template-columns: 1fr; } }
+</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

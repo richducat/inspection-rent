@@ -95,6 +95,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .topbar .navlinks a:hover { color: #fff; }
   .topbar .navlinks a.here { color: var(--amber); }
   @media (max-width: 640px) { .topbar .navlinks a.hide-sm { display: none; } }
+  /* Phones: brand + "How it works · Pricing · Open the app" wrapped the sticky bar
+     to three lines (85px) at 320-375px; keep only the app link, like the other pages. */
+  @media (max-width: 520px) {
+    .topbar .brand { white-space: nowrap; }
+    .topbar .navlinks a:not(:last-child) { display: none; }
+    .topbar .navlinks a:last-child { white-space: nowrap; }
+  }
 
   /* ---------- hero ---------- */
   .hero {

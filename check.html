@@ -165,7 +165,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .lead-cap .lead-lbl span { color: var(--muted); font-weight: 500; }
   .lead-cap form { display: flex; gap: 10px; flex-wrap: wrap; }
   .lead-cap input[type="email"] {
-    flex: 1; min-width: 220px; font-family: var(--font-ui); font-size: 15px;
+    flex: 1; min-width: 220px; font-family: var(--font-ui); font-size: 16px; /* 16px: iOS Safari zooms the page on focus below that */
     padding: 12px 14px; border-radius: 4px; border: 1.5px solid var(--line-strong);
     color: var(--ink); outline: none;
   }
@@ -388,10 +388,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   /* Counties whose permit systems the app auto-pulls today (kept in sync with
      the records API registry). Everything else gets a one-click portal link. */
   var PERMIT_AUTOPULL = [
-    "Brevard", "Hillsborough", "Pinellas", "Pasco", "Manatee", "Citrus", "Lake",
-    "Seminole", "Nassau", "Franklin", "Madison", "Lee", "Polk", "Martin",
-    "St. Johns", "Indian River"
-  ];
+    "Brevard", "Hillsborough", "Pinellas", "Pasco", "Manatee", "Citrus", "Lee",
+    "Polk", "Martin", "Osceola", "St. Johns", "St. Lucie", "Clay", "Seminole",
+    "Indian River"
+  ]; // records API FL_ACA_COUNTIES + FL_OTHER_COUNTIES, 2026-09-30
 
   var FDOR_COUNTY = {
     11:"Alachua",12:"Baker",13:"Bay",14:"Bradford",15:"Brevard",16:"Broward",17:"Calhoun",
@@ -420,8 +420,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   /* Any code not in DOR_USE still resolves to its DOR category by numeric range,
      so the card never shows a raw "DOR use 087" to an ad visitor. */
   function dorUseLabel(code) {
-    var c = String(code == null ? "" : code).trim();
-    if (!c) return null;
+    // The roll files codes as "001" but some counties carry four digits
+    // ("0100" = single family): keep the first two of a 4-digit code, pad short ones.
+    var digits = String(code == null ? "" : code).replace(/\D/g, "");
+    if (!digits) return null;
+    var c = digits.length >= 4 ? "0" + digits.slice(0, 2) : ("000" + digits).slice(-3);
     if (DOR_USE[c]) return DOR_USE[c];
     var n = parseInt(c, 10);
     if (!isFinite(n)) return null;
@@ -467,8 +470,51 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var timer = setTimeout(function () { ctrl.abort(); }, timeoutMs || 15000);
     return fetch(url, { signal: ctrl.signal })
       .then(function (res) { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+      // ArcGIS reports failures (token required, bad params, rate limit) as an
+      // HTTP 200 {"error":{...}} envelope; read it as the failure it is instead
+      // of "no parcel here".
+      .then(function (j) { if (j && j.error) throw new Error("ArcGIS " + (j.error.code || "") + ": " + (j.error.message || "")); return j; })
       .finally(function () { clearTimeout(timer); });
   }
+  // The FL DOR statewide parcel POLYGON layer began demanding a token on
+  // 2026-09-29 (every query, even the layer's own metadata, answers
+  // {"error":{"code":499,"message":"Token Required"}}), which made this check
+  // tell every visitor "no parcel under it". The same organization publishes
+  // the same roll as public parcel CENTROIDS with identical fields, so we take
+  // the centroid nearest the geocoded rooftop, preferring the one whose site
+  // address carries the typed house number, and say how it was matched.
+  var PARCEL_LAYER = "https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/Florida_Statewide_Parcel_Centroid_Version/FeatureServer/0/query";
+  var PARCEL_FIELDS = "PARCEL_ID,ACT_YR_BLT,EFF_YR_BLT,TOT_LVG_AR,NO_BULDNG,OWN_NAME,DOR_UC,CO_NO,PHY_ADDR1";
+  function houseNumberOf(text) { var m = /^\s*(\d+)/.exec(text || ""); return m ? m[1] : ""; }
+  function parcelUrl(x, y, meters) {
+    return PARCEL_LAYER + "?f=json&geometryType=esriGeometryPoint&inSR=4326&outSR=4326&spatialRel=esriSpatialRelIntersects&units=esriSRUnit_Meter&returnGeometry=true&outFields=" + PARCEL_FIELDS +
+      "&distance=" + meters + "&geometry=" + encodeURIComponent(JSON.stringify({ x: x, y: y, spatialReference: { wkid: 4326 } }));
+  }
+  function pickParcel(fdor, x, y, houseNo) {
+    var rows = ((fdor && fdor.features) || []).filter(function (f) { return f && f.attributes && f.geometry; });
+    if (!rows.length) return null;
+    var kx = Math.cos(y * Math.PI / 180);
+    rows.forEach(function (f) { var dx = (f.geometry.x - x) * kx, dy = f.geometry.y - y; f.dist = Math.sqrt(dx * dx + dy * dy) * 111320; });
+    var match = "nearest";
+    if (houseNo) {
+      var same = rows.filter(function (f) { return houseNumberOf(f.attributes.PHY_ADDR1) === houseNo; });
+      if (same.length) { rows = same; match = "address"; }
+    }
+    // Common areas and rights-of-way carry no site address and no building;
+    // they are never "the property", unless nothing else is anywhere near.
+    var addressed = rows.filter(function (f) { var a = String(f.attributes.PHY_ADDR1 || "").trim().toUpperCase(); return (a && a !== "UNKNOWN") || Number(f.attributes.NO_BULDNG) > 0; });
+    if (addressed.length) rows = addressed;
+    rows.sort(function (a, b) { return a.dist - b.dist; });
+    return { attributes: rows[0].attributes, match: match, feet: Math.round(rows[0].dist * 3.281) };
+  }
+  function fetchParcel(x, y, houseNo) {
+    return fetchJson(parcelUrl(x, y, 60), 15000).then(function (d) {
+      var hit = pickParcel(d, x, y, houseNo);
+      if (hit) return hit;
+      return fetchJson(parcelUrl(x, y, 120), 15000).then(function (d2) { return pickParcel(d2, x, y, houseNo); });
+    });
+  }
+
 
   function delay(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
@@ -565,25 +611,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       .then(function () {
         state.fdorLn = line('<span class="arrow">&rarr;</span> SEARCHING THE FL DOR PROPERTY ROLL — year built, living area, owner');
         state.pendingLn = state.fdorLn;
-        return fetchJson("https://services9.arcgis.com/Gh9awoU677aKree0/arcgis/rest/services/Florida_Statewide_Cadastral/FeatureServer/0/query?f=json&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outFields=PARCEL_ID,ACT_YR_BLT,EFF_YR_BLT,TOT_LVG_AR,NO_BULDNG,OWN_NAME,DOR_UC,CO_NO&geometry=" + state.x + "," + state.y, 15000);
+        return fetchParcel(state.x, state.y, houseNumberOf(state.matched) || houseNumberOf(q));
       })
-      .then(function (fdor) {
-        var feat = ((fdor && fdor.features) || [])[0];
-        if (!feat || !feat.attributes) throw { step: "fdor" };
-        state.parcel = feat.attributes;
-        finishLine(state.fdorLn, true, "parcel found");
+      .then(function (hit) {
+        if (!hit) throw { step: "fdor" };
+        state.parcel = hit.attributes;
+        state.match = hit.match;
+        state.feet = hit.feet;
+        finishLine(state.fdorLn, true, hit.match === "address" ? "parcel found" : "nearest parcel, ~" + hit.feet + " ft");
         state.pendingLn = null;
         return delay(350);
       })
       .then(function () {
         state.femaLn = line('<span class="arrow">&rarr;</span> CHECKING FEMA NFHL — flood zone');
         return fetchJson("https://hazards.fema.gov/arcgis/rest/services/public/NFHL/MapServer/28/query?f=json&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&returnGeometry=false&outFields=FLD_ZONE,ZONE_SUBTY&geometry=" + state.x + "," + state.y, 15000)
-          .catch(function () { return null; });
+          .catch(function () { return { failed: true }; });
       })
       .then(function (fema) {
         var zone = fema && fema.features && fema.features[0] && fema.features[0].attributes;
+        // A FEMA timeout/error is not "no flood zone" — say it didn't answer.
+        state.floodFailed = Boolean(fema && fema.failed);
         state.flood = zone && zone.FLD_ZONE ? zone.FLD_ZONE : null;
-        finishLine(state.femaLn, Boolean(state.flood), state.flood ? "zone " + state.flood : "no layer here");
+        finishLine(state.femaLn, Boolean(state.flood), state.flood ? "zone " + state.flood : (state.floodFailed ? "no response" : "no layer here"));
         return delay(350);
       })
       .then(function () {
@@ -605,8 +654,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             "Try the full street address with city — e.g. “1801 27th St, Vero Beach, FL”. In the app you get address autocomplete, so this step is one tap.");
         } else if (err && err.step === "fdor") {
           finishLine(state.fdorLn, false, "no parcel at point");
-          showFail("Found the location, but no parcel record at that exact point.",
-            "That usually means the pin landed on a road or common area. The full app cross-references the appraiser record and lets you adjust — this quick check only does a single point lookup.");
+          showFail("Found the location, but no parcel record within 400 ft of it.",
+            "That usually means a brand-new lot, or a pin that landed well off the property. The full app cross-references the appraiser record and lets you adjust — this quick check only does a single point lookup.");
         } else {
           // A fetch/network/timeout/HTTP error on a live layer. Mark whichever
           // step was in flight (so no console line hangs unmarked) and word the
@@ -668,7 +717,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       body: JSON.stringify({ email: email, address: lastAddress, source: "property-check" })
     })
       .then(function (res) {
-        if (!res.ok) throw new Error("HTTP " + res.status);
+        // The accounts host's bot-protection (Imunify360) can answer with an
+        // HTTP 200 HTML challenge page instead of the API's JSON; that lead was
+        // never recorded, so only a JSON {ok:true} counts as sent.
+        if (!res.ok || !/json/i.test(res.headers.get("content-type") || "")) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data || data.ok !== true) throw new Error("unexpected reply");
         leadMsg.className = "lead-msg ok";
         leadMsg.textContent = "Request received — we’ll email it to you.";
         leadBtn.textContent = "Requested";
@@ -724,9 +780,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       ["County", state.county || "—"],
       ["Owner of record", owner || "—"],
       ["Parcel ID", p.PARCEL_ID || "—", true],
-      ["Flood zone", state.flood ? "Zone " + state.flood : "—"],
+      ["Flood zone", state.flood ? "Zone " + state.flood : (state.floodFailed ? "FEMA didn\u2019t answer" : "—")],
       ["Buildings", bldgs ? String(bldgs) : "—"],
-      ["Property use", use || "—"]
+      ["Property use", use || "—"],
+      ["Parcel match", state.match === "address" ? "Site address on the roll" : "Nearest parcel, ~" + state.feet + " ft from the pin"]
     ];
     var grid = cells.map(function (c) {
       return '<div class="rec"><span class="lbl">' + esc(c[0]) + '</span><span class="val' + (c[2] ? " small" : "") + '">' + esc(c[1]) + "</span></div>";
@@ -741,7 +798,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         " County.</b> In the full app, county-issued roof and building permits for this parcel come in automatically — numbers, types, and dates (addresses permitted by an incorporated city route to that city's portal). That's a documented roof age instead of an estimate.</span></div>";
     } else {
       badge = '<div class="permit-badge linked">' + arrowIcon + "<span><b>Permit auto-pull: not yet live in " + esc(state.county || "this") +
-        " County — direct lookup link provided.</b> In the full app, you get a one-click link to the county's permit lookup for this address. We only claim auto-pull where we actually have it (16 counties + 7 cities and growing); property records still fill in automatically here, statewide.</span></div>";
+        " County — direct lookup link provided.</b> In the full app, you get a one-click link to the county's permit lookup for this address. We only claim auto-pull where we actually have it (15 counties + 50 cities and growing); property records still fill in automatically here, statewide.</span></div>";
     }
     document.getElementById("rPermit").innerHTML = badge;
 
