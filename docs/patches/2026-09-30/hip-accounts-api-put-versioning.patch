@@ -1,0 +1,392 @@
+PUT /properties versioning — SERVER-SIDE PATCH, NOT APPLIED (schedule as a coordinated client+server change)
+==========================================================================================================
+
+Applies on top of branch claude/billing-hardening (commit e1c94f0) with:
+    git am put-versioning.patch        # or: git apply --index put-versioning.patch
+Verified: `JWT_SECRET=ci-only-secret node --test` is green with it applied (test/property-versioning.test.mjs added).
+
+What the server does after the patch
+------------------------------------
+- properties gets `version INTEGER NOT NULL DEFAULT 1` (PRAGMA-guarded ALTER, existing rows start at 1).
+- GET /properties/:id returns { inspection, version } and an ETag "<version>"; list summaries include version.
+- PUT /properties/:id reads If-Match (quoted / weak forms accepted) or body.baseVersion. If the base is
+  given and differs from the stored version: 409 { code: "version_conflict", version: <current> }, checked
+  BEFORE metering (a refused save consumes no allowance) and again atomically in the upsert's WHERE clause.
+  Success returns { ok, updatedAt, version } (+ ETag). No base at all = unconditional write, exactly what
+  every save is today (old builds, and the app's offline replay reconcilePendingWrites, keep working).
+- The property-count 409 now carries code "property_limit" (+ limit) so it can be told apart from a conflict.
+- A malformed base is 400 bad_version.
+
+Why it must NOT ship before the client is changed (home-inspection-assistant src/domain/sessionBackend.ts,
+saveUserProperty ~L862-905 and reconcilePendingWrites ~L648-690)
+--------------------------------------------------------------------------------------------------------
+Today the server never sends a 409 for a stale save, so the client's conflict branch is dead code. The
+moment the server starts sending version_conflict, the CURRENT client's branch runs, and it:
+  1. calls markClean(username, id) on ANY 409/412 — the dirty flag is dropped, so reconcilePendingWrites will
+     never push that record again and the "dirty-first" boot guard will fetch the server copy on reload. The
+     edits made on the losing device since it loaded the record are silently abandoned (they linger in the
+     IndexedDB mirror until the next local save overwrites them, but nothing surfaces or merges them).
+  2. does not distinguish codes: the property-cap 409 is also treated as a conflict (already a bug today).
+  3. keeps versions only in an in-memory Map per tab (propertyVersions) and stamps the next version as
+     data.version ?? baseVersion + 1. reconcilePendingWrites sends NO base and never stamps the version it
+     gets back, so after an offline replay the still-open tab holds an old number: its next autosave is a
+     SELF-conflict → 409 → its own edits are marked clean and dropped even though this device was the last
+     writer. Two tabs on one device (shared IndexedDB, separate Maps) produce the same self-conflict on
+     every autosave.
+So with the server patch alone, every real or spurious conflict makes a device discard its local work with
+a "reload" message; today the same situation silently overwrites the other device's work instead. Both
+lose data — the patch only changes WHO loses. It is only a net gain once the client is changed to:
+  a. enter the conflict branch ONLY when body.code === "version_conflict" (and surface data.error otherwise,
+     leaving the record dirty — the property_limit case),
+  b. on a version_conflict keep the local copy AND the dirty flag, and offer "keep mine (overwrite) / take
+     the server's / reload" instead of markClean,
+  c. stamp propertyVersions from EVERY successful PUT and GET, including reconcilePendingWrites, and persist
+     the base version next to the dirty set (e.g. hia:dirty:v1 as { id: version }) so a reload or a second
+     tab starts from the right number,
+  d. send baseVersion from reconcilePendingWrites too (or deliberately leave it unconditional and document
+     that offline replays are last-writer-wins).
+Deploy order: client build with a–d first (it tolerates a server that returns no version: data.version is
+optional), then this server patch.
+
+Rollback: the version column is additive; reverting the server code leaves it unused.
+
+---------------------------------------------------------------- patch follows (git am / git apply --index) ----
+
+From 479a79827a3977efdd817d1d174b2d70aa12d4c9 Mon Sep 17 00:00:00 2001
+From: Richard Ducat <richducat@gmail.com>
+Date: Wed, 30 Sep 2026 02:39:58 +0000
+Subject: [PATCH] Version cross-device property saves: PUT honours
+ If-Match/baseVersion, 409 version_conflict
+
+- properties gains version INTEGER NOT NULL DEFAULT 1 (PRAGMA-guarded ALTER; existing rows start at 1).
+- GET /properties/:id returns { inspection, version } plus an ETag; list summaries carry version.
+- PUT /properties/:id reads If-Match (quoted/weak accepted) or body.baseVersion. A base that is not
+  the stored version is refused with 409 { code: "version_conflict", version } BEFORE metering, and
+  again atomically in the upsert's WHERE clause. Success returns { ok, updatedAt, version } + ETag.
+  No base at all stays an unconditional write (old builds, offline replay).
+- The property-count 409 now carries code "property_limit" (+ limit) so the app can tell it from a
+  conflict. A malformed base is 400 bad_version.
+
+NOT to be deployed before the app's conflict branch is changed: today it marks the record clean on
+any 409 and drops the local edits (see the patch preamble).
+---
+ src/db.mjs                        |  10 +++
+ src/properties.mjs                |  32 ++++++--
+ src/server.mjs                    |  44 +++++++++-
+ test/property-versioning.test.mjs | 131 ++++++++++++++++++++++++++++++
+ 4 files changed, 209 insertions(+), 8 deletions(-)
+ create mode 100644 test/property-versioning.test.mjs
+
+diff --git a/src/db.mjs b/src/db.mjs
+index 0ddf73b..26f2d55 100644
+--- a/src/db.mjs
++++ b/src/db.mjs
+@@ -53,6 +53,16 @@ db.exec(`
+   );
+ `);
+ 
++// Migration: optimistic-concurrency version for cross-device saves. PUT
++// /properties/:id honours If-Match / baseVersion against it and answers 409
++// version_conflict for a stale device, so a phone that loaded an inspection an
++// hour ago can never silently overwrite the photos another device saved since.
++// Existing rows start at 1.
++const propertyColumns = db.prepare("PRAGMA table_info(properties)").all().map((c) => c.name);
++if (!propertyColumns.includes("version")) {
++  db.exec("ALTER TABLE properties ADD COLUMN version INTEGER NOT NULL DEFAULT 1");
++}
++
+ // Migration: track the newest Stripe event applied to each account so a stale /
+ // out-of-order event can't overwrite a newer subscription state.
+ const accountColumns = db.prepare("PRAGMA table_info(accounts)").all().map((c) => c.name);
+diff --git a/src/properties.mjs b/src/properties.mjs
+index cd8e67b..ed71180 100644
+--- a/src/properties.mjs
++++ b/src/properties.mjs
+@@ -7,6 +7,7 @@ export function listProperties(accountId) {
+               COALESCE(json_extract(data, '$.request.appointmentStart'), '') AS appointmentStart,
+               COALESCE(json_extract(data, '$.request.clientName'), '') AS clientName,
+               COALESCE(json_extract(data, '$.request.calendarEventId'), '') AS calendarEventId,
++              version,
+               updated_at AS updatedAt
+        FROM properties WHERE account_id = ? ORDER BY updated_at DESC`
+     )
+@@ -23,8 +24,22 @@ export function getProperty(accountId, id) {
+   }
+ }
+ 
+-/** Upsert a full inspection for an account. Returns the updatedAt timestamp. */
+-export function saveProperty(accountId, inspection) {
++/** The stored version of a property, or null when it does not exist. */
++export function propertyVersion(accountId, id) {
++  const row = db.prepare("SELECT version FROM properties WHERE account_id = ? AND id = ?").get(accountId, String(id));
++  return row ? Number(row.version) : null;
++}
++
++/**
++ * Upsert a full inspection for an account. `expectedVersion` (from If-Match /
++ * baseVersion) is the version the client loaded; when it is given and the row
++ * exists at a different version the write is refused atomically (the upsert's
++ * WHERE clause) and { conflict: true, version } names the current one. A save
++ * without a base (an old client, or the offline replay) is unconditional.
++ * Returns { updatedAt, version } on success — a new row is version 1, every
++ * accepted update increments it.
++ */
++export function saveProperty(accountId, inspection, expectedVersion = null) {
+   const now = new Date().toISOString();
+   // Payment truth comes from the signature-verified Connect webhook, not from a
+   // possibly stale browser autosave. Once a paid row exists, no later client
+@@ -50,12 +65,14 @@ export function saveProperty(accountId, inspection) {
+         },
+       }
+     : inspection;
+-  db.prepare(
++  const info = db.prepare(
+     `INSERT INTO properties (account_id, id, address, city, state, status, inspection_type, data, updated_at)
+      VALUES (@account_id, @id, @address, @city, @state, @status, @inspection_type, @data, @updated_at)
+      ON CONFLICT(account_id, id) DO UPDATE SET
+        address = @address, city = @city, state = @state, status = @status,
+-       inspection_type = @inspection_type, data = @data, updated_at = @updated_at`
++       inspection_type = @inspection_type, data = @data, updated_at = @updated_at,
++       version = version + 1
++     WHERE @expected_version IS NULL OR version = @expected_version`
+   ).run({
+     account_id: accountId,
+     id: String(inspection.id),
+@@ -66,8 +83,13 @@ export function saveProperty(accountId, inspection) {
+     inspection_type: document.request?.inspectionType ?? "",
+     data: JSON.stringify(document),
+     updated_at: now,
++    expected_version: expectedVersion == null ? null : Number(expectedVersion),
+   });
+-  return now;
++  const version = propertyVersion(accountId, inspection.id);
++  if (info.changes === 0) {
++    return { conflict: true, version };
++  }
++  return { updatedAt: now, version };
+ }
+ 
+ export function deleteProperty(accountId, id) {
+diff --git a/src/server.mjs b/src/server.mjs
+index bffba68..8474bcb 100644
+--- a/src/server.mjs
++++ b/src/server.mjs
+@@ -48,6 +48,7 @@ import {
+   deleteProperty,
+   countProperties,
+   propertyExists,
++  propertyVersion,
+   accountDataBytes,
+ } from "./properties.mjs";
+ import {
+@@ -367,21 +368,54 @@ app.get("/properties/:id", requireAuth, requireActive, (req, res) => {
+   if (!inspection) {
+     return res.status(404).json({ error: "Property not found." });
+   }
+-  res.json({ inspection });
++  const version = propertyVersion(req.account.id, req.params.id);
++  res.setHeader("ETag", `"${version}"`);
++  res.json({ inspection, version });
+ });
+ 
++/** 409 for a save whose base is not the current version; the client owns the wording. */
++function versionConflict(res, version) {
++  return res.status(409).json({
++    error: "This inspection was changed on another device since you loaded it. Reload to see the latest before saving again.",
++    code: "version_conflict",
++    version,
++  });
++}
++
+ app.put("/properties/:id", requireAuth, requireActive, propertyWriteRateLimit, (req, res) => {
+   const inspection = req.body?.inspection;
+   if (!inspection || String(inspection.id) !== req.params.id) {
+     return res.status(400).json({ error: "Body must be { inspection } with a matching id." });
+   }
++  // Optimistic concurrency. The app sends the version it loaded — If-Match is
++  // the idiomatic channel, baseVersion in the body the fallback for proxies that
++  // strip conditional headers. A stale base is refused (409 version_conflict)
++  // BEFORE metering, so a refused save never consumes allowance; the upsert
++  // re-checks atomically. No base at all = unconditional (old clients, offline
++  // replay), exactly what every save was before versions existed.
++  const ifMatch = req.get("If-Match");
++  const rawBase = ifMatch != null && ifMatch !== "" ? ifMatch.replace(/^W\//, "").replace(/"/g, "") : req.body?.baseVersion;
++  let expectedVersion = null;
++  if (rawBase !== undefined && rawBase !== null && rawBase !== "") {
++    expectedVersion = Number(rawBase);
++    if (!Number.isInteger(expectedVersion) || expectedVersion < 1) {
++      return res.status(400).json({ error: "If-Match / baseVersion must be a positive integer.", code: "bad_version" });
++    }
++    const current = propertyVersion(req.account.id, req.params.id);
++    if (current !== null && current !== expectedVersion) {
++      return versionConflict(res, current);
++    }
++  }
+   // Cap new properties per account so a caller can't grow storage without bound.
++  // Its own code: the app must never read this 409 as a version conflict.
+   if (
+     !propertyExists(req.account.id, req.params.id) &&
+     countProperties(req.account.id) >= config.maxPropertiesPerAccount
+   ) {
+     return res.status(409).json({
+       error: `Property limit reached (${config.maxPropertiesPerAccount}). Delete a property to add another.`,
++      code: "property_limit",
++      limit: config.maxPropertiesPerAccount,
+     });
+   }
+   // Bound total stored bytes per account (each row can be up to the request body
+@@ -420,8 +454,12 @@ app.put("/properties/:id", requireAuth, requireActive, propertyWriteRateLimit, (
+       });
+     }
+   }
+-  const updatedAt = saveProperty(req.account.id, inspection);
+-  res.json({ ok: true, updatedAt });
++  const saved = saveProperty(req.account.id, inspection, expectedVersion);
++  if (saved.conflict) {
++    return versionConflict(res, saved.version);
++  }
++  res.setHeader("ETag", `"${saved.version}"`);
++  res.json({ ok: true, updatedAt: saved.updatedAt, version: saved.version });
+ });
+ 
+ app.delete("/properties/:id", requireAuth, requireActive, rateLimit, (req, res) => {
+diff --git a/test/property-versioning.test.mjs b/test/property-versioning.test.mjs
+new file mode 100644
+index 0000000..211bae6
+--- /dev/null
++++ b/test/property-versioning.test.mjs
+@@ -0,0 +1,131 @@
++// Cross-device saves are versioned: PUT /properties/:id honours If-Match /
++// baseVersion and refuses a stale base with 409 version_conflict, so a device
++// that loaded an inspection earlier can never silently overwrite the photos
++// another device saved since. GET and PUT return the version (and an ETag).
++// The property-count 409 carries its own code so it is never read as a conflict.
++import test, { after } from "node:test";
++import assert from "node:assert/strict";
++import fs from "node:fs";
++import os from "node:os";
++import path from "node:path";
++
++process.env.DB_PATH = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "hip-versioning-")), "accounts.db");
++process.env.ADMIN_PASSWORD = "test-admin-password-1";
++process.env.JWT_SECRET = "test-secret-test-secret-test-secret";
++process.env.PORT = "0";
++process.env.MAX_PROPERTIES_PER_ACCOUNT = "2";
++
++const { server } = await import("../src/server.mjs");
++const { db, insertAccount, accountById, setPlan } = await import("../src/db.mjs");
++const { signToken } = await import("../src/auth.mjs");
++const { propertyVersion } = await import("../src/properties.mjs");
++
++await new Promise((resolve) => (server.listening ? resolve() : server.once("listening", resolve)));
++const base = `http://127.0.0.1:${server.address().port}`;
++
++after(() => {
++  server.close();
++  db.close();
++});
++
++insertAccount({
++  id: "ver",
++  username: "u-ver",
++  email: "ver@t.local",
++  display_name: "ver",
++  role: "inspector",
++  pass_hash: "x",
++  plan: "annual",
++  subscription_status: "active",
++  created_at: new Date().toISOString(),
++});
++setPlan("ver", "annual", "annual");
++const token = signToken(accountById("ver"));
++
++const photos = (n) => Array.from({ length: n }, (_, i) => ({ id: `p${i}` }));
++async function put(id, body, headers = {}) {
++  const res = await fetch(`${base}/properties/${id}`, {
++    method: "PUT",
++    headers: { "content-type": "application/json", authorization: `Bearer ${token}`, ...headers },
++    body: JSON.stringify(body),
++  });
++  return { status: res.status, etag: res.headers.get("etag"), body: await res.json() };
++}
++async function get(id) {
++  const res = await fetch(`${base}/properties/${id}`, { headers: { authorization: `Bearer ${token}` } });
++  return { status: res.status, etag: res.headers.get("etag"), body: await res.json() };
++}
++const job = (n) => ({ id: "job-1", property: { address: "1 Sync St" }, photos: photos(n) });
++
++test("a new property is version 1; GET and PUT return it with an ETag", async () => {
++  const created = await put("job-1", { inspection: job(15) });
++  assert.equal(created.status, 200);
++  assert.equal(created.body.version, 1);
++  assert.equal(created.etag, '"1"');
++  const loaded = await get("job-1");
++  assert.equal(loaded.body.version, 1);
++  assert.equal(loaded.etag, '"1"');
++  assert.equal(loaded.body.inspection.photos.length, 15);
++});
++
++test("a save with the current base is accepted and bumps the version; a STALE base is refused and nothing is lost", async () => {
++  // Device A saves on top of version 1.
++  const a = await put("job-1", { inspection: job(20) }, { "If-Match": "1" });
++  assert.equal(a.status, 200);
++  assert.equal(a.body.version, 2);
++  // Device B still holds version 1 with only 10 photos.
++  const b = await put("job-1", { inspection: job(10) }, { "If-Match": "1" });
++  assert.equal(b.status, 409);
++  assert.equal(b.body.code, "version_conflict");
++  assert.equal(b.body.version, 2, "tells the stale device the current version");
++  assert.equal((await get("job-1")).body.inspection.photos.length, 20, "device A's photos survive");
++  assert.equal(propertyVersion("ver", "job-1"), 2);
++  // baseVersion in the body is the fallback channel; a quoted / weak ETag is accepted.
++  const c = await put("job-1", { inspection: job(21), baseVersion: 2 });
++  assert.equal(c.status, 200);
++  assert.equal(c.body.version, 3);
++  const d = await put("job-1", { inspection: job(22) }, { "If-Match": 'W/"3"' });
++  assert.equal(d.status, 200);
++  assert.equal(d.body.version, 4);
++  // The header wins over the body when both are sent.
++  const e = await put("job-1", { inspection: job(23), baseVersion: 1 }, { "If-Match": "4" });
++  assert.equal(e.status, 200);
++  assert.equal(e.body.version, 5);
++});
++
++test("no base at all is unconditional (old clients, offline replay) — exactly the old behaviour", async () => {
++  const res = await put("job-1", { inspection: job(11) });
++  assert.equal(res.status, 200);
++  assert.equal(res.body.version, 6);
++  assert.equal((await get("job-1")).body.inspection.photos.length, 11);
++});
++
++test("a malformed base is a 400, not a silent overwrite", async () => {
++  for (const headers of [{ "If-Match": "abc" }, { "If-Match": "0" }]) {
++    const res = await put("job-1", { inspection: job(1) }, headers);
++    assert.equal(res.status, 400);
++    assert.equal(res.body.code, "bad_version");
++  }
++  const body = await put("job-1", { inspection: job(1), baseVersion: -3 });
++  assert.equal(body.status, 400);
++  assert.equal((await get("job-1")).body.inspection.photos.length, 11, "unchanged");
++});
++
++test("the property-count 409 carries its own code, distinct from a version conflict", async () => {
++  assert.equal((await put("job-2", { inspection: { id: "job-2", property: { address: "2 Cap St" } } })).status, 200);
++  const third = await put("job-3", { inspection: { id: "job-3", property: { address: "3 Cap St" } } });
++  assert.equal(third.status, 409);
++  assert.equal(third.body.code, "property_limit");
++  assert.equal(third.body.limit, 2);
++  // Updating an existing one at the cap is fine, and still versioned.
++  const upd = await put("job-2", { inspection: { id: "job-2", property: { address: "2 Cap St" }, note: "x" } }, { "If-Match": "1" });
++  assert.equal(upd.status, 200);
++  assert.equal(upd.body.version, 2);
++});
++
++test("list summaries carry the version", async () => {
++  const res = await fetch(`${base}/properties`, { headers: { authorization: `Bearer ${token}` } });
++  const { properties } = await res.json();
++  const one = properties.find((p) => p.id === "job-1");
++  assert.equal(one.version, 6);
++});
+-- 
+2.43.0
+

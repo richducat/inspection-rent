@@ -1,0 +1,85 @@
+--- a/server.mjs
++++ b/server.mjs
+@@ -2999,22 +2999,33 @@
+                   .map((a) => a.getAttribute("href") || "")
+                   .find((href) => /CapDetail\.aspx/i.test(href)) || ""
+             }));
+-            const showing = document.body.innerText.match(/Showing \d+-\d+ of (\d+)/)?.[1] ?? null;
++            const pager = document.body.innerText.match(/Showing \d+-\d+ of (\d+)/);
++            const showing = pager?.[1] ?? null;
+             const next = [...table.querySelectorAll("a")].find((a) => /Next\s*>/.test(a.textContent));
+-            return { rows, showing, hasNext: Boolean(next), noData, searchError, bannerText };
++            return { rows, showing, pagerText: pager?.[0] ?? null, hasNext: Boolean(next), noData, searchError, bannerText };
+           });
+           sawNoDataMarker = sawNoDataMarker || extraction.noData;
+           if (extraction.searchError && !portalError) {
+             portalError = extraction.bannerText;
+           }
+           permits.push(...parsePermitGridRows(extraction.rows));
+-          total = extraction.showing ? Number(extraction.showing) : total ?? permits.length;
+-          if (!extraction.hasNext || permits.length >= total) {
++          if (extraction.showing) total = Number(extraction.showing);
++          // Compare the portal's count against DISTINCT permits, never the raw
++          // row count: a page read twice (a slow postback, see below) pushed 10
++          // duplicate rows, `permits.length >= total` came true with "Next >"
++          // still on the page, the post-loop de-dup quietly removed them, and
++          // the oldest pages — the ones that date a roof — were never read,
++          // unflagged. A tenant with no "Showing a-b of N" text leaves `total`
++          // unknown (null): there "Next >" is the only exit signal. The old
++          // `total ?? permits.length` fallback made page 1's row count the
++          // total and ended every such read after one page.
++          const uniqueCount = new Set(permits.map((permit) => permit.permitNumber)).size;
++          if (!extraction.hasNext || (total !== null && uniqueCount >= total)) {
+             // Pager gone but the portal's own count says rows remain unread
+             // (markup drift, or rows that failed to parse): that is a PARTIAL
+             // read and must say so — exiting quietly here presented the newest
+             // page as the property's whole history.
+-            if (!extraction.hasNext && total !== null && permits.length < total) {
++            if (!extraction.hasNext && total !== null && uniqueCount < total) {
+               truncated = true;
+             }
+             break;
+@@ -3026,11 +3037,43 @@
+             truncated = true;
+             break;
+           }
++          // "Next >" is a WebForms postback (__doPostBack): the click returns
++          // at once and the OLD grid stays in the DOM until the response lands.
++          // The fixed 2.5 s sleep at the top of the loop was the only thing
++          // separating page N from page N+1, so on a slow evening the loop
++          // re-read the page it already had. Remember what this page looks
++          // like, click, and wait for the grid (or the pager line) to CHANGE.
++          const previousPager = extraction.pagerText;
++          const previousGrid = extraction.rows.map((row) => row.cells.join("|")).join("\n");
+           await page.evaluate(() => {
+             const table = document.querySelector("#ctl00_PlaceHolderMain_dgvPermitList_gdvPermitList");
+             const next = [...table.querySelectorAll("a")].find((a) => /Next\s*>/.test(a.textContent));
+             next?.click();
+           });
++          const advanced = await page
++            .waitForFunction(
++              ({ pager, grid }) => {
++                const pagerNow = document.body.innerText.match(/Showing \d+-\d+ of \d+/)?.[0] ?? null;
++                if (pager && pagerNow && pagerNow !== pager) return true;
++                const table = document.querySelector("#ctl00_PlaceHolderMain_dgvPermitList_gdvPermitList");
++                // Grid gone: a banner or an error page replaced it; the read at
++                // the top of the loop reports that, so the wait is over.
++                if (!table) return true;
++                const gridNow = [...table.querySelectorAll("tr")]
++                  .map((tr) => [...tr.querySelectorAll("th,td")].map((td) => td.innerText.trim().replace(/\s+/g, " ")).join("|"))
++                  .join("\n");
++                return gridNow !== grid;
++              },
++              { pager: previousPager, grid: previousGrid },
++              { timeout: 20_000 }
++            )
++            .then(() => true, () => false);
++          if (!advanced) {
++            // The next page never landed. Stop here and SAY so, rather than
++            // read the page we already have as though it were the next one.
++            truncated = true;
++            break;
++          }
+         }
+ 
+         // De-dup (a row can repeat across page reads).

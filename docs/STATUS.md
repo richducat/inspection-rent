@@ -3,7 +3,111 @@
 The living ledger. Update it at the end of every session, in the same PR as the work.
 Newest entry first. Dates and times are UTC. A reader should be able to start from here alone.
 
-## Last updated: 2026-09-24 23:35 UTC (Claude Code session on the owner's Mac; everything below the merges is on `main`)
+## Last updated: 2026-09-30 03:45 UTC (Claude Code cloud session "App error review", branch `claude/app-error-review-o46y68`; NOTHING from this session is on `main` yet — every line below is a branch waiting for the owner)
+
+### Two outages found on 2026-09-30: one fixed in this PR, one needs the owner
+
+**1. The free property check has been failing for every visitor since about 2026-09-29.**
+The Florida DOR statewide parcel layer both check pages read
+(`Florida_Statewide_Cadastral`) now answers every request, even its own metadata, with
+HTTP 200 `{"error":{"code":499,"message":"Token Required"}}`. The pages read that 200 as
+"no parcel under it", so every visitor was told their house has no parcel record and the
+analytics counted a failed check. **Fixed in this PR:** the pages now query the same
+organization's public parcel *centroid* layer (identical fields, updated 2026-09-29),
+take the centroid nearest the geocoded rooftop, prefer the one whose site address
+carries the typed house number, skip common areas, and say how the parcel was matched.
+Verified against the live layers on four addresses (Viera, Melbourne, Bradenton, Cocoa
+Beach) in headless Chromium. The app's own research used the same dead layer
+(`src/domain/propertyLinks.ts`); the app-side switch is on the app branch listed below.
+
+**2. The accounts host's bot-protection is answering API calls with a challenge page.**
+`accounts.eb28.co` (shared cPanel host) runs behind Imunify360. Measured live from this
+sandbox on 2026-09-30, with ordinary user agents (Node's default and iPhone Safari):
+`GET /auth/me`, `GET /properties`, `GET /billing/entitlements` and `POST /client-errors`
+came back as an HTTP **200** `text/html` "Please wait while your request is being
+verified..." page, or a **403** JSON "Access denied by Imunify360 bot-protection", instead
+of the API's reply. A server-to-server fetch can never solve that challenge.
+What it did to the product (read from the code, then reproduced by booting the records
+API against a fake accounts host that serves the page):
+- Records API `introspectToken` read the 200 page as "not active", **cached it as a
+  definitive deny**, and answered the app `401 "Your session has expired ... Sign in
+  again"`; the app obeys a 401 from the records API by **signing the inspector out
+  mid-job**. `/health` showed `accounts.result: http_200`, so nobody could see it.
+- The same page on `POST /entitlements/pull` counted as a **paid allow** and was
+  remembered for 30 minutes (metering failed open).
+- The website's lead form showed "Request received" for a lead that was never recorded.
+**Fixed in code** (records API branch `claude/accounts-challenge-guard`, and this PR's
+lead form): only a JSON body from accounts is a verdict; a challenge page is "could not
+ask accounts" (retryable, never cached, never a grant), and `/health` now reports
+`accounts.result: "challenge_page"` when it happens.
+**Owner action (the root cause is on the host, not in code):** in cPanel → Imunify360,
+whitelist the records service's outbound IPs (Render dashboard → hip-records-api →
+"Outbound IP addresses"), or ask Namecheap support to turn off the anti-bot challenge
+for the `accounts.eb28.co` subdomain, which serves an API and never a browser page.
+Whether Beth's phone is ever challenged cannot be proven from here; the records-API
+path (cloud IP) is the certain one.
+
+### Branches pushed this session (none merged; the owner merges)
+
+| Repository | Branch | What it carries | Verified how |
+|---|---|---|---|
+| this repo | `claude/app-error-review-o46y68` (on `main` `1f4f14a`) | parcel-centroid repair of the free check on `index.html` and `check.html`; ArcGIS error envelopes and FEMA timeouts worded honestly; lead form counts only a JSON `{ok:true}`; auto-pull county list matches the records API (15 counties, 50 city portals — Lake, Nassau, Franklin, Madison were never auto-pulled; Osceola, St. Lucie, Clay, Seminole are); 4-digit DOR use codes; 16px email inputs (check, lp08); wind-mitigation cards styled; how-it-works top bar collapses on phones; `docs/patches/2026-09-30/` holds two unapplied patches (below) | `npm test` 20/20; `npm run mobilecheck` 0 of 46 overflow; live relay run of both check pages on four addresses |
+| `hip-records-api` | `claude/accounts-challenge-guard` `9c1d276` | `lib/accounts-response.mjs` + guard in `introspectToken` / `checkPullEntitlement`; a 200 with no allowance left is no longer "paying"; an unconfirmed allowance is 503 retryable, not a 402 paywall; `/health` deploy marker `2026-09-30-accounts-challenge-guard`; RUNBOOK section on the challenge page | `node --check` all, docker-imports, `scripts/test-accounts-response.mjs` (38 cases), test-entitlement, test-session-auth, test-address; booted before/after against a fake accounts host |
+| `hip-records-api` | `claude/permit-matching-fixes` `c6f1aac` (merges cleanly with the branch above; checked) | `parsePermitAddress` no longer searches "Ridgewood Ave" for "8600 Ridgewood Ave #101" (a cacheable zero); a row printed "345 WICKHAM RD, WEST MELBOURNE" is no longer rejected as a wrong quadrant; Viera / Merritt Island / Census-resolved unincorporated points no longer get the false "city permits NOT included" warning; a truncated portal read is now said in the note; no-op Accela teardowns no longer fill the 5-slot browser queue (busy 503) | `node --check` all, docker-imports, test-address 170/0, test-brevard-coverage 218/0, test-central-fl-coverage 334/0, test-browser-close 74/0, test-entitlement, test-session-auth. **`node scripts/verify-coverage.mjs` was NOT run (no browsers or portal access here) — run it from the Mac before merging, per that repo's CLAUDE.md.** `test-permit-store` has one pre-existing date-dependent failure on `main` |
+| `hip-accounts-api` | `claude/billing-hardening` `dcd0961` | a Stripe event for an OLD subscription (dunning on a failed card, then its "deleted" weeks later) can no longer cancel an account whose NEW subscription is live, nor swap the live subscription id for the dead one (which made "delete account" cancel the wrong one); reconcile-from-Stripe no longer reports "active" when its write was rejected (the loop that minted full tokens for inactive rows and sent people back to checkout as "already active"); two simultaneous registrations with the same username no longer crash the whole accounts server (409 instead; every async route now answers a JSON 500 instead of exiting the process); a lapsed subscriber with an unspent $5 credit can use it; an active subscriber can buy an overflow pull or change plan (portal) instead of being told "already active"; a plan change made in the billing portal now updates the plan and limits; storage caps raised (2 GB, admins exempt) with a JSON 413 instead of an HTML error page; the bundled demo house is never metered (it used up a free account's one included address) | `node --check` all; `node --test` 86/86 (was 69); each defect reproduced on current `main` before the fix and re-run after |
+| `home-inspection-assistant` | **`claude/app-fixes-2026-09-30` `b432f98` — the one to merge; it contains the five topic branches below plus the cross-branch fixes** | everything in the five rows below, plus: the 4-Point "Age of system" cell falls through to an approved condenser / air-handler plate read; saving the setup wizard merges only the fields the inspector changed onto the CURRENT profile and the wizard closes when the server restores a filled-in profile (a wizard seeded on a blank local book appended a second sparse profile and dropped the restored signature/license/logo); sign-out pushes pending offline writes and asks before discarding anything the server has not confirmed; a lapsed plan on boot says so instead of reading as an outage; the "opening…" drawer keeps tap-to-cancel but drops the 15 s timer (over budget by 145 B with everything merged) | `tsc -b` clean; vite build; budget 132,491 B gzip (under by 0.6 KB); vitest 652/652; `npm run score` 100/100; mobile check 13 surfaces fit 375 px |
+| `home-inspection-assistant` | `claude/official-forms-honesty` `0b27437` (topic branch, inside the one above) | any electrical permit no longer stamps panel age / year updated / main amperage (only service-scope permits, amps ≥ 60); the 4-Point "Age of system" prints exactly the workspace value (no hidden PDF-only year from a permit); TPRV boxes follow the leading word of the answer ("Yes - drain line not extended" is a Yes); the unit/apt number reaches every address line, footer and photo-page header; editing a selected permit's date/number/scope re-imports it; a dead/expired roof permit says why it cannot be selected (on the card, not a tooltip); readiness no longer demands an approved finding on a clean job; the inspector logo survives reload. Five of the fifteen verified form defects (wind-mit §4.2 "A" credit, electrical Satisfactory auto-check, §4.1 No-Info on the shingle row, owner email, Q1 date format) had already been fixed upstream on 2026-09-10 | `tsc -b` clean; vitest 543/543 (58 new); prod build; budget under; `npm run score` 100/100 |
+| `home-inspection-assistant` | `claude/research-client-fixes` `77b9c1e` (topic branch) | the app's research reads the DOR roll from the public centroid layer (street-number match, else nearest building centroid, basis recorded in the source note; proximity picks marked "medium"); a truncated permit read renders as PARTIAL HISTORY; pasted permit rows parse the permit number instead of "MAIN"/"BUILDING"/the year; BCPAO "no property matched" reads as not found instead of "Records API unavailable"; a hand-typed address is accepted only when the geocoder matched THIS house (street number and directional agree), so a road point or ZIP centroid no longer pulls a neighbour's owner into the insured name; the DOR effective-year roof proxy queues for review instead of auto-filling the roof year on the signed forms | `tsc -b` clean; vitest 514/514 (was 485); prod build + budget; live smoke on a real Viera address (one request, street-number match) |
+| `home-inspection-assistant` | `claude/photo-pipeline-fixes` `4a90223` (topic branch) | plate OCR can no longer hang the Scan button forever (SIMD probed up front; engine start bounded at 20 s, recognition at 60 s); the image editor fits a 375 px phone (was a fixed 520 px stage with the crop handles off-screen) and its crop handles are 24 px on touch; the offline template scan no longer fabricates "Unsatisfactory - safety review required" for an electrical photo (that value reached the signed 4-Point once approved); labeled non-plate photos skip the 10-30 s OCR pass; sub-panel photos no longer write into the MAIN panel age/brand; the signature pad re-sizes after rotation instead of drawing at 2x offset; "MODEL NUMBER X" parses the model; the tour stops re-navigating on every re-render; a Wind-Mit run stops after the first unreachable step (feature is shelved anyway); the admin crash-report list shows an error with Retry. The mobile-overflow guardrail gained an image-editor surface and a scroll-container probe, refuses to grade a stale dev server, and kills the server it starts (an orphan from 2026-09-01 had been silently graded by earlier runs) | `tsc -b` clean; vitest 522/522 (was 485); build; budget; mobile check 13 surfaces ok at 375 px |
+| `home-inspection-assistant` | `claude/session-sync-fixes` `6fa0986` (topic branch) | a photo-heavy record no longer aborts at 12 s and gets replaced by a phantom blank (90 s cap; when listed records cannot be fetched the boot screen says "try again" instead of inventing one); boot list calls carry a timeout; a lapsed plan shows a plain sentence instead of raw "subscription_required" and keeps the record dirty; a property created offline appears in the switcher; a 409 that is not a version conflict (the per-account cap) no longer drops the dirty flag | `tsc -b` clean; vitest 494/494 (8 new); build + budget |
+| `home-inspection-assistant` | `claude/data-loss-fixes` `dfc3b7f` (topic branch) | research is pinned to the house it started for (correcting address A to B mid-pull no longer writes A's owner, parcel and year built onto B); deleting a property waits for its in-flight autosave (a DELETE that overtook a save was undone when the save landed); sign-out asks before discarding a save the server refused; calendar re-sync fills the address on first import only instead of overwriting a corrected street; "Load demo data" no longer autosaves the sample house to the server (which burned the free address); opening a Drive report keeps the active slot's id (the next autosave wrote under a foreign id); the address menu no longer opens by itself when a property opens (a stray tap re-selected an address and wiped owner, parcel and permits); "Finalized"/"Signed" tapped twice no longer re-date the signatures; photos file under the local day; an `.ics` time with a trailing Z is read as local (a 9 AM Eastern booking imported as 1 PM); a pasted "Date: Wednesday, July 15, 2026" is normalized instead of written verbatim; an expired token lands on the login screen with a notice saying why | regression tests in `dataLossRegressions.test.tsx`, `bookingDateParsing.test.ts`, `calendarSync.test.ts`; budget 129.1 KB gzip (calendar upsert and booking-text parsers moved behind existing lazy imports to pay for it) |
+
+### How the review was done, and what was NOT changed
+
+Eighteen scoped reviewers read the site, the app source and both APIs (September 1
+state). Their 174 candidate findings (16 official forms, 48 session and data loss,
+77 billing and entitlement, 13 photos and OCR, 11 records API, 9 marketing site) went to
+six verifiers, each of which had to reproduce a finding before it counted (a test against
+the real module, the real PDF templates, a real local accounts server, or a
+headless-Chromium run). Only reproduced findings were fixed, and every fix was re-checked
+against `main` as of 2026-09-23 first: five form defects had been fixed upstream on
+2026-09-10; the records API's abort safety (`9db92d1`) and partial-permit-failure handling
+(`4bb4427`) and the app's local-clock date default (`794186c`) were already on `main` and
+got regression tests only.
+
+Two fixes are written but **deliberately not applied**, in `docs/patches/2026-09-30/`
+with a README saying why and how: the Accela pagination race in the records API (needs the
+live `verify-coverage` run from the Mac), and `PUT /properties` versioning in the accounts
+API (the app must change first, or every conflict makes a device discard its own edits).
+
+### Still unverified
+
+- Anything on the owner's Mac, Render's dashboard (outbound IPs), or cPanel.
+- Whether Imunify360 challenges Beth's phone; only the cloud-IP path was measured.
+- A real end-to-end permit pull through the challenge guard in production (needs a
+  signed-in account; the local before/after boot is the evidence).
+- A real end-to-end checkout at $50 and $500 (still open from 2026-09-23).
+
+### What the owner needs to do next, in order
+
+1. Merge this PR (site). The free check comes back with the next Pages run.
+2. Merge `hip-records-api` `claude/accounts-challenge-guard` (Render auto-deploys; the
+   `/health` marker flips to `2026-09-30-accounts-challenge-guard`).
+3. cPanel → Imunify360: whitelist Render's outbound IPs, or have Namecheap disable the
+   anti-bot challenge on `accounts.eb28.co`. Without this, step 2 only turns a silent
+   sign-out into an honest "try again".
+4. Merge `hip-accounts-api` `claude/billing-hardening` and deploy it to the host the way
+   the 2026-09-23 offer went out (host code == GitHub `main`, restart, health ok). Then, in
+   Stripe, set up the customer portal to offer the $50 and $500 plans (`STRIPE-SETUP.md`),
+   or the in-app "change plan" link opens a portal that cannot switch.
+5. From the Mac, in `hip-records-api` on `claude/permit-matching-fixes`, run
+   `node scripts/verify-coverage.mjs`; if it is clean, merge it.
+6. Merge `home-inspection-assistant` `claude/app-fixes-2026-09-30` (the five topic branches
+   can be closed unmerged; they are its parts), then run `./deploy-hip.sh` from the Mac.
+7. Still open from 2026-09-24: the Render persistent disk for the permit store.
+
+### Previous update: 2026-09-24 23:35 UTC (Claude Code session on the owner's Mac; everything from here down is on `main`)
+
 
 ### Instant permit lookups (2026-09-24 UTC)
 
