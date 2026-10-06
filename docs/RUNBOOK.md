@@ -1,7 +1,7 @@
 # Runbook
 
 Step-by-step instructions for the recurring jobs. Commands assume Node 22 and a checkout
-of this repository. "PR" means a pull request to `main`, reviewed by Codex, merged by the
+of this repository. "PR" means a pull request to `main` (optional; no Codex review required since 2026-10-06), merged by the
 owner.
 
 ## 1. Is the site healthy right now?
@@ -197,7 +197,7 @@ Never edit `app/` by hand for any other reason.
   the Mac's `~/hip-backups`; read `RESTORE.md` in that repo first. This is the only copy
   of the inspectors' work besides the host disk.
 
-## 8. Handle a Codex review
+## 8. Handle a Codex review (optional — not required since 2026-10-06; never wait on it)
 
 Codex reviews every pull request. It reacts with 👀 while working, posts a "Codex Review
 Summary" comment, and leaves inline threads with a P1 (fix before merge) or P2 (fix or

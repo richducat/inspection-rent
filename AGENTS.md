@@ -66,15 +66,10 @@ is the checklist every PR fills in.
    `node_modules/`.
 5. **Phones first.** No page may be wider than a 320 px or 375 px viewport.
    `npm run mobilecheck` must print `0 overflowing` before a pull request is opened.
-6. **All changes go through a pull request to `main`.** Codex reviews every PR and posts
-   a "Codex Review Summary" comment; wait until it says Completed (2 to 8 minutes observed
-   when the bot has quota; comment `@codex review` to re-run it; if nothing appears within
-   ten minutes, say so in the PR, as on 2026-09-19 when it answered "usage limits reached"),
-   then fix each finding or reply in its thread with why not, before merging. Three valid
-   findings from 2026-09-07 were lost because PRs #1 and #2 were merged within two minutes
-   of opening, before Codex had posted (PRs #4 to #6 were merged within seconds): the charset
-   position (fixed 2026-09-19), a patched bundle keeping its old hash (moot after the
-   2026-09-10 rebuild), and the single-report plan label (fixed in the app repo's PR #5).
+6. **Ship it, then verify it (owner rule, 2026-10-06).** Do the work end to end: commit,
+   push or merge to `main`, and confirm the live site. A pull request is optional; there is
+   no required Codex review and no waiting on any bot. Only ask the owner before messaging
+   people, paying, or deleting. Don't add new tests unless the task asks for them.
 7. **Never commit secrets.** Every file in this repository is served to the internet,
    including `tests/` and `package.json`.
 8. **Say exactly what you verified.** "Tests pass" means you ran them in this checkout.
@@ -93,7 +88,7 @@ is the checklist every PR fills in.
 ## How a change flows
 
 ```
-branch  →  pull request to main  →  Codex review completed and answered  →  owner merges
+change  →  checks  →  push/merge to main  →  verify live
         →  Pages workflow runs (20 to 30 seconds)  →  verify live with curl
         →  docs/STATUS.md already updated in the PR
 ```
